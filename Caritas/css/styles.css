@@ -1,0 +1,61 @@
+/* Estilos generales */
+:root {
+    --caritas-rojo: #E5243B; 
+    --caritas-azul: #6698CC; 
+}
+
+body {
+    font-family: 'Segoe UI',Tahoma, Geneva, Tahoma, sans-serif ;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height:100svh ;
+    font-size: larger;
+    padding: 0;
+    background-color: var(--caritas-azul); 
+    color: #000; 
+
+ 
+
+}
+
+.form-container {
+    width: 500px;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center; 
+    background-color: #fff; 
+    border: 2px solid var(--caritas-rojo); 
+}
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+form+p {
+    text-align: center;
+}
+h2 {
+    color: var(--caritas-rojo); 
+}
+
+label {
+    color: var(--caritas-rojo); 
+}
+
+input, button {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--caritas-rojo); 
+}
+
+button {
+    background-color: var(--caritas-rojo); 
+    color: white;
+    cursor: pointer;
+
+button:hover {
+    background-color: #cc2035; 
+}}
