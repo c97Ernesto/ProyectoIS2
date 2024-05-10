@@ -1,11 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Aplicación</title>
+    <link rel="stylesheet" href="/css/index.css">
 </head>
+<header>
+    <div class="user-profile">
+      <!-- Aquí iría la imagen de perfil del usuario -->
+      <span class="user-name">Nombre de usuario</span>
+      <!-- Menú desplegable para opciones del perfil -->
+      <div class="dropdown-content">
+        <a href="#">Editar perfil</a>
+        <a href="#">Configuración de la cuenta</a>
+      </div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#">Inicio</a></li>
+        <li><a href="#">Mis publicaciones</a></li>
+        <li><a href="#">Historia de publicaciones</a></li>
+        <button id="logoutButton">Cerrar sesión</button>
+      </ul>
+    </nav>
+  </header>
+  
 <body>
   
+    <script src="/js/logout.js"></script>
 </body>
 </html>
