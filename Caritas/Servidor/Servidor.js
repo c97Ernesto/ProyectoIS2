@@ -27,6 +27,11 @@ app.get('/login', (req, res)=> {
     res.sendFile(filePath);
 })
 
+app.get('/index', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'index.html');
+  res.sendFile(filePath);
+});
+
 app.post("/registrar", async (req, res) => {
   var { correo, password, usuario, nombre, apellido, nacimiento, dni, tlf } =
     req.body;
@@ -124,3 +129,8 @@ app.listen(PORT, () => {
     `Servidor Express en ejecución en http://localhost:${PORT}/registrar`
   );
 });
+
+
+//Publicaciones
+const publicacionRoutes = require("../routes/publicacionRoutes.js");
+app.use("/publicacion", publicacionRoutes);

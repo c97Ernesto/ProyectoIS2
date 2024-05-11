@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             // Verificar si la edad es mayor o igual a 18 años
             if (age >= 18) {
-                
+                userData.nacimiento = userData.nacimiento.toISOString().slice(0, 19).replace('T', ' ');
                 try {
                     const response = await fetch('http://localhost:3000/registrar', {
                         method: 'POST',
