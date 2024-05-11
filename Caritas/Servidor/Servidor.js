@@ -129,3 +129,8 @@ app.listen(PORT, () => {
     `Servidor Express en ejecución en http://localhost:${PORT}/registrar`
   );
 });
+
+
+//Publicaciones
+const publicacionRoutes = require("../routes/publicacionRoutes.js");
+app.use("/publicacion", publicacionRoutes);
