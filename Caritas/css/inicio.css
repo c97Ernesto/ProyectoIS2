@@ -1,0 +1,67 @@
+.header{
+    height: 80px;
+    background-color: rgb(212, 208, 208);
+   
+}
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 100px);
+    padding: 20px;
+    align-self: start;   
+}
+
+.categorias {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* espacio entre los botones */
+}
+
+.categoria:hover{
+    background-color:#a19f9f;
+}
+
+
+.categorias button {
+    width: 200px; 
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: #e0e0e0; /* Color de fondo */
+    cursor: pointer;
+    height: 40px;
+}
+
+
+.quienes-somos {
+    position: fixed;
+    bottom: 0; 
+    right: 0; 
+    padding: 10px;
+}
+.quienes-somos button {
+    font-size: 18px;
+    color: rgb(2, 2, 2);
+    font-family:'Times New Roman', Times, serif;
+    font-weight:bolder;
+    border-radius: 20px;
+    background-color:rgb(252, 252, 253) ;
+    cursor: pointer;    
+}
+.buscador{
+    margin-top: 15px;
+    justify-content: center;
+    position:initial;
+    width: auto;
+    height: 30px;
+    align-items: center;
+}
+
+.buscador input{
+    border-radius: 5px;
+    width: 250px;
+    height: 30px;
+}
