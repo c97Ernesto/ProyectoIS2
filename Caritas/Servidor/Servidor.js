@@ -33,7 +33,7 @@ app.get('/index', (req, res) => {
 });
 
 app.post("/registrar", async (req, res) => {
-  var { correo, password, usuario, nombre, apellido, nacimiento, dni, tlf } =
+  var { correo, password, usuario, nombre, apellido, nacimiento, dni, tlf, rol } =
     req.body;
   try {
     var contraseña = await bcrypt.hash(password, 10); // 10 es el número de rondas de encriptación
@@ -49,6 +49,7 @@ app.post("/registrar", async (req, res) => {
       nacimiento,
       dni,
       tlf,
+      rol
     });
 
     // Aquí debemos verificar las credenciales del usuario en tu base de datos
@@ -56,32 +57,37 @@ app.post("/registrar", async (req, res) => {
       "SELECT COUNT(*) AS count FROM usuarios WHERE correo = ?",
       [correo],
       (err, results) => {
+        bool = true;
         if (err) {
           console.error("Error al verificar el correo:", err);
-          return;
+          bool=false;
         }
         if (results[0].count > 0) {
           console.log("El correo ya está registrado");
-          return;
+          bool=false;
         }
-
-        // Insertar nuevo usuario si el correo no está registrado
-        db.query(
-          "INSERT INTO usuarios (Correo, Contraseña, Usuario, Nombre, apellido, nacimiento, DNI, Telefono) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-          [correo, contraseña, usuario, nombre, apellido, nacimiento, dni, tlf],
-          (err, results) => {
-            if (err) {
-              console.error("Error al guardar el usuario:", err);
-              return;
+        if (bool) {
+          // Insertar nuevo usuario si el correo no está registrado
+          db.query(
+            "INSERT INTO usuarios (Correo, Contraseña, Usuario, Nombre, apellido, nacimiento, DNI, Telefono, rol) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [correo, contraseña, usuario, nombre, apellido, nacimiento, dni, tlf, rol],
+            (err, results) => {
+              if (err) {
+                console.error("Error al guardar el usuario:", err);
+                return;
+              }
+              console.log("Usuario guardado exitosamente");
             }
-            console.log("Usuario guardado exitosamente");
-          }
-        );
+          );     
+        }
+           
+        if(bool){
+          res.status(200).json({ message: "Autenticación exitosa" });
+        }else {
+          res.status(400).json({ message: "Correo ya registrado" });
+        }
       }
     );
-    // Generar un token JWT con una expiración de 1 hora
-    const token = jwt.sign({ correo }, secretKey, { expiresIn: "1h" });
-    res.status(200).json({ message: "Autenticación exitosa", token });
   } catch (error) {
     console.error("Error al registrar usuario:", error);
     res.status(500).json({ error: "Error al registrar usuario" });
@@ -126,6 +132,8 @@ app.post('/login', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(
-    `Servidor Express en ejecución en http://localhost:${PORT}/registrar`
+    `Servidor Express en ejecución en http://localhost:${PORT}`
   );
 });
+const publicacionRoutes = require("../routes/publicacionRoutes");
+app.use("/publicacion", publicacionRoutes);

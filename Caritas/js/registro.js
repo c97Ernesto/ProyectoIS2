@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
             apellido: formData.get('lastname'),
             nacimiento: new Date(formData.get("birthdate")),
             dni: parseInt(formData.get('dni'), 10),
-            tlf: parseInt(formData.get('phone'), 10)
+            tlf: parseInt(formData.get('phone'), 10),
+            rol:"comun"
         };
              // Calcular la edad en años
             const today = new Date();
@@ -23,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 age--;
             }
             // Verificar si la edad es mayor o igual a 18 años
-            if (age >= 18) {
-                
+            if (age >= 18 && userData.password.length>=3) { //TAMBIEN PREGUNTA SI LA LONGITUD DE LA PASSW ES MAYOR A 3
+                userData.nacimiento = userData.nacimiento.toISOString().slice(0, 19).replace('T', ' ');
                 try {
                     const response = await fetch('http://localhost:3000/registrar', {
                         method: 'POST',
@@ -34,33 +35,32 @@ document.addEventListener('DOMContentLoaded', () => {
                         body: JSON.stringify(userData)
                     });
         
-                    if (!response.ok) {
+                    if (!response.ok) {//de 200 a 299 es una respuesta positiva, sino es error
+                        const respuestaError = await response.json();
+                        alert(await respuestaError.message)
                         throw new Error('Credenciales inválidas');
                     }
         
-                    const responseData1 = await response.json();
-                    const { token } = responseData1;
-                    if(token!=null){
-                        alert("Correo ya registrado.")
+                    var responseData1 = await response.json();
+                    var { mensaje } = responseData1;
+                    if(mensaje=null){
+                        alert("Error al registrar.")
                         return;
                     }
-                    // Almacenar el token en localStorage para usarlo en solicitudes posteriores
-                    localStorage.setItem('token', token);
-        
-                    // Redirigir al usuario a otra página después de iniciar sesión
-                    window.location.href = 'inicio.html'; // Cambiar esto por la página deseada después del inicio de sesión
-        
-                    const responseData2 = await response.json();
-                    console.log('Respuesta del servidor:', responseData2);
+                    console.log('Respuesta del servidor:', responseData1);
+                    alert("Usted fue registrado en el sistema")
+                    window.location.href = './login.html';
                 } catch (error) {
                     console.error('Error en la solicitud:', error);
                 }
                 
                 //o indicar exito en la operacion
             } else {
-                alert('asegurate de completar todos los campos y ser mayor de 18 años.');
-            }
-        
-            
+                if (age<18) {
+                    alert('no se permite a los menores de edad registrarse.');
+                }else{
+                    alert('la contraseña debe ser al menos 3 caracteres de largo.');
+                }
+            }       
     });
 });
