@@ -32,6 +32,11 @@ app.get('/index', (req, res) => {
   res.sendFile(filePath);
 });
 
+app.get('/inicio', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'inicio.html');
+  res.sendFile(filePath);
+});
+
 app.post("/registrar", async (req, res) => {
   var { correo, password, usuario, nombre, apellido, nacimiento, dni, tlf, rol } =
     req.body;

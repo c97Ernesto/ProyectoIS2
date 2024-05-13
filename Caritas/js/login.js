@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Redirigir al usuario a la página adecuada según el rol
                 if (rol === 'comun') {
                     alert("soy un usario comun")
-                    window.location.href = './inicio.html';
+                    window.location.href = './inicio';
                 } else if (rol === 'voluntario') {
                     window.location.href = './voluntario.html';
                 } else if (rol === 'administrador') {
