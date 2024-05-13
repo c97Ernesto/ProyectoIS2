@@ -21,6 +21,8 @@ class UsuarioController {
 
   }
 
+  
+
   borrar(req, res){
 
   }

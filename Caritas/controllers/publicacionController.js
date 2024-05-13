@@ -94,6 +94,24 @@ class PublicacionController {
       res.status(500).send(err.message);
     }
   }
+
+  //consultar las publicaciones de un usuario
+  consultarPublicacionDeUsuario(req, res) {
+    const { correo, id } = req.params; // Suponiendo que tanto el correo como el ID se pasan como parámetros en la URL
+    try {
+      db.query(`SELECT * FROM publicacion WHERE usuario_correo = ? AND id = ?`, [correo, id], (err, rows) => {
+        if (err) {
+          res.status(400).send(err.message);
+        }
+        res.status(200).json(rows);
+      });
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+
+  //consultar todas las publicacioens de un usuario
+  consultarPublicacionesDeUsuario(){}
 }
 
 module.exports = new PublicacionController();

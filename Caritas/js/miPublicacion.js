@@ -13,7 +13,7 @@ function mostrarPublicacion(id) {
   const cardPublicacion = document.createElement("div");
 
   // Llamar a getPublicacionById y manejar el resultado cuando se resuelva la promesa
-  obtenerPublicacionPorId(id)
+  obtenerMiPublicacion(id)
     .then((publicacion) => {
       console.log(publicacion);
 
@@ -32,26 +32,13 @@ function mostrarPublicacion(id) {
             <p class="card-text ">${publicacion.estado}</p>
             <p class="card-text ">${publicacion.categoria}</p>
           </div>
+          <div class="">
+            <button type="button" class="btn btn-outline-primary>Editar publicación</button>
+            <button type="button" class="btn btn-outline-danger">Eliminar publicación</button>
+          </div>
         </div>
       </div>
       `;
-
-      function getCookie(name) {
-        const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-        return cookieValue ? cookieValue.pop() : '';
-      }
-      
-      const token = getCookie('jwt');
-      
-      if (token) {
-        const botonHTML = `
-        <div class="">
-          <button type="button" class="btn btn-outline-primary>Agregar comentario</button>
-          <button type="button" class="btn btn-outline-danger">Realizar oferta</button>
-        </div>
-        `;
-        cardPublicacion.querySelector(".card-body").innerHTML += botonHTML;
-      }
 
       containerCard.appendChild(cardPublicacion);
     })
@@ -60,8 +47,5 @@ function mostrarPublicacion(id) {
       console.error("Error al obtener la publicación:", error);
     });
 }
-
-
-
 
 obtenerPublicacion(id);
