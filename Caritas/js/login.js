@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     
         try {
-            const response = await fetch('/login', {
+            const response = await fetch('http://localhost:3000/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -29,15 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
             if (token) {
                 localStorage.setItem('token', token);
-    
                 // Redirigir al usuario a la página adecuada según el rol
                 if (rol === 'comun') {
                     alert("soy un usario comun")
-                    window.location.href = '/inicio.html';
+                    window.location.href = './inicio.html';
                 } else if (rol === 'voluntario') {
-                    window.location.href = '/voluntario.html';
+                    window.location.href = './voluntario.html';
                 } else if (rol === 'administrador') {
-                    window.location.href = '/admin.html';
+                    window.location.href = './admin.html';
                 }
             } else {
                 alert('Error al iniciar sesión');

@@ -11,30 +11,30 @@
         <h2>Registro</h2>
         <form id="registroForm">
             <label for="email">Correo electrónico:</label>
-            <input type="email" id="email" name="email" required><br><br>
+            <input type="email" id="email" name="email" required="" oninvalid="this.setCustomValidity('Se deben completar los campos')"><br><br>
             
             <label for="username">Nombre de usuario:</label>
-            <input type="text" id="username" name="username" required><br><br>
+            <input type="text" id="username" name="username" required=""  oninvalid="this.setCustomValidity('Se deben completar los campos')"><br><br>
             
             <label for="password">Contraseña:</label>
-            <input type="password" id="password" name="password" required><br><br>
+            <input type="password" id="password" name="password" required=""  oninvalid="this.setCustomValidity('Se deben completar los campos')"><br><br>
             
             <label for="firstname">Nombre:</label>
-            <input type="text" id="firstname" name="firstname" required><br><br>
+            <input type="text" id="firstname" name="firstname" required=""  oninvalid="this.setCustomValidity('Se deben completar los campos')"><br><br>
             
             <label for="lastname">Apellido:</label>
-            <input type="text" id="lastname" name="lastname" required><br><br>
+            <input type="text" id="lastname" name="lastname" required=""  oninvalid="this.setCustomValidity('Se deben completar los campos')"><br><br>
             
             <label for="birthdate">Fecha de nacimiento:</label>
-            <input type="date" id="birthdate" name="birthdate" required><br><br>
+            <input type="date" id="birthdate" name="birthdate" required=""  oninvalid="this.setCustomValidity('Se deben completar los campos')"><br><br>
             
             <label for="dni">DNI:</label>
-            <input type="text" id="dni" name="dni" required><br><br>
+            <input type="text" id="dni" name="dni" required=""  oninvalid="this.setCustomValidity('Se deben completar los campos')"><br><br>
             
             <label for="phone">Teléfono:</label>
-            <input type="tel" id="phone" name="phone" required><br><br>
+            <input type="tel" id="phone" name="phone" required=""  oninvalid="this.setCustomValidity('Se deben completar los campos')"><br><br>
             
-            <button type="submit">Registrarse</button>
+            <button type="submit">Registrar usuario</button>
         </form>
     </div>
 
