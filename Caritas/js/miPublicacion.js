@@ -1,22 +1,13 @@
-function obtenerPublicacion(id) {
-  // Obtener el ID de la publicación de la URL
-  // const urlParams = new URLSearchParams(window.location.search);
-  // const publicacionId = urlParams.get('id');
-
-  mostrarPublicacion(id);
-}
-
+const containerCard = document.getElementById("publicacion-container");
 function mostrarPublicacion(id) {
-  const containerCard = document.getElementById("publicacion-container");
   containerCard.innerHTML = "";
 
   const cardPublicacion = document.createElement("div");
 
-  // Llamar a getPublicacionById y manejar el resultado cuando se resuelva la promesa
-  obtenerMiPublicacion(id)
+  fetch(`http://localhost:3000/publicacion/${id}`)
+    .then((response) => response.json())
     .then((publicacion) => {
-      console.log(publicacion);
-
+      // Renderiza la página HTML con los datos de la publicación
       cardPublicacion.classList = "card-publicacion";
 
       cardPublicacion.innerHTML = `
@@ -31,21 +22,17 @@ function mostrarPublicacion(id) {
             <p class="card-text">${publicacion.descripcion}</p>
             <p class="card-text ">${publicacion.estado}</p>
             <p class="card-text ">${publicacion.categoria}</p>
+            <div class="">
+              <button type="button" class="btn btn-outline-primary">Editar publicación</button>
+              <button type="button" class="btn btn-outline-danger">Eliminar publicación</button>
           </div>
-          <div class="">
-            <button type="button" class="btn btn-outline-primary>Editar publicación</button>
-            <button type="button" class="btn btn-outline-danger">Eliminar publicación</button>
           </div>
         </div>
       </div>
       `;
-
       containerCard.appendChild(cardPublicacion);
     })
-    .catch((error) => {
-      // Manejar cualquier error que pueda ocurrir durante la obtención de la publicación
-      console.error("Error al obtener la publicación:", error);
-    });
+    .catch((error) =>
+      console.error("Error al obtener los detalles de la publicación:", error)
+    );
 }
-
-obtenerPublicacion(id);

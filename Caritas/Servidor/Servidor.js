@@ -129,16 +129,6 @@ app.post('/login', async (req, res) => {
       const token = jwt.sign({ correo: usuario.Correo, rol }, secretKey, { expiresIn: '1h' });
       console.log(token + rol)
 
-
-      
-      const cookiesOptions = {
-        expires: new Date(Date.now() + 90*24*60*60*1000), // Caduca en 90 días
-        httpOnly: false
-      };
-      res.cookie('jwt', token, cookiesOptions);
-      
-      
-
       // Responder con el token JWT, el rol del usuario y un mensaje de éxito
       res.json({ token, rol, message: 'Inicio de sesión exitoso' });
   });
