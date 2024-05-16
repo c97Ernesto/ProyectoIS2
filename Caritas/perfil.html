@@ -1,33 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Aplicación</title>
-    <link rel="stylesheet" href="./css/index.css">
+    <title>Perfil de Usuario</title>
+    <link rel="stylesheet" href="./css/perfil.css">
 </head>
-<header>
-    <div class="user-profile">
-      <!-- Aquí iría la imagen de perfil del usuario -->
-      <span class="user-name">Nombre de usuario</span>
-      <!-- Menú desplegable para opciones del perfil -->
-      <div class="dropdown-content">
-        <a href="#">Editar perfil</a>
-        <a href="#">Configuración de la cuenta</a>
-      </div>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#">Inicio</a></li>
-        <li><a href="#">Mis publicaciones</a></li>
-        <li><a href="#">Historia de publicaciones</a></li>
-        <button id="logoutButton">Cerrar sesión</button>
-      </ul>
-    </nav>
-  </header>
-  
 <body>
-  
+    <div class="profile-icon">
+        <div class="avatar"></div>
+        <div class="dropdown-content hidden">
+            <button id="editProfileButton">Editar perfil</button>
+            <button id="myPostsButton">Mis publicaciones</button>
+            <button id="postHistoryButton">Historias de publicaciones</button>
+            <button id="logoutButton">Cerrar sesión</button>
+    </div>
+
+    <script src="./js/perfil.js"></script>
     <script src="./js/logout.js"></script>
 </body>
 </html>
+

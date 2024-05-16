@@ -27,11 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             const { token, rol } = data;
     
-            if (token) {
+            if (token) {//usuario registrado entra aqui
                 localStorage.setItem('token', token);
-                // Redirigir al usuario a la página adecuada según el rol
                 if (rol === 'comun') {
-                    alert("soy un usario comun")
                     window.location.href = './inicio.html';
                 } else if (rol === 'voluntario') {
                     window.location.href = './voluntario.html';
@@ -41,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 alert('Error al iniciar sesión');
             }
-        } catch (error) {
+        } catch (error) {//usuario no registrado entra aqui
             console.error('Error en la solicitud:', error);
             alert('Error en la solicitud: ' + error.message);
         }

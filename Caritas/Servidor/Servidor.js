@@ -27,8 +27,8 @@ app.get('/login', (req, res)=> {
     res.sendFile(filePath);
 })
 
-app.get('/index', (req, res) => {
-  const filePath = path.join(__dirname, '..', 'index.html');
+app.get('/perfil', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'perfil.html');
   res.sendFile(filePath);
 });
 

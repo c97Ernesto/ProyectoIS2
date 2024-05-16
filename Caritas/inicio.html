@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pantalla de Inicio</title>
+    <!-- Vincula tu archivo de estilos -->
+    <link rel="stylesheet" href="./css/inicio.css">
+    <link rel="stylesheet" href="./css/perfil.css">
+    
+</head>
+
+<body>
+    <!-- Espacio para el header -->
+    <div class="header">
+        <div class="logo">
+            <a href='./inicio.html'>
+                <h1>Cáritas</h1>
+            </a>         
+            <div class="header-buttons">
+                <a href="./ofertas-enviadas.html" class="header-button">Ofertas Enviadas</a>
+                <a href="./ofertas-recibidas.html" class="header-button">Ofertas Recibidas</a>
+            </div>   
+        </div>
+        <div class="profile-icon">
+            <div class="avatar"></div>
+            <div class="dropdown-content hidden">
+                <button id="editProfileButton">Editar perfil</button>
+                <button id="myPostsButton">Mis publicaciones</button>
+                <button id="postHistoryButton">Historias de publicaciones</button>
+                <button id="logoutButton">Cerrar sesión</button>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="categorias">
+            <button class="categoria" id="Limpieza"> Productos de limpieza</button>
+            <button class="categoria" id="Indumentaria">Indumentaria</button>
+            <button class="categoria" id="Utiles">Útiles escolares</button>
+            <button  class="categoria" id="Alimentos">Alimentos</button>
+        </div>
+
+        <div class="buscador">       
+                <input type="text" id= "busqueda" placeholder="Filtrar productos..."> 
+        </div> 
+        <footer class = "quienes-somos ">
+            <button onclick="location.href='quienessomos.html';" >¿Quiénes somos?</button>
+        </footer>
+                
+    </div>
+
+    <script src="./js/inicio.js"></script>
+    <script src="./js/perfil.js"></script>
+    <script src="./js/logout.js"></script>
+</body>
+
+</html>
