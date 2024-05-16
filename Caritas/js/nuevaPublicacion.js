@@ -1,44 +1,54 @@
+
 document.addEventListener("DOMContentLoaded", function () {
   const formulario = document.getElementById("formularioPublicacion");
 
-  formulario
-    .addEventListener("submit", function (event) {
-      event.preventDefault();
+  formulario.addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
 
-      const nombrePublicacion =
-        document.getElementById("nombrePublicacion").value;
-      const urlImagen = document.getElementById("urlImagen").value;
-      const descripcion = document.getElementById("descripcion").value;
-      const estado = document.getElementById("estado").value;
-      const categoria = document.getElementById("categoria").value;
+    const nombrePublicacion =
+      document.getElementById("nombrePublicacion").value;
+    const urlImagen = document.getElementById("urlImagen").value;
+    const descripcion = document.getElementById("descripcion").value;
+    const estado = document.getElementById("estado").value;
+    const categoria = document.getElementById("categoria").value;
 
-      //obtener correo del usuario (localhost)
-      const correoUsuario = "laloConstante@gmail.com";
+    // Obtener correo del usuario (localhost)
+    //const correoUsuario = "laloConstante@gmail.com";
 
-      // Enviar los datos al backend usando fetch
-      fetch("/publicacion", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nombrePublicacion,
-          urlImagen,
-          descripcion,
-          estado,
-          categoria,
-          correoUsuario,
-        }),
-      }).then((response) => {
-        if (response.ok) {
-          window.location.href = "./misPublicaciones.html";
-        } else {
-          // La solicitud no fue exitosa, puedes manejar el error aquí
-          alert("Error al publicar");
-        }
-      });
+    const token = localStorage.getItem('token');
+
+    // Enviar los datos al backend usando fetch
+    fetch("/publicacion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        nombrePublicacion,
+        urlImagen,
+        descripcion,
+        estado,
+        categoria,
+      }),
     })
-    .catch((error) => {
-      console.error("Error al enviar la solicitud:", error);
-    });
+    .then((response) => {
+      if (response.ok) {
+        alert("Publicación cargada con éxito");
+        setTimeout(() => {
+          window.location.href = "./misPublicaciones.html";
+        }, 300);
+      } else {
+        alert("Debe iniciar sesión para cargar una publicación");
+        setTimeout(() => {
+          window.location.href = "./login.html";
+        }, 300);
+        throw new Error("Error al publicar");
+      }    
+      })
+      .catch((error) => {
+        console.error("Error al enviar la solicitud:", error);
+        alert(error.message); // Muestra el mensaje de error en una alerta
+      });
+  });
 });
