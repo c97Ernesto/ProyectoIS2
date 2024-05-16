@@ -12,8 +12,8 @@ const path= require("path");
 app.use(cors());
 app.use(bodyParser.json());
 const secretKey = "codigo secreto";
-
-
+const cookieParser = require('cookie-parser')
+app.use(cookieParser())
 app.use(express.static(path.join(__dirname, '../')));
 
 app.get('/registrar', (req, res)=> {
@@ -29,6 +29,11 @@ app.get('/login', (req, res)=> {
 
 app.get('/perfil', (req, res) => {
   const filePath = path.join(__dirname, '..', 'perfil.html');
+  res.sendFile(filePath);
+});
+
+app.get('/inicio', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'inicio.html');
   res.sendFile(filePath);
 });
 
@@ -122,6 +127,7 @@ app.post('/login', async (req, res) => {
 
       // Generar un token JWT con el rol incluido y una expiración de 1 hora
       const token = jwt.sign({ correo: usuario.Correo, rol }, secretKey, { expiresIn: '1h' });
+      console.log(token + rol)
 
       // Responder con el token JWT, el rol del usuario y un mensaje de éxito
       res.json({ token, rol, message: 'Inicio de sesión exitoso' });
