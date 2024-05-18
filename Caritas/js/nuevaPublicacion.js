@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (response.ok) {
         alert("Publicación cargada con éxito");
         setTimeout(() => {
-          window.location.href = "./misPublicaciones.html";
+          window.location.href = "./misPublicaciones";
         }, 300);
       } else {
         alert("Debe iniciar sesión para cargar una publicación");

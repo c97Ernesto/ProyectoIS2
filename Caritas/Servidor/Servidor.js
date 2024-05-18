@@ -37,6 +37,11 @@ app.get('/inicio', (req, res) => {
   res.sendFile(filePath);
 });
 
+app.get('/misPublicaciones', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'misPublicaciones.html');
+  res.sendFile(filePath);
+});
+
 app.post("/registrar", async (req, res) => {
   var { correo, password, usuario, nombre, apellido, nacimiento, dni, tlf, rol } =
     req.body;
@@ -142,4 +147,5 @@ app.listen(PORT, () => {
   );
 });
 const publicacionRoutes = require("../routes/publicacionRoutes");
+
 app.use("/publicacion", publicacionRoutes);

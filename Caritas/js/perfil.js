@@ -2,6 +2,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const profileIcon = document.querySelector(".profile-icon");
     const dropdownContent = profileIcon.querySelector(".dropdown-content");
 
+    
+    const miPostsButton = document.getElementById('myPostsButton');
+    if(miPostsButton){
+        miPostsButton.addEventListener('click',()=>{
+            window.location.href='http://localhost:3000/misPublicaciones';
+        });
+    }
+
     // Verificar la existencia del token al cargar la página
     const token = localStorage.getItem('token'); // Función para verificar si el token existe (debes implementarla)
 

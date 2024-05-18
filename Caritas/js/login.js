@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (token) {//usuario registrado entra aqui
                 localStorage.setItem('token', token);
                 if (rol === 'comun') {
-                    window.location.href = './inicio.html';
+                    window.location.href = 'http://localhost:3000/inicio';
                 } else if (rol === 'voluntario') {
                     window.location.href = './voluntario.html';
                 } else if (rol === 'administrador') {

@@ -152,7 +152,23 @@ class PublicacionController {
   }
 
   //consultar todas las publicacioens de un usuario
-  consultarPublicacionesDeUsuario() {}
+  consultarPublicacionesDeUsuario(req, res) {
+    try {
+     const correoUsuario= obtenerCorreoUsuarioDesdeToken(req);
+      db.query(
+        'SELECT * FROM publicacion WHERE fk_usuario_correo = ?',
+        [correoUsuario],
+        (err, rows) => {
+          if (err) {
+            return res.status(400).send(err.message);
+          }
+          return res.status(200).json(rows);
+        }
+      );
+    } catch (err) {
+      return res.status(500).send(err.message);
+    }
+  }
 }
-
+  
 module.exports = new PublicacionController();
