@@ -17,6 +17,7 @@ router
 router
   .route("/misPublicaciones")
   .get(publicacionController.consultarPublicacionesDeUsuario);
+
 //buscamos los datos de una publicación mediante id
 router
   .route("/:id")
@@ -24,5 +25,9 @@ router
   .put(publicacionController.actualizar)
   .delete(publicacionController.borrar);
 
-
+// Ruta para obtener publicaciones por categoría
+router
+  .route("/misPublicaciones/categoria/:categoria")
+  .get(publicacionController.consultarPublicacionPorCategoria);
+  
 module.exports = router;

@@ -169,6 +169,25 @@ class PublicacionController {
       return res.status(500).send(err.message);
     }
   }
+
+  //Consultar Publicaciones  Por Categoria
+  consultarPublicacionPorCategoria(req, res){
+    try {
+       const { categoria } = req.params;
+       db.query(
+         'SELECT * FROM publicacion WHERE categoria = ?',
+         [categoria],
+         (err, rows) => {
+           if (err) {
+             return res.status(400).send(err.message);
+           }
+           return res.status(200).json(rows);
+         }
+       );
+     } catch (err) {
+       return res.status(500).send(err.message);
+     }
+  }
 }
   
 module.exports = new PublicacionController();
