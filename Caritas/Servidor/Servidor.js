@@ -42,6 +42,11 @@ app.get('/misPublicaciones', (req, res) => {
   res.sendFile(filePath);
 });
 
+app.get('/ofertas', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'ofertas.html');
+  res.sendFile(filePath);
+});
+
 app.post("/registrar", async (req, res) => {
   var { correo, password, usuario, nombre, apellido, nacimiento, dni, tlf, rol } =
     req.body;

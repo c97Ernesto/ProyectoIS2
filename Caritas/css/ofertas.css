@@ -1,0 +1,99 @@
+:root {
+  --color-acento:  #005f73;
+  --color-texto: #fff;
+  --color-texto-negro: #000;
+  --color-fondo:  #9a9c9c;
+  --color-boton:#0056b3;
+  --color-boton-hover: #007bff;
+} 
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--color-fondo);
+  margin: 0;
+  padding: 20px;
+}
+
+#ofertas-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.tarjeta-publicacion {
+  background-color: #a9bcc0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  max-width: 300px;
+  text-align: center;
+  transition: transform 0.2s;
+  padding: 10px;
+}
+
+.tarjeta-publicacion img {
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1.5;
+}
+
+.tarjeta-publicacion h3 {
+  color: var(--color-texto-negro);
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+.tarjeta-publicacion p {
+  padding: 0 20px;
+  color: #444444;
+}
+
+.tarjeta-publicacion button {
+  background-color: var(--color-acento);
+  color: var(--color-texto);
+  border: none;
+  padding: 10px 20px;
+  margin: 10px 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tarjeta-publicacion button:hover {
+  background-color:#516368;
+}
+
+.tarjeta-publicacion:hover {
+  transform: translateY(-5px);
+}
+
+
+.input-group {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.input-group input, .input-group button {
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.input-group input {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.input-group button {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.input-group button:hover {
+  background-color: #0056b3;
+}

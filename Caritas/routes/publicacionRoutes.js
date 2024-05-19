@@ -11,8 +11,9 @@ router
   .get(publicacionController.consultar)
   .post(publicacionController.ingresar)
 
-    
-
+router
+  .route("/ofertas")
+  .get(publicacionController.consultarPublicacionesAgenas)
 
 router
   .route("/misPublicaciones")
