@@ -181,6 +181,7 @@ class PublicacionController {
     }
   }
 
+<<<<<<< HEAD
   consultarPublicacionesAgenas(req, res) {
     console.log("publicacionesagenas");
     try {
@@ -202,6 +203,25 @@ class PublicacionController {
     } catch (err) {
       return res.status(500).send(err.message);
     }
+=======
+  //Consultar Publicaciones  Por Categoria
+  consultarPublicacionPorCategoria(req, res){
+    try {
+       const { categoria } = req.params;
+       db.query(
+         'SELECT * FROM publicacion WHERE categoria = ?',
+         [categoria],
+         (err, rows) => {
+           if (err) {
+             return res.status(400).send(err.message);
+           }
+           return res.status(200).json(rows);
+         }
+       );
+     } catch (err) {
+       return res.status(500).send(err.message);
+     }
+>>>>>>> fbeb5d3c2d0c68d65cad53a74560a78124c90648
   }
 }
 
