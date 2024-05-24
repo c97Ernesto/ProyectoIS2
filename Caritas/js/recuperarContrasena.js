@@ -18,7 +18,7 @@ async function recuperarContrasena() {
         const data = await response.json(); // Parsear la respuesta JSON
 
         if (!response.ok) {
-            alert(data.message || 'El correo electrónico esta registrado en el sistema');
+            alert(data.message || 'El correo electrónico no esta registrado en el sistema');
             return;
         }
 
