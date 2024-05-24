@@ -2,7 +2,12 @@
   display: none;
 }
 
-.header-buttons {
+.header-buttons1 {
+  display: flex;
+  justify-content: center; /* Centrar horizontalmente los botones */
+  align-items: center;
+}
+.header-buttons2 {
   display: flex;
   justify-content: center; /* Centrar horizontalmente los botones */
   align-items: center;
