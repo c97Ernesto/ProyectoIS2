@@ -2,14 +2,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const profileIcon = document.querySelector(".profile-icon");
     const dropdownContent = profileIcon.querySelector(".dropdown-content");
 
-    
-    const miPostsButton = document.getElementById('myPostsButton');
-    if(miPostsButton){
-        miPostsButton.addEventListener('click',()=>{
-            window.location.href='http://localhost:3000/misPublicaciones';
-        });
-    }
-
     // Verificar la existencia del token al cargar la página
     const token = localStorage.getItem('token'); // Función para verificar si el token existe (debes implementarla)
 
@@ -17,6 +9,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const avatarElement = document.querySelector('.profile-icon');
 
     if (token) {
+        const ofertasButton = document.querySelector('.header-buttons2');
+        // Ocultar los botones de registrar e iniciar sesion si hay token
+        if (ofertasButton) {
+            ofertasButton.style.display = 'none';
+        }
+        
         console.log('El token existe');
         // Función para mostrar u ocultar el menú desplegable al hacer clic en el perfil
         profileIcon.addEventListener("click", function() {
@@ -25,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
         // El token no existe en localStorage
         // Obtener los elementos de los botones
-        const ofertasButton = document.querySelector('.header-buttons');
+        const ofertasButton = document.querySelector('.header-buttons1');
 
         // Ocultar los botones si no hay token en el localStorage
         if (ofertasButton) {
@@ -39,6 +37,12 @@ document.addEventListener("DOMContentLoaded", function() {
          
         console.log('El token no existe');
     }
-    
+    const miPostsButton = document.getElementById('myPostsButton');
+    if(miPostsButton){
+        miPostsButton.addEventListener('click',()=>{
+            window.location.href='http://localhost:3000/misPublicaciones';
+        });
+    }
+
 
 });

@@ -162,7 +162,7 @@ app.post('/recuperarContrasena', async (req, res) => {
       // using Twilio SendGrid's v3 Node.js Library
       // https://github.com/sendgrid/sendgrid-nodejs
       const sgMail = require('@sendgrid/mail')
-      sgMail.setApiKey('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')
+      sgMail.setApiKey('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')
       const msg = {
         to: correo, // Change to your recipient
         from: 'prueba2003123@gmail.com', // Change to your verified sender
