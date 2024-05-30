@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de la Publicación</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <a href='http://localhost:3000/inicio'>
+        <h1>Cáritas</h1>
+    </a>     
+</head>
+<body>
+  <div class="card m-2">
+    <div class="row g-0">
+      <div class="col-md-5">
+        <img src={{imagenes}} class="img-fluid rounded-start"  alt="...">
+      </div>
+      <div class="col-md-7">
+        <div class="card-body text-center">
+          <h5 class="card-title" id=" nombre">{{nombre}}</h5>
+          <p class="card-text"id= "descripcion">{{descripcion}}</p>
+          <p class="card-text "id=" estado">{{estado}}</p>
+          <p class="card-text "id="cat">{{categoria}}</p>
+          <div class="">
+            <button type="button" id= 'oferta'class="btn btn-outline-primary">Realizar Oferta</button>
+            <button type="button" id= 'comentar'class="btn btn-outline-primary">Comentar Publicacion</button>
+        </div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>
