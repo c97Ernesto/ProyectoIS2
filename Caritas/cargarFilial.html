@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cargar Filial</title>
+    <link rel="stylesheet" href="./css/cargarFilial.css">
+</head>
+<body>
+    
+
+    <h1>Cargar Filial</h1>
+    <form id="cargarFilialForm">
+
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        
+        <label for="fechaHora">Fecha y Hora:</label>
+        <input type="datetime-local" id="fechaHora" name="fechaHora" required>
+
+        <label for="fk_idUsuarioVoluntario">Usuario Voluntario:</label>
+        <select id="fk_idUsuarioVoluntario" name="fk_idUsuarioVoluntario" required>
+            <option value="">Seleccionar Voluntario...</option>
+           
+        </select>
+        
+        <button type="submit">Cargar Filial</button>
+    </form>
+
+    <script src="./js/cargarFilial.js"></script>
+</body>
+</html>

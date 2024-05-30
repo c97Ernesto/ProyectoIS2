@@ -32,6 +32,10 @@ app.get('/perfil', (req, res) => {
   const filePath = path.join(__dirname, '..', 'perfil.html');
   res.sendFile(filePath);
 });
+app.get('/perfilAdm', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'perfilAdm.html');
+  res.sendFile(filePath);
+});
 
 app.get('/inicio', (req, res) => {
   const filePath = path.join(__dirname, '..', 'inicio.html');
@@ -189,5 +193,9 @@ app.listen(PORT, () => {
   );
 });
 const publicacionRoutes = require("../routes/publicacionRoutes");
+const filialRoutes = require("../routes/filialRoutes");
+const userRoutes = require("../routes/userRoutes");
 
 app.use("/publicacion", publicacionRoutes);
+app.use("/filial", filialRoutes);
+app.use("/usuarios",userRoutes);

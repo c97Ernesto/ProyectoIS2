@@ -1,0 +1,153 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Estilos generales */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Estilos para el menú del administrador */
+  .menu-administrador {
+    background: #007bff;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .menu-administrador button {
+    background: #fff;
+    color: #007bff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .menu-administrador button:hover {
+    background: #e6e6e6;
+  }
+  
+  /* Estilos para el formulario de cargar filial */
+  form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  
+  form h2 {
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+  
+  form .form-group {
+    margin-bottom: 15px;
+  }
+  
+  form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  form input,
+  form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  form input:focus,
+  form select:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  form button {
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  form button:hover {
+    background: #0056b3;
+  }
+  
+  /* Estilos para el perfil del administrador */
+  .profile-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  
+  .profile-container h2 {
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+  
+  .profile-container .profile-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-container .profile-info .profile-item {
+    margin-bottom: 15px;
+  }
+  
+  .profile-container .profile-info .profile-item label {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .profile-container .profile-info .profile-item p {
+    margin-top: 5px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 5px;
+  }
+  
+  .profile-container .profile-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .profile-container .profile-actions button {
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .profile-container .profile-actions button:hover {
+    background: #0056b3;
+  }
+  

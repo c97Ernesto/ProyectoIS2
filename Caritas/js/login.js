@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (rol === 'voluntario') {
                     window.location.href = './voluntario.html';
                 } else if (rol === 'administrador') {
-                    window.location.href = './admin.html';
+                    window.location.href = './PerfilAdm';
                 }
             } else {
                 alert('Error al iniciar sesión');
