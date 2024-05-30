@@ -73,6 +73,45 @@ class PublicacionController {
 
   //Obtenemos la información de la publicación según el id recibido y devolvemos un JSON
 
+  consultarDetallesAutenticado(req, res) {
+    const { id } = req.params;
+    const correoUsuario = obtenerCorreoUsuarioDesdeToken(req);
+    try {
+      db.query(`SELECT * FROM publicacion WHERE id = ?`, [id], (err, rows) => {
+        if (err) {
+          return res.status(400).send(err.message);
+        }
+        let correo=  rows[0].fk_usuario_correo;
+        const esPropietario = correo === correoUsuario;
+
+        let archivoHtml;
+        if (esPropietario) {
+          archivoHtml = "miPublicacion.html";
+        } else {
+          archivoHtml = "publicacionAjena.html";
+}
+
+fs.readFile(path.join(__dirname, `../${archivoHtml}`), "utf8", (err, data) => {
+    if (err) {
+        return res.status(500).send(err.message);
+    }
+    const contenido = data
+              .replace("{{nombre}}", rows[0].nombre)
+              .replace("{{descripcion}}", rows[0].descripcion)
+              .replace("{{imagenes}}", rows[0].imagenes)
+              .replace("{{categoria}}", rows[0].categoria)
+              .replace("{{estado}}", rows[0].estado);
+
+            // Envía el contenido modificado como respuesta al cliente
+            res.send(contenido);
+          }
+        );
+      });
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+
   consultarDetalles(req, res) {
     const { id } = req.params;
     try {
@@ -82,7 +121,7 @@ class PublicacionController {
         }
         // Lee el contenido del archivo detallePublicacion.html
         fs.readFile(
-          path.join(__dirname, "../miPublicacion.html"),
+          path.join(__dirname, "../publicacionAjena.html"),
           "utf8",
           (err, data) => {
             if (err) {
@@ -222,6 +261,23 @@ class PublicacionController {
       return res.status(500).send(err.message);
     }
   }
+
+  // Nueva función para obtener productos de la misma categoría del usuario logueado
+  consultarPublicacionPorCategoriaPropio(req, res) {
+    
+      const correoUsuario = obtenerCorreoUsuarioDesdeToken(req);
+      const { categoria } = req.params;
+      db.query('SELECT id, nombre, imagenes FROM publicacion WHERE categoria = ? AND fk_usuario_correo = ?', [categoria, correoUsuario], (err, rows) => {
+        if (err) {
+            return res.status(500).send(err.message);
+        }
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'No tienes productos de la misma categoría para intercambiar' });
+        }
+        res.status(200).json(rows);
+    });
+}
+  
 }
 
 module.exports = new PublicacionController();

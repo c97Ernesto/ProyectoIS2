@@ -31,4 +31,13 @@ router
   .route("/misPublicaciones/categoria/:categoria")
   .get(publicacionController.consultarPublicacionPorCategoria);
   
+// Nueva ruta para obtener productos de la misma categoría del usuario logueado
+router
+   .route("/buscarPorCategoriaPropio/:categoria")
+   .get(publicacionController.consultarPublicacionPorCategoriaPropio);
+
+router
+   .route("/buscarPublicacionesAutenticado/:id")
+   .get(publicacionController.consultarDetallesAutenticado);
+
 module.exports = router;

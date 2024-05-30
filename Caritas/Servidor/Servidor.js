@@ -52,6 +52,11 @@ app.get('/ofertas', (req, res) => {
   res.sendFile(filePath);
 });
 
+app.get('/buscarPorCategoriaPropio', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'buscarPorCategoriaPropio.html');
+  res.sendFile(filePath);
+});
+
 app.post("/registrar", async (req, res) => {
   var { correo, password, usuario, nombre, apellido, nacimiento, dni, tlf, rol } =
     req.body;
@@ -197,5 +202,9 @@ const filialRoutes = require("../routes/filialRoutes");
 const userRoutes = require("../routes/userRoutes");
 
 app.use("/publicacion", publicacionRoutes);
+
+const ofertaRoutes = require("../routes/ofertaRoutes");
+
+app.use("/ofertas", ofertaRoutes);
 app.use("/filial", filialRoutes);
 app.use("/usuarios",userRoutes);
