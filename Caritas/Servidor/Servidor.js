@@ -48,6 +48,11 @@ app.get('/ofertas', (req, res) => {
   res.sendFile(filePath);
 });
 
+app.get('/buscarPorCategoriaPropio', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'buscarPorCategoriaPropio.html');
+  res.sendFile(filePath);
+});
+
 app.post("/registrar", async (req, res) => {
   var { correo, password, usuario, nombre, apellido, nacimiento, dni, tlf, rol } =
     req.body;
@@ -191,3 +196,7 @@ app.listen(PORT, () => {
 const publicacionRoutes = require("../routes/publicacionRoutes");
 
 app.use("/publicacion", publicacionRoutes);
+
+const ofertaRoutes = require("../routes/ofertaRoutes");
+
+app.use("/ofertas", ofertaRoutes);

@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Agregar event listeners a los botones "Ver Publicación"
-        const botonesVerPublicacion = document.querySelectorAll('.tarjeta-publicacion button');
+        /*const botonesVerPublicacion = document.querySelectorAll('.tarjeta-publicacion button');
         botonesVerPublicacion.forEach(boton => {
             boton.addEventListener('click', (event) => {
                 const publicacionId = event.target.getAttribute('data-id');
@@ -96,4 +96,48 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+});*/
+async function verPublicacion(publicacionId) {
+    const token = localStorage.getItem('token');
+    if (!token){
+        window.location.href = `http://localhost:3000/publicacion/${publicacionId}`;
+    }else{
+    try {
+        const response = await fetch(`http://localhost:3000/publicacion/buscarPublicacionesAutenticado/${encodeURIComponent(publicacionId)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Error al obtener los detalles de la publicación');
+        }
+        const contenido= await response.text();
+        localStorage.setItem('detallePublicacion', contenido);
+        localStorage.setItem('publicacionId', publicacionId);
+        window.location.href= `./verDetallePublicacion.html`;
+        
+
+       // document.getElementById('contenido').innerHTML = contenido;
+        //const nuevaVentana= window.open();
+        //nuevaVentana.document.write(contenido);
+
+        //window.location.href = `http://localhost:3000/publicacion/${publicacionId}`;
+    } catch (error) {
+        console.error('Error al obtener los detalles de la publicación:', error);
+    }}
+}
+
+// Agregar event listeners a los botones "Ver Publicación"
+const botonesVerPublicacion = document.querySelectorAll('.tarjeta-publicacion button');
+botonesVerPublicacion.forEach(boton => {
+    boton.addEventListener('click', (event) => {
+        const publicacionId = event.target.getAttribute('data-id');
+        verPublicacion(publicacionId); // Llama a la función para ver la publicación
+    });
+});
+
+
+}
 });
