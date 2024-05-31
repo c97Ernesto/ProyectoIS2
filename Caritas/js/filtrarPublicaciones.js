@@ -1,4 +1,4 @@
-async function obtenerPublicacionesFiltradas() {
+async function obtenerTodasLasPublicaciones() {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -50,20 +50,22 @@ async function obtenerPublicacionesFiltradas() {
 
 const contenedorTarjetas = document.getElementById("publicacionesAgenas-container");
 
-function crearTarjetaOferta(publicaciones) {
+function crearTarjetaPublicacion(publicaciones) {
 
   contenedorTarjetas.innerHTML = "";
 
   publicaciones.forEach((publicacion) => {
     const nuevaPublicacion = document.createElement("div");
-    nuevaPublicacion.classList = "tarjeta-publicacion col p-2";
+    nuevaPublicacion.classList = "col p-2 d-flex justify-content-center";
     nuevaPublicacion.innerHTML = `
               <div class="card" style="width: 18rem; ">
-                  <img src="${publicacion.imagenes}" class="m-3" alt="...">
+                  <img src="${publicacion.imagenes}" style="max-width: 100%; height: auto; aspect-ratio: 1.5;" alt="...">
                   <div class="card-body">
-                  <h5 class="card-title">${publicacion.nombre}</h5>
-                  <p class="card-text">${publicacion.descripcion}.</p>
-                  <button data-id="${publicacion.id}" class="btn btn-primary">Ver publicación</a>
+                    <h5 class="card-title">${publicacion.nombre}</h5>
+                    <p class="card-text">${publicacion.descripcion}.</p>
+                    <div class="text-center">
+                      <button data-id="${publicacion.id}" class="btn btn-primary">Ver publicación</a>
+                    </div>
                   </div>
               </div>
           `;
@@ -83,9 +85,9 @@ function crearTarjetaOferta(publicaciones) {
 
 
 
-//FILTRAR PUBLICACIONES
+//FILTRAR PUBLICACIONES POR NOMBRE
 
-function filtrarPublicaciones(publicaciones, texto) {
+function filtrarPublicacionesPorNombre(publicaciones, texto) {
   const textoMinusculas = texto.toLowerCase();
 
   return publicaciones.filter((publicacion) => {
@@ -101,13 +103,41 @@ function filtrarPublicaciones(publicaciones, texto) {
 document.getElementById("btn-filter-name").addEventListener("click", () => {
   const textoFiltro = document.getElementById("input-filter-name").value;
 
-  obtenerPublicacionesFiltradas().then((publicaciones) => {
-    const publicacionesFiltradas = filtrarPublicaciones(publicaciones, textoFiltro);
-    crearTarjetaOferta(publicacionesFiltradas);
+  obtenerTodasLasPublicaciones().then((publicaciones) => {
+    const publicacionesFiltradas = filtrarPublicacionesPorNombre(publicaciones, textoFiltro);
+    console.log(publicacionesFiltradas)
+    if (publicacionesFiltradas.length == 0){
+      alert("No hay publicaciones que coincidan con el texto ingresado.")
+      obtenerTodasLasPublicaciones();
+    } else{
+      crearTarjetaPublicacion(publicacionesFiltradas);
+    }
+    
   });
 });
 
-// Inicialmente cargar todas las publicaciones
-obtenerPublicacionesFiltradas().then((publicaciones) => {
-  crearTarjetaOferta(publicaciones);
+//FILTRAR PUBLICACIONES POR ESTADO
+function filtrarPorEstado(publicaciones, estado) {
+  return publicaciones.filter((publicacion) => publicacion.estado === estado);
+}
+
+document.getElementById("btn-filter-state").addEventListener("click", () => {
+  const estadoFiltro = document.getElementById("select-filter-state").value;
+
+  obtenerTodasLasPublicaciones().then((publicaciones) => {
+    const publicacionesFiltradas = filtrarPorEstado(publicaciones, estadoFiltro);
+
+    if (publicacionesFiltradas.length == 0){
+      alert("No hay publicaciones que coincidan con el texto ingresado.")
+      obtenerTodasLasPublicaciones();
+    } else{
+      crearTarjetaPublicacion(publicacionesFiltradas);
+    }
+    
+  });
+});
+
+// SE CARGAN TODAS LAS PUBLICACIONES
+obtenerTodasLasPublicaciones().then((publicaciones) => {
+  crearTarjetaPublicacion(publicaciones);
 });

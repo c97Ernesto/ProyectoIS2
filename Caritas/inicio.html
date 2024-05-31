@@ -43,7 +43,13 @@
             <button class="categoria" id="Indumentaria">Indumentaria</button>
             <button class="categoria" id="Útiles escolares">Útiles escolares</button>
             <button  class="categoria" id="Alimentos">Alimentos</button>
+            
         </div>
+        <div style="margin-top: 20px;">
+            <button  class="btn-filter" id="btn-filter">Filtrar Productos</button>
+        </div>
+        
+        
 
         <div class="buscador">       
                 <input type="text" id= "busqueda" placeholder="Filtrar productos..."> 
@@ -58,6 +64,12 @@
     <script src="./js/perfil.js"></script>
     <script src="./js/logout.js"></script>
     <script src="./js/filtroPorCategoria.js"></script>
+
+    <script>
+        document.getElementById("btn-filter").addEventListener('click', () => {
+          window.location.href = `http://localhost:3000/filtrarPublicaciones.html`;
+        });
+    </script>
     
 
 </body>

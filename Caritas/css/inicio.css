@@ -9,8 +9,8 @@
     align-items: center;
     justify-content: center;
     height: calc(100vh - 100px);
-    padding: 20px;
     align-self: start;   
+    text-align: center;
 }
 
 .categorias, .buscador {
@@ -27,13 +27,28 @@
 
 .categorias button {
     width: 200px; 
-    padding: 10px;
+    
     border: none;
     border-radius: 10px;
     background-color: #e0e0e0; /* Color de fondo */
     cursor: pointer;
     height: 40px;
 }
+
+.btn-filter {
+    height: 30px;
+    width: 250px; 
+    background-color: #e0e0e0; 
+    border: none; 
+    border-radius: 10px;
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    text-align: center; 
+}
+
 .buscador button {
     width: 200px; 
     padding: 10px;

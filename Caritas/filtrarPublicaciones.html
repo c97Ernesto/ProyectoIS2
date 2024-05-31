@@ -4,34 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publicaciones</title>
-    <!-- <link rel="stylesheet" href="./css/filtrarPublicaciones.css"> -->
+    
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    <style>
-        .tarjeta-publicacion img {
-            max-width: 100%;
-            height: auto;
-            aspect-ratio: 1.5;
-        }
-    </style>
-
   </head>
 
-  <body>
+  <body style="background-color: #f0f0f0;">
+
+    <nav class="navbar" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="color: rgb(37, 135, 255);" href='./inicio'>
+                <h1>Cáritas</h1>
+            </a>
+        </div>
+    </nav>
 
     <div class="container">
 
-        <div class="container d-flex justify-content-center align-items-center m-2">
-            <div class="input-group m-3">
+        <div class="container row">
+            <div class="input-group m-3 col-md">
                 <input type="text" class="form-control" placeholder="Filtrar por nombre..." aria-label="Filtrar por nombre..." aria-describedby="btn-filter-name" id="input-filter-name">
-                <button class="btn btn-outline-secondary" type="button" id="btn-filter-name">Button</button>
+                <button class="btn btn-outline-secondary" type="button" id="btn-filter-name">Buscar</button>
               </div>
               
-            <div class="input-group m-3">
-                <select class="form-select" id="filter-state" aria-label="Example select with button addon">
+            <div class="input-group m-3 col-md">
+                <select class="form-select" id="select-filter-state" aria-label="Example select with button addon">
                     <option selected>Filtrar por estado...</option>
                     <option value="Nuevo">Nuevo</option>
                     <option value="Usado">Usado</option>
@@ -42,8 +42,8 @@
     
         
     
-        <div class="container-fluid row" id="publicacionesAgenas-container">
-    
+        <div class="container row" id="publicacionesAgenas-container">
+
         </div>
 
     </div>
