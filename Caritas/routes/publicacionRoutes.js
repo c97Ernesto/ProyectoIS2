@@ -16,6 +16,10 @@ router
   .get(publicacionController.consultarPublicacionesAgenas)
 
 router
+  .route("/publicacionesAgenas")
+  .get(publicacionController.consultarPublicacionesAgenas)
+
+router
   .route("/misPublicaciones")
   .get(publicacionController.consultarPublicacionesDeUsuario);
 

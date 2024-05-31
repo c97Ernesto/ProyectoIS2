@@ -258,7 +258,8 @@ fs.readFile(path.join(__dirname, `../${archivoHtml}`), "utf8", (err, data) => {
         });
       }
     } catch (err) {
-      return res.status(500).send(err.message);
+      console.log(err)
+      return res.status(500).send(err);
     }
   }
 
