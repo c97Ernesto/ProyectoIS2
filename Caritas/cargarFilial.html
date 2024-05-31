@@ -6,21 +6,21 @@
     <link rel="stylesheet" href="./css/cargarFilial.css">
 </head>
 <body>
-    
-
     <h1>Cargar Filial</h1>
     <form id="cargarFilialForm">
-
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" required>
-        
-        <label for="fechaHora">Fecha y Hora:</label>
-        <input type="datetime-local" id="fechaHora" name="fechaHora" required>
+
+        <div id="horarios">
+            <label for="fechaHora">Fecha y Hora:</label>
+            <input type="datetime-local" id="fechaHora" name="fechaHora" required>
+        </div>
+        <button type="button" id="agregarHorario">Agregar otro horario</button>
 
         <label for="fk_idUsuarioVoluntario">Usuario Voluntario:</label>
         <select id="fk_idUsuarioVoluntario" name="fk_idUsuarioVoluntario" required>
             <option value="">Seleccionar Voluntario...</option>
-           
+            <!-- Opciones serán cargadas dinámicamente -->
         </select>
         
         <button type="submit">Cargar Filial</button>
@@ -29,3 +29,4 @@
     <script src="./js/cargarFilial.js"></script>
 </body>
 </html>
+

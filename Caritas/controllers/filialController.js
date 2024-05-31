@@ -18,24 +18,50 @@ function obtenerCorreoUsuarioDesdeToken(req) {
 
 class FiliarController {
     constructor() {}
-    // Otros métodos
 
     // Método para cargar una filial
     cargarFilial(req, res) {
         try {
-            console.log(req.body);
-            const { nombre, fechaHora, fk_idUsuarioVoluntario } = req.body;
-            db.query(
-                "INSERT INTO filial (nombre, fechaHora, fk_idUsuarioVoluntario) VALUES (?, ?, ?);",
+            const { nombre, horarios, fk_idUsuarioVoluntario } = req.body;
 
-                [nombre, fechaHora, fk_idUsuarioVoluntario],
+            // Insertar la filial
+            db.query(
+                "INSERT INTO filial (nombre, fk_idUsuarioVoluntario) VALUES (?, ?);",
+                [nombre, fk_idUsuarioVoluntario],
                 (err, result) => {
                     if (err) {
                         console.error('Error al insertar la filial:', err);
-                       
                         return res.status(400).json({ message: err.message });
                     }
-                    return res.status(201).json({ id: result.insertId });
+
+                    const filialId = result.insertId;
+
+                    // Insertar los horarios para la filial
+                    const horarioQueries = horarios.map(horario => {
+                        return new Promise((resolve, reject) => {
+                            db.query(
+                                "INSERT INTO horario (fechaHora, fk_IdFilial) VALUES (?, ?);",
+                                [horario, filialId],
+                                (err, result) => {
+                                    if (err) {
+                                        console.error('Error al insertar el horario:', err);
+                                        return reject(err);
+                                    }
+                                    resolve(result);
+                                }
+                            );
+                        });
+                    });
+
+                    // Ejecutar todas las consultas de horario
+                    Promise.all(horarioQueries)
+                        .then(() => {
+                            return res.status(201).json({ message: 'Filial y horarios cargados exitosamente' });
+                        })
+                        .catch(err => {
+                            console.error('Error al insertar los horarios:', err);
+                            return res.status(500).json({ message: 'Error al insertar los horarios' });
+                        });
                 }
             );
         } catch (err) {
@@ -43,6 +69,49 @@ class FiliarController {
             return res.status(500).json({ message: err.message });
         }
     }
+    obtenerFiliales(req, res){
+        db.query('SELECT id, nombre FROM filial', (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+            res.json(results);
+        });
+    }
+    obtenerLosHorariosDeUnaFilial(req, res){
+        const { filialId } = req.params;
+        db.query('SELECT id, fechaHora, estado FROM horario WHERE fk_IdFilial = ?', [filialId], (err, results) => {
+             if (err) {
+                     return res.status(500).json({ message: err.message });
+             }
+             res.json(results);
+        });
+
+    }
+    
+
+    ElegirUnaFilial(req, res){
+        const { filialId, horarioId } = req.body;
+
+        // Verificar si el horario está disponible
+        db.query('SELECT estado FROM horario WHERE id = ?', [horarioId], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+    
+            if (results.length === 0 || results[0].estado !== 'disponible') {
+                return res.status(400).json({ message: 'El horario no está disponible' });
+            }
+    
+            // Actualizar el estado del horario a 'ocupado'
+            db.query('UPDATE horario SET estado = ? WHERE id = ?', ['ocupado', horarioId], (err, results) => {
+                if (err) {
+                    return res.status(500).json({ message: err.message });
+                }
+                res.status(200).json({ message: 'Filial elegida exitosamente' });
+            });
+        });
+    }
+
 }
 
 module.exports = new FiliarController();

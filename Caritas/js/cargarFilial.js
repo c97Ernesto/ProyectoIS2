@@ -1,33 +1,41 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Cargar usuarios voluntarios al cargar la página
     cargarUsuariosVoluntarios();
 
-    // Manejar el envío del formulario
     const formulario = document.getElementById('cargarFilialForm');
+    const agregarHorarioButton = document.getElementById('agregarHorario');
+    const horariosDiv = document.getElementById('horarios');
+
+    agregarHorarioButton.addEventListener('click', function() {
+        const nuevoHorario = document.createElement('input');
+        nuevoHorario.type = 'datetime-local';
+        nuevoHorario.name = 'fechaHora';
+        nuevoHorario.required = true;
+        horariosDiv.appendChild(nuevoHorario);
+    });
+
     formulario.addEventListener('submit', async function(event) {
         event.preventDefault();
         
         const nombre = document.getElementById('nombre').value;
-        const fechaHora = document.getElementById('fechaHora').value;
+        const horarios = Array.from(document.querySelectorAll('input[name="fechaHora"]')).map(input => input.value);
         const fk_idUsuarioVoluntario = document.getElementById('fk_idUsuarioVoluntario').value;
 
         try {
             const response = await fetch('http://localhost:3000/filial', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                   // 'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ nombre, fechaHora, fk_idUsuarioVoluntario })
+                body: JSON.stringify({ nombre, horarios, fk_idUsuarioVoluntario })
             });
 
             if (response.ok) {
                 alert('Filial cargada exitosamente');
                 formulario.reset();
+                horariosDiv.innerHTML = `<label for="fechaHora">Fecha y Hora:</label><input type="datetime-local" id="fechaHora" name="fechaHora" required>`;
             } else {
                 const error = await response.json();
                 alert('Error: ' + error.message);
-               
             }
         } catch (error) {
             console.error('Error al cargar la filial:', error);
@@ -39,9 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
 async function cargarUsuariosVoluntarios() {
     try {
         const response = await fetch('http://localhost:3000/usuarios/voluntarios', {
-            headers: {
-                //'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
+            headers: {}
         });
 
         if (response.ok) {
