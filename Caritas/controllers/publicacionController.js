@@ -16,6 +16,18 @@ function obtenerCorreoUsuarioDesdeToken(req) {
   return correoUsuario;
 }
 
+function obtenerCorreoUsuario(req) {
+  // Obtén el token del encabezado de autorización
+  const token = req.headers.authorization.split(" ")[1];
+
+  // Decodifica el token sin verificarlo
+  const decodedToken = jwt.decode(token);
+  const correoUsuario = decodedToken.correo; // Suponiendo que el correo electrónico está almacenado en el token como 'correo'
+
+  return correoUsuario;
+}
+
+
 class PublicacionController {
   constructor() {}
 
@@ -266,7 +278,7 @@ fs.readFile(path.join(__dirname, `../${archivoHtml}`), "utf8", (err, data) => {
   // Nueva función para obtener productos de la misma categoría del usuario logueado
   consultarPublicacionPorCategoriaPropio(req, res) {
     
-      const correoUsuario = obtenerCorreoUsuarioDesdeToken(req);
+      const correoUsuario = obtenerCorreoUsuario(req);
       const { categoria } = req.params;
       db.query('SELECT id, nombre, imagenes FROM publicacion WHERE categoria = ? AND fk_usuario_correo = ?', [categoria, correoUsuario], (err, rows) => {
         if (err) {
