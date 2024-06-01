@@ -104,16 +104,6 @@ function crearTarjetaPublicacion(publicaciones) {
         }
       }
     }
-    // Agregar evento click al botón
-    const botonesVerPublicacion = document.querySelectorAll(
-      ".tarjeta-publicacion button"
-    );
-    botonesVerPublicacion.forEach((boton) => {
-      boton.addEventListener("click", (event) => {
-        const publicacionId = event.target.getAttribute("data-id");
-        verPublicacion(publicacionId); // Llama a la función para ver la publicación
-      });
-    });
 
     const boton = nuevaPublicacion.querySelector('button');
     boton.addEventListener('click', () => {
