@@ -75,6 +75,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function crearTarjetasPublicaciones(publicaciones) {
+        if (publicaciones.length === 0) {
+            contenedorTarjetas.innerHTML = '<p id="no_publicaciones" style="text-align: center;">No hay publicaciones disponibles.</p>';
+            return;
+        }
+
+
+
         publicaciones.forEach(publicacion => {
             const nuevaPublicacion = document.createElement("div");
             nuevaPublicacion.classList = "tarjeta-publicacion";
@@ -87,16 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
             contenedorTarjetas.appendChild(nuevaPublicacion);
         });
 
-        // Agregar event listeners a los botones "Ver Publicación"
-        /*const botonesVerPublicacion = document.querySelectorAll('.tarjeta-publicacion button');
-        botonesVerPublicacion.forEach(boton => {
-            boton.addEventListener('click', (event) => {
-                const publicacionId = event.target.getAttribute('data-id');
-                window.location.href = `http://localhost:3000/publicacion/${publicacionId}`;
-            });
-        });
-    }
-});*/
 async function verPublicacion(publicacionId) {
     const token = localStorage.getItem('token');
     if (!token){
@@ -118,12 +115,6 @@ async function verPublicacion(publicacionId) {
         localStorage.setItem('publicacionId', publicacionId);
         window.location.href= `./verDetallePublicacion.html`;
         
-
-       // document.getElementById('contenido').innerHTML = contenido;
-        //const nuevaVentana= window.open();
-        //nuevaVentana.document.write(contenido);
-
-        //window.location.href = `http://localhost:3000/publicacion/${publicacionId}`;
     } catch (error) {
         console.error('Error al obtener los detalles de la publicación:', error);
     }}
