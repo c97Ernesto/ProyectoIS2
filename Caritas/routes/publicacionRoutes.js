@@ -44,8 +44,8 @@ router
    .route("/buscarPublicacionesAutenticado/:id")
    .get(publicacionController.consultarDetallesAutenticado);
 
-
 router
-  .route("/detalles/id")
+  .route("/detalles/:id")
   .get(publicacionController.infoPublicacion)
+
 module.exports = router;

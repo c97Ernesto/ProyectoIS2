@@ -16,6 +16,8 @@ router
    .route("/horarios/:filialId")
    .get(filialController.obtenerLosHorariosDeUnaFilial);
 
-
+router
+   .route("/detalles/:id")
+   .get(filialController.obtenerDetallesFilial)
    
 module.exports = router;

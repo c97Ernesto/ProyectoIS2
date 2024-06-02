@@ -296,15 +296,14 @@ class PublicacionController {
     const idProducto = req.params.id;
     console.log(idProducto)
     try {
-      db.query(`SELECT * FROM productos WHERE id = ?`, [idProducto], (err, rows) => {
+      db.query(`SELECT * FROM publicacion WHERE id = ?`, [idProducto], (err, rows) => {
         if (err) {
           return res.status(400).send(err.message);
         }
         if (rows.length === 0) {
           return res.status(404).send('Producto no encontrado');
         }
-        const producto = rows[0];
-        res.status(200).json(producto);
+        res.status(200).json(rows);
       });
     } catch (err) {
       res.status(500).send(err.message);

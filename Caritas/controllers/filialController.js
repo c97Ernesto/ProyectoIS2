@@ -112,6 +112,25 @@ class FiliarController {
         });
     }
 
+    obtenerDetallesFilial(req, res){
+        const id = req.params.id
+        console.log(id)
+        try {
+          db.query(`SELECT * FROM filial WHERE id = ?`, [id], (err, rows) => {
+            if (err) {
+              res.status(400).send(err.message);
+            }
+            if (rows.length === 0) {
+              return res.status(404).send('Filial no encontrada');
+            }
+            return res.status(200).json(rows);
+          }
+        );
+        } catch (err) {
+          res.status(500).send(err.message);
+        }
+      }
+
 }
 
 module.exports = new FiliarController();
