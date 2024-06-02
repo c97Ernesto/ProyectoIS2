@@ -103,6 +103,45 @@ class OfertaController {
         res.status(500).json({ error: 'Error al realizar la oferta' });
       });
   }
+
+
+  obtenerOferta(req, res){
+    const idOferta = req.params.id
+    try {
+      db.query(`SELECT * FROM ofertas WHERE id = ?`, [idOferta], (err, rows) => {
+        if (err) {
+          res.status(400).send(err.message);
+        }
+        if (rows.length === 0) {
+          return res.status(404).send('Oferta no encontrada');
+        }
+        
+        res.redirect(`/visualizarOferta.html?id=${idOferta}`);
+      }
+    );
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+
+  obtenerOfertaDetalles(req, res){
+    const idOferta = req.params.id
+    try {
+      db.query(`SELECT * FROM ofertas WHERE id = ?`, [idOferta], (err, rows) => {
+        if (err) {
+          res.status(400).send(err.message);
+        }
+        if (rows.length === 0) {
+          return res.status(404).send('Oferta no encontrada');
+        }
+        return res.status(200).json(rows);
+      }
+    );
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+  
 }
 
 module.exports = new OfertaController();

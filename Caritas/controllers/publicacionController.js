@@ -101,13 +101,13 @@ class PublicacionController {
           archivoHtml = "miPublicacion.html";
         } else {
           archivoHtml = "publicacionAjena.html";
-}
+        }
 
-fs.readFile(path.join(__dirname, `../${archivoHtml}`), "utf8", (err, data) => {
-    if (err) {
-        return res.status(500).send(err.message);
-    }
-    const contenido = data
+        fs.readFile(path.join(__dirname, `../${archivoHtml}`), "utf8", (err, data) => {
+          if (err) {
+            return res.status(500).send(err.message);
+          }
+          const contenido = data
               .replace("{{nombre}}", rows[0].nombre)
               .replace("{{descripcion}}", rows[0].descripcion)
               .replace("{{imagenes}}", rows[0].imagenes)
@@ -289,8 +289,27 @@ fs.readFile(path.join(__dirname, `../${archivoHtml}`), "utf8", (err, data) => {
         }
         res.status(200).json(rows);
     });
+
 }
-  
+
+  infoPublicacion(req, res){
+    const idProducto = req.params.id;
+    console.log(idProducto)
+    try {
+      db.query(`SELECT * FROM productos WHERE id = ?`, [idProducto], (err, rows) => {
+        if (err) {
+          return res.status(400).send(err.message);
+        }
+        if (rows.length === 0) {
+          return res.status(404).send('Producto no encontrado');
+        }
+        const producto = rows[0];
+        res.status(200).json(producto);
+      });
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
 }
 
 module.exports = new PublicacionController();
