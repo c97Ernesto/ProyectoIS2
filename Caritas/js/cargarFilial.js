@@ -57,7 +57,7 @@ async function cargarUsuariosVoluntarios() {
             usuarios.forEach(usuario => {
                 const option = document.createElement('option');
                 option.value = usuario.correo; 
-                option.textContent = usuario.nombre;  
+                option.textContent = `${usuario.nombre} ${usuario.apellido}`; 
                 select.appendChild(option);
             });
         } else {

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cambiar Rol de Usuario</title>
+    <link rel="stylesheet" href="./css/cargarFilial.css">
+</head>
+<body>
+    <h1>Cambiar rol de usuario</h1>
+    <form id="cambiarRolForm">
+        <p>Usuario</p>
+        <select id="user" name="user" required>
+            <option value="">Seleccionar Usuario...</option>  
+        </select>
+
+        <p>Rol actual</p>
+        <input type="text" id="rolActual" name="rolActual" disabled>
+
+        <p>Nuevo rol</p>
+        <select id="rol" name="rol" required>
+            <option value="">Seleccionar rol...</option> 
+            <option value="voluntario">Voluntario</option>
+            <option value="comun">Común</option>
+        </select>
+
+        <button type="submit" class="cambiarRol">Modificar Rol</button>
+    </form>
+
+    <script src="./js/cambiarRol.js"></script>
+</body>
+</html>
