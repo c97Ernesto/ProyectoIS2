@@ -111,8 +111,10 @@ function mostrarOferta(oferta, prodOfer, prodRecep, filial) {
     btnCambiarFilial = '<div><a href="#" class="btn btn-outline-dark">Cambiar Filial</a></div>';
     btnAceptarOferta = ''
     btnCancelarOferta = '<a href="#" class="btn btn-outline-danger">Cancelar Oferta</a>';
-  } else {
-    actionButtonHTML = ''; // If there's no action for other states, leave it empty
+  } else if (oferta.estado === 'rechazado') {
+    btnCambiarFilial = '';
+    btnAceptarOferta = ''
+    btnCancelarOferta = '';
   }
 
   const ofertasContainer = document.getElementById("ofertas-container");
