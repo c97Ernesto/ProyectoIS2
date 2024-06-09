@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select de Horarios</title>
+</head>
+<body>
+    <h1>Seleccione un horario</h1>
+    <label for="fechaHora">Fecha y Hora:</label>
+    <input type="datetime-local" id="fechaHora" name="fechaHora">
+
+    <label for="filiales">Filiales:</label>
+    <select id="filiales" name="filiales">
+        <!-- Las opciones de filiales serán generadas aquí -->
+    </select>
+
+    <div id="resultado"></div>
+
+    <button id="confirmarFilial">Confirmar Filial</button>
+
+    <script src="./js/elegirFilial1.js"></script>
+</body>
+</html>

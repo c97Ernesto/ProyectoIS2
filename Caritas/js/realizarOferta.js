@@ -1,8 +1,17 @@
+document.addEventListener("DOMContentLoaded", function() {
+    const elegir = document.getElementById('elegir');
+    if(elegir){
+        elegir.addEventListener('click',()=>{
+            window.location.href='./elegirFilial.html';
+        });
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const categoria = urlParams.get('categoria');
     const token = localStorage.getItem('token');
-    const idProductoObjetivo= localStorage.getItem('publicacionObjetivo');
+    const idProductoObjetivo = localStorage.getItem('publicacionObjetivo');
 
     if (categoria && token) {
         obtenerPublicacionesPorCategoria(categoria).then(publicaciones => {
@@ -15,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error("Categoría o token no disponible");
     }
-    
 
     async function obtenerPublicacionesPorCategoria(categoria) {
         try {
@@ -29,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 throw new Error(`Error al obtener las publicaciones: ${response.status} ${response.statusText}`);
-                
             }
 
             const publicaciones = await response.json();
@@ -47,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function crearTarjetasPublicaciones(publicaciones) {
-        
         publicaciones.forEach(publicacion => {
             const nuevaPublicacion = document.createElement("div");
             nuevaPublicacion.classList.add("tarjeta-publicacion");
@@ -61,8 +67,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     async function seleccionarProducto(idProductoOfertante) {
+        const filialId = localStorage.getItem('filialId');
+        const horario = localStorage.getItem('horario');
+        alert(horario);
+
+        if (!filialId || !horario) {
+            alert('Por favor, selecciona una filial y un horario antes de realizar la oferta.');
+            return;
+        }
+
         try {
             const response = await fetch('/ofertas', {
                 method: 'POST',
@@ -72,22 +86,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({
                     idProductoObjetivo,
-                    idProductoOfertante
+                    idProductoOfertante,
+                    filialId,
+                    horario
                 })
             });
 
             if (!response.ok) {
-                throw new Error(`Error al realizar la oferta aqui: ${response.status} ${response.statusText}`);
+                throw new Error(`Error al realizar la oferta: ${response.status} ${response.statusText}`);
             }
 
             const result = await response.json();
             alert(result.message);
-            //const detallerURL= localStorage.getItem('detallePublicacionURL');
-           // window.location.href = detallerURL+ "?ofertaRealizada=true";
-           window.history.go(-2);
+            localStorage.removeItem("filialId");
+            localStorage.removeItem('horario');
+            window.history.go(-2);
         } catch (error) {
             console.error("Error al realizar la oferta:", error);
-            alert('Error al realizar la ofertaa.');
+            alert('Error al realizar la oferta.');
         }
     }
 });
