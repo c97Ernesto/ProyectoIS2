@@ -189,7 +189,6 @@ class FiliarController {
         }
       }
 
-
 }
 
 module.exports = new FiliarController();

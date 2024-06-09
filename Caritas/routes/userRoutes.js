@@ -11,11 +11,16 @@ router
   .get(usersController.obtenerUsuariosVoluntarios);
 
 router
+  .route("/comunes")
+  .get(usersController.obtenerUsuariosComunes);
+
+
+router
   .route("/:usuarioCorreo")
   .get(usersController.obtenerUsuarioPorCorreo);
 
 router
   .route("/cambiarRol")
-  .post(usersController.cambiarRolUsuario);
+  .post(usersController.cambiarRol);
 
 module.exports = router;

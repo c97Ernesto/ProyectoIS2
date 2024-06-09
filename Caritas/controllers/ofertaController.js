@@ -50,7 +50,7 @@ function obtenerProductoPorId(idProducto) {
 
 class OfertaController {
   realizarOferta(req, res) {
-    const { idProductoObjetivo, idProductoOfertante } = req.body;
+    const { idProductoObjetivo, idProductoOfertante,filialId, horario } = req.body;
     const correoUsuario = obtenerCorreoUsuarioDesdeToken(req);
 
     const fecha = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -82,13 +82,11 @@ class OfertaController {
           throw new Error('Usuario receptor no encontrado');
         }
        
-
-        const id_filial = 1; 
-        const estado = 'esperando'; 
+        const estado = 'pendiente'; 
 
         db.query(
           'INSERT INTO ofertas (dni_ofertante, nombre_ofertante, dni_receptor, nombre_receptor, id_producto_ofertante, id_producto_receptor, id_filial, estado, fecha_intercambio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-          [userOfertante.DNI, userOfertante.Nombre, userReceptor.DNI, userReceptor.Nombre, idProductoOfertante, idProductoObjetivo, id_filial, estado,fecha],
+          [userOfertante.DNI, userOfertante.Nombre, userReceptor.DNI, userReceptor.Nombre, idProductoOfertante, idProductoObjetivo, filialId, estado,horario],
           (err, result) => {
             if (err) {
               console.error('Error al realizar la oferta:', err.message);
