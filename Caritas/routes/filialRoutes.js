@@ -13,6 +13,15 @@ router
    .post(filialController.ElegirUnaFilial);
 
 router
+   .route("/asignarVoluntario")
+   .post(filialController.asignarVoluntarioFilial);
+
+   router
+   .route("/reasignarVoluntario")
+   .post(filialController.reasignarVoluntario);
+
+
+router
    .route("/horarios/:filialId")
    .get(filialController.obtenerLosHorariosDeUnaFilial);
 

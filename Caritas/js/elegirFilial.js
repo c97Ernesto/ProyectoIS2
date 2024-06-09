@@ -20,8 +20,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
             if (response.ok) {
                 alert('Filial elegida exitosamente');
+                localStorage.setItem('filialId', filialId);
+                localStorage.setItem('horario', horarioId);
                 formulario.reset();
                 cargarHorarios(); // Recargar horarios para actualizar disponibilidad
+                window.history.go(-1);
             } else {
                 const error = await response.json();
                 alert('Error: ' + error.message);

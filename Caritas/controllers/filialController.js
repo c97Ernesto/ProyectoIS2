@@ -131,6 +131,82 @@ class FiliarController {
         }
       }
 
+
+      asignarVoluntarioFilial(req, res) {
+        const { filialId, correoNuevo } = req.body;
+
+        db.query('SELECT fk_idUsuarioVoluntario FROM filial WHERE id = ?', [filialId], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+
+            const correoAntiguoVoluntario = results[0].fk_idUsuarioVoluntario;
+
+            db.query('UPDATE filial SET fk_idUsuarioVoluntario = ? WHERE id = ?', [correoNuevo, filialId], (err, results) => {
+                if (err) {
+                    return res.status(500).json({ message: err.message });
+                }
+
+                db.query('UPDATE usuarios SET rol = ? WHERE correo = ?', ['voluntario', correoNuevo], (err, results) => {
+                    if (err) {
+                        return res.status(500).json({ message: err.message });
+                    }
+
+                    db.query('UPDATE usuarios SET rol = ? WHERE correo = ?', ['comun', correoAntiguoVoluntario], (err, results) => {
+                        if (err) {
+                            return res.status(500).json({ message: err.message });
+                        }
+
+                        res.status(200).json({ message: 'Voluntario asignado a filial exitosamente' });
+                    });
+                });
+            });
+        });
+    }
+
+    reasignarVoluntario(req, res) {
+        const { correoAntiguo, correoNuevo } = req.body;
+
+        db.query('SELECT id FROM filial WHERE fk_idUsuarioVoluntario = ?', [correoAntiguo], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+
+            if (results.length === 0) {
+                return res.status(400).json({ message: 'El voluntario antiguo no está asignado a ninguna filial' });
+            }
+
+            const filialId = results[0].id;
+
+            db.query('UPDATE filial SET fk_idUsuarioVoluntario = ? WHERE id = ?', [correoNuevo, filialId], (err, results) => {
+                if (err) {
+                    return res.status(500).json({ message: err.message });
+                }
+
+                db.query('UPDATE usuarios SET rol = ? WHERE correo = ?', ['voluntario', correoNuevo], (err, results) => {
+                    if (err) {
+                        return res.status(500).json({ message: err.message });
+                    }
+
+                    db.query('UPDATE usuarios SET rol = ? WHERE correo = ?', ['comun', correoAntiguo], (err, results) => {
+                        if (err) {
+                            return res.status(500).json({ message: err.message });
+                        }
+
+                        res.status(200).json({ message: 'Se asigno un nuevo voluntario a la filial' });
+                    });
+                    
+
+                    
+                });
+            });
+        });
+    }
+
 }
+
+
+
+
 
 module.exports = new FiliarController();
