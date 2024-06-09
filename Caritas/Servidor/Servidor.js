@@ -200,3 +200,7 @@ const ofertaRoutes = require("../routes/ofertaRoutes");
 app.use("/ofertas", ofertaRoutes);
 app.use("/filial", filialRoutes);
 app.use("/usuarios",userRoutes);
+
+const horarioRoutes = require("../routes/horarioRoutes.js");
+app.use("/horario", horarioRoutes);
+
