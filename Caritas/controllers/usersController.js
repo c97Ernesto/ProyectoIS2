@@ -30,8 +30,18 @@ class UsersController {
     });
    };
 
+   obtenerUsuariosComunes = (req, res) => {
+    const query = 'SELECT nombre, correo, apellido FROM usuarios WHERE rol = "comun"'; 
+        db.query(query, (err, results) => {
+             if (err) {
+                 return res.status(500).json({ message: 'Error al obtener los usuarios voluntarios', error: err });
+            }
+            res.status(200).json(results);
+    });
+   };
+
    obtenerUsuarios = (req, res) => {
-    const query = 'SELECT nombre, apellido, correo, rol FROM usuarios WHERE rol != "administrador"';
+    const query = 'SELECT nombre, apellido, correo, rol FROM usuarios "';
     db.query(query, (err, results) => {
       if (err) {
         return res.status(500).json({ message: 'Error al obtener los usuarios', error: err });
@@ -55,21 +65,31 @@ obtenerUsuarioPorCorreo = async (req, res) => {
     ); 
 }
 
-cambiarRolUsuario(req, res) {
-  const { usuarioCorreo, nuevoRol } = req.body;
 
-  try {
-    db.query(
-          'UPDATE usuarios SET rol = ? WHERE correo = ?',
-          [nuevoRol, usuarioCorreo]
-      );
+    cambiarRol = async (req, res) => {
+        const { usuarioCorreo, nuevoRol } = req.body;
 
-      res.status(200).json({ message: "Se cambió el rol del usuario exitosamente" });
-  } catch (error) {
-      console.error("Error al cambiar el rol del usuario:", error);
-      res.status(500).json({ message: "Error al cambiar el rol del usuario" });
-  }
+        db.query('SELECT rol FROM usuarios WHERE correo = ?', [usuarioCorreo], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: 'Error al obtener el rol del usuario', error: err });
+            }
+            const rolAnterior = results[0].rol;
+
+             db.query(
+               'UPDATE usuarios SET rol = ? WHERE correo = ?',
+                [nuevoRol, usuarioCorreo], (err, results) => {
+                if (err) {
+                    return res.status(500).json({ message: 'Error al cambiar el rol del usuario', error: err });
+                }
+
+                if (rolAnterior === 'voluntario' && nuevoRol === 'comun') {
+                    res.status(200).json({ message: 'Rol cambiado correctamente. Seleccione un nuevo voluntario para la filial.' });
+                } else {
+                    res.status(200).json({ message: 'Rol cambiado correctamente' });
+                }
+            });
+        });
+    };
 }
 
-}  
 module.exports = new UsersController();

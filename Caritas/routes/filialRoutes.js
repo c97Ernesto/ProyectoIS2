@@ -13,11 +13,27 @@ router
    .post(filialController.ElegirUnaFilial);
 
 router
+   .route("/asignarVoluntario")
+   .post(filialController.asignarVoluntarioFilial);
+
+   router
+   .route("/reasignarVoluntario")
+   .post(filialController.reasignarVoluntario);
+
+
+router
    .route("/horarios/:filialId")
    .get(filialController.obtenerLosHorariosDeUnaFilial);
 
 router
    .route("/detalles/:id")
-   .get(filialController.obtenerDetallesFilial)
+   .get(filialController.obtenerDetallesFilial);
+
+
+// Nueva ruta para obtener ofertas pendientes
+router
+  .route("/truequesPendientes")
+  .get(filialController.obtenerTruequesPendientes);
+
    
 module.exports = router;
