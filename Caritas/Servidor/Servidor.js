@@ -188,6 +188,33 @@ db.query('SELECT * FROM usuarios WHERE Correo = ?', [correo], async (err, result
       });
 });
 
+app.get('/ofertas-enviadas', (req, res) => {
+  const { email } = req.query;
+  const query = 'SELECT * FROM ofertas WHERE dni_ofertante = ?';
+  connection.query(query, [email], (err, results) => {
+      if (err) {
+          console.error('Error fetching data:', err);
+          res.status(500).send('Error fetching data');
+          return;
+      }
+      res.json(results);
+  });
+});
+
+app.get('/ofertas-recibidas', (req, res) => {
+  const { email } = req.query;
+  const query = 'SELECT * FROM ofertas WHERE dni_receptor = ?';
+  connection.query(query, [email], (err, results) => {
+      if (err) {
+          console.error('Error fetching data:', err);
+          res.status(500).send('Error fetching data');
+          return;
+      }
+      res.json(results);
+  });
+});
+
+
 });
 
 app.listen(PORT, () => {
