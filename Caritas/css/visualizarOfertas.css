@@ -6,35 +6,38 @@ body {
 }
 
 header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #333;
     color: white;
-    padding: 10px 0;
-    text-align: center;
+    padding: 10px 20px;
+    position: relative;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+}
+
+header a h1 {
+    font-size: 1.5em;
+    margin: 0;
+}
+
+header .center-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
 }
 
 main {
     padding: 20px;
 }
 
-#search-section, #offers-section {
+#offers-section {
     margin-bottom: 20px;
-}
-
-#search-input {
-    padding: 10px;
-    width: 300px;
-}
-
-button {
-    padding: 10px 15px;
-    background-color: #333;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #555;
 }
 
 #offers-list {
