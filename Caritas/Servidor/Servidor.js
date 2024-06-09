@@ -66,6 +66,11 @@ app.get('/ofertas-enviadas', (req, res) => {
   res.sendFile(filePath);
 });
 
+app.get('/ofertas-recibidas', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'ofertas-recibidas.html');
+  res.sendFile(filePath);
+});
+
 app.post("/registrar", async (req, res) => {
   var { correo, password, usuario, nombre, apellido, nacimiento, dni, tlf, rol } = req.body;
   try {
@@ -159,31 +164,31 @@ app.post('/recuperarContrasena', async (req, res) => {
   const { correo } = req.body;
 
   // Consulta a la base de datos para obtener el usuario por correo
-db.query('SELECT * FROM usuarios WHERE Correo = ?', [correo], async (err, results) => {
-  if (err) {
-      console.error('Error al buscar el usuario:', err);
-      return res.status(500).json({ error: 'Error interno del servidor' });
-  }
-  // Verificar si no se encontró el usuario
-  if (results.length === 0) {
-      return res.status(401).json({ error: 'Correo electrónico no registrado' });
-  }
+  db.query('SELECT * FROM usuarios WHERE Correo = ?', [correo], async (err, results) => {
+    if (err) {
+        console.error('Error al buscar el usuario:', err);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+    // Verificar si no se encontró el usuario
+    if (results.length === 0) {
+        return res.status(401).json({ error: 'Correo electrónico no registrado' });
+    }
 
-  // Obtener la contraseña del primer usuario encontrado
-  const contraseña = results[0].Contraseña;
+    // Obtener la contraseña del primer usuario encontrado
+    const contraseña = results[0].Contraseña;
 
-  // using Twilio SendGrid's v3 Node.js Library
-  // https://github.com/sendgrid/sendgrid-nodejs
-  const sgMail = require('@sendgrid/mail');
-  sgMail.setApiKey('keySG.fxqSbXGJS-Wxj_s0OM_gRg.lcOpQbQJQ70kDXGmzrqNWLFUrSWpDEIJka-UZ8i9gzk');
+    // using Twilio SendGrid's v3 Node.js Library
+    // https://github.com/sendgrid/sendgrid-nodejs
+    const sgMail = require('@sendgrid/mail');
+    sgMail.setApiKey('keySG.fxqSbXGJS-Wxj_s0OM_gRg.lcOpQbQJQ70kDXGmzrqNWLFUrSWpDEIJka-UZ8i9gzk');
 
-  const msg = {
-      to: correo, // Cambiar por el destinatario
-      from: 'prueba2003123@gmail.com', // Cambiar por el remitente verificado
-      subject: 'Recuperación de Contraseña',
-      text: `Esta es su contraseña: ${contraseña}`,
-      html: `<strong>Recuperación</strong><br/>Esta es su contraseña: ${contraseña}`,
-  };
+    const msg = {
+        to: correo, // Cambiar por el destinatario
+        from: 'prueba2003123@gmail.com', // Cambiar por el remitente verificado
+        subject: 'Recuperación de Contraseña',
+        text: `Esta es su contraseña: ${contraseña}`,
+        html: `<strong>Recuperación</strong><br/>Esta es su contraseña: ${contraseña}`,
+    };
 
   sgMail
       .send(msg)
@@ -196,9 +201,9 @@ db.query('SELECT * FROM usuarios WHERE Correo = ?', [correo], async (err, result
           return res.status(500).json({ success: false, message: 'Error al enviar el correo electrónico.' });
       });
 });
+});
 
 app.post('/ofertas-enviadas', async (req, res) => {
-  console.log("aaaaaaa")
   const token = req.headers.authorization;
 
   if (!token) {
@@ -208,12 +213,12 @@ app.post('/ofertas-enviadas', async (req, res) => {
 
   const accessToken = token.split(' ')[1]; // Extraer el token del encabezado
   try {
-      const decodedToken = jwt.verify(accessToken, 'codigo_secreto');
+      const decodedToken = jwt.verify(accessToken, 'codigo secreto');
       const email = decodedToken.correo;
 
       // Realizar la consulta para obtener el DNI del usuario basado en el correo electrónico
       const query = 'SELECT dni FROM usuarios WHERE correo = ?';
-      connection.query(query, [email], (err, results) => {
+      db.query(query, [email], (err, results) => {
           if (err) {
               console.error('Error al obtener el DNI:', err);
               return res.status(500).send('Error al obtener el DNI');
@@ -225,7 +230,7 @@ app.post('/ofertas-enviadas', async (req, res) => {
 
           // Consultar ofertas enviadas usando el DNI obtenido
           const queryEnv = 'SELECT * FROM ofertas WHERE dni_ofertante = ?';
-          connection.query(queryEnv, [dni], (errEnv, resultsEnv) => {
+          db.query(queryEnv, [dni], (errEnv, resultsEnv) => {
               if (errEnv) {
                   console.error('Error fetching data:', errEnv);
                   return res.status(500).send('Error fetching data');
@@ -279,12 +284,6 @@ app.post('/ofertas-recibidas', async (req, res) => {
       console.error('Error al verificar y decodificar el token:', error);
       return res.status(401).send('Token inválido');
   }
-});
-
-
-
-
-
 });
 
 app.listen(PORT, () => {
