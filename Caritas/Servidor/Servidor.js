@@ -36,6 +36,10 @@ app.get('/perfilAdm', (req, res) => {
   const filePath = path.join(__dirname, '..', 'perfilAdm.html');
   res.sendFile(filePath);
 });
+app.get('/perfilVoluntario', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'perfilVoluntario.html');
+  res.sendFile(filePath);
+});
 
 app.get('/inicio', (req, res) => {
   const filePath = path.join(__dirname, '..', 'inicio.html');

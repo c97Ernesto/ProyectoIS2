@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (rol === 'comun') {
                     window.location.href = 'http://localhost:3000/inicio';
                 } else if (rol === 'voluntario') {
-                    window.location.href = './voluntario.html';
+                    window.location.href = './perfilVoluntario';
                 } else if (rol === 'administrador') {
                     window.location.href = './PerfilAdm';
                 }
