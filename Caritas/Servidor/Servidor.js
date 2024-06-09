@@ -150,38 +150,44 @@ app.post('/recuperarContrasena', async (req, res) => {
   const { correo } = req.body;
 
   // Consulta a la base de datos para obtener el usuario por correo
-  db.query('SELECT * FROM usuarios WHERE Correo = ?', [correo], async (err, results) => {
-      if (err) {
-          console.error('Error al buscar el usuario:', err);
-          return res.status(500).json({ error: 'Error interno del servidor' });
-      }
-      // Verificar si no se encontró el usuario
-      if (results.length === 0) {
-          return res.status(401).json({ error: 'Correo electrónico no registrado' });
-      }
+db.query('SELECT * FROM usuarios WHERE Correo = ?', [correo], async (err, results) => {
+  if (err) {
+      console.error('Error al buscar el usuario:', err);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+  // Verificar si no se encontró el usuario
+  if (results.length === 0) {
+      return res.status(401).json({ error: 'Correo electrónico no registrado' });
+  }
 
-      // using Twilio SendGrid's v3 Node.js Library
-      // https://github.com/sendgrid/sendgrid-nodejs
-      const sgMail = require('@sendgrid/mail')
-      sgMail.setApiKey('keySG.fxqSbXGJS-Wxj_s0OM_gRg.lcOpQbQJQ70kDXGmzrqNWLFUrSWpDEIJka-UZ8i9gzk')
-      const msg = {
-        to: correo, // Change to your recipient
-        from: 'prueba2003123@gmail.com', // Change to your verified sender
-        subject: 'Recuperación de Contraseña',
-        text: 'Por favor, sigue este enlace para restablecer tu contraseña: http://localhost:3000/editarPerfil?token=${token}',
-        html: '<strong>Recuperacion</strong>',
-      }
-      sgMail
-        .send(msg)
-        .then(() => {
-          console.log('Correo enviado')
+  // Obtener la contraseña del primer usuario encontrado
+  const contraseña = results[0].Contraseña;
+
+  // using Twilio SendGrid's v3 Node.js Library
+  // https://github.com/sendgrid/sendgrid-nodejs
+  const sgMail = require('@sendgrid/mail');
+  sgMail.setApiKey('keySG.fxqSbXGJS-Wxj_s0OM_gRg.lcOpQbQJQ70kDXGmzrqNWLFUrSWpDEIJka-UZ8i9gzk');
+
+  const msg = {
+      to: correo, // Cambiar por el destinatario
+      from: 'prueba2003123@gmail.com', // Cambiar por el remitente verificado
+      subject: 'Recuperación de Contraseña',
+      text: `Esta es su contraseña: ${contraseña}`,
+      html: `<strong>Recuperación</strong><br/>Esta es su contraseña: ${contraseña}`,
+  };
+
+  sgMail
+      .send(msg)
+      .then(() => {
+          console.log('Correo enviado');
           return res.status(200).json({ success: true, message: 'Correo electrónico enviado.' });
-        })
-        .catch((error) => {
-          console.error("Hubo un error: ",error)
+      })
+      .catch((error) => {
+          console.error("Hubo un error: ", error);
           return res.status(500).json({ success: false, message: 'Error al enviar el correo electrónico.' });
-        })
-  });
+      });
+});
+
 });
 
 app.listen(PORT, () => {
