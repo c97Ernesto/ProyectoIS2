@@ -241,3 +241,5 @@ app.use("/usuarios",userRoutes);
 const horarioRoutes = require("../routes/horarioRoutes.js");
 app.use("/horario", horarioRoutes);
 
+const usuario_horarios_predeterminadosRoutes = require("../routes/usuario_horarios_predeterminadosRoutes.js");
+app.use("/usuarios_horarios_predeterminados", usuario_horarios_predeterminadosRoutes);
