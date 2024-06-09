@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const dropdownContent = profileIcon.querySelector(".dropdown-content");
 
     // Verificar la existencia del token al cargar la página
-    const token = localStorage.getItem('token'); // Función para verificar si el token existe (debes implementarla)
+    const token = localStorage.getItem('token'); // Función para verificar si el token existe
 
     // Obtener el elemento del avatar
     const avatarElement = document.querySelector('.profile-icon');

@@ -27,6 +27,13 @@ router
 
 router
    .route("/detalles/:id")
-   .get(filialController.obtenerDetallesFilial)
+   .get(filialController.obtenerDetallesFilial);
+
+
+// Nueva ruta para obtener ofertas pendientes
+router
+  .route("/truequesPendientes")
+  .get(filialController.obtenerTruequesPendientes);
+
    
 module.exports = router;

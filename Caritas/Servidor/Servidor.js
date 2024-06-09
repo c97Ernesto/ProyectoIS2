@@ -36,6 +36,10 @@ app.get('/perfilAdm', (req, res) => {
   const filePath = path.join(__dirname, '..', 'perfilAdm.html');
   res.sendFile(filePath);
 });
+app.get('/perfilVoluntario', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'perfilVoluntario.html');
+  res.sendFile(filePath);
+});
 
 app.get('/inicio', (req, res) => {
   const filePath = path.join(__dirname, '..', 'inicio.html');
@@ -54,6 +58,11 @@ app.get('/ofertas', (req, res) => {
 
 app.get('/buscarPorCategoriaPropio', (req, res) => {
   const filePath = path.join(__dirname, '..', 'buscarPorCategoriaPropio.html');
+  res.sendFile(filePath);
+});
+
+app.get('/ofertas-enviadas', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'ofertas-enviadas.html');
   res.sendFile(filePath);
 });
 
@@ -138,11 +147,11 @@ app.post('/login', async (req, res) => {
       const rol = usuario.rol;
 
       // Generar un token JWT con el rol incluido y una expiración de 1 hora
-      const token = jwt.sign({ correo: usuario.Correo, rol }, secretKey, { expiresIn: '1h' });
-      console.log(token + rol)
+      const token = jwt.sign({ correo: usuario.Correo, rol: rol }, secretKey, { expiresIn: '1h' });
 
       // Responder con el token JWT, el rol del usuario y un mensaje de éxito
       res.json({ token, rol, message: 'Inicio de sesión exitoso' });
+
   });
 });
 
@@ -188,31 +197,92 @@ db.query('SELECT * FROM usuarios WHERE Correo = ?', [correo], async (err, result
       });
 });
 
-app.get('/ofertas-enviadas', (req, res) => {
-  const { email } = req.query;
-  const query = 'SELECT * FROM ofertas WHERE dni_ofertante = ?';
-  connection.query(query, [email], (err, results) => {
-      if (err) {
-          console.error('Error fetching data:', err);
-          res.status(500).send('Error fetching data');
-          return;
-      }
-      res.json(results);
-  });
+app.post('/ofertas-enviadas', async (req, res) => {
+  console.log("aaaaaaa")
+  const token = req.headers.authorization;
+
+  if (!token) {
+      console.error('No se proporcionó un token en los encabezados');
+      return res.status(401).send('No se proporcionó un token en los encabezados');
+  }
+
+  const accessToken = token.split(' ')[1]; // Extraer el token del encabezado
+  try {
+      const decodedToken = jwt.verify(accessToken, 'codigo_secreto');
+      const email = decodedToken.correo;
+
+      // Realizar la consulta para obtener el DNI del usuario basado en el correo electrónico
+      const query = 'SELECT dni FROM usuarios WHERE correo = ?';
+      connection.query(query, [email], (err, results) => {
+          if (err) {
+              console.error('Error al obtener el DNI:', err);
+              return res.status(500).send('Error al obtener el DNI');
+          }
+          if (results.length === 0) {
+              return res.status(404).send('Usuario no encontrado');
+          }
+          const dni = results[0].dni;
+
+          // Consultar ofertas enviadas usando el DNI obtenido
+          const queryEnv = 'SELECT * FROM ofertas WHERE dni_ofertante = ?';
+          connection.query(queryEnv, [dni], (errEnv, resultsEnv) => {
+              if (errEnv) {
+                  console.error('Error fetching data:', errEnv);
+                  return res.status(500).send('Error fetching data');
+              }
+              res.json(resultsEnv);
+          });
+      });
+  } catch (error) {
+      console.error('Error al verificar y decodificar el token:', error);
+      return res.status(401).send('Token inválido');
+  }
 });
 
-app.get('/ofertas-recibidas', (req, res) => {
-  const { email } = req.query;
-  const query = 'SELECT * FROM ofertas WHERE dni_receptor = ?';
-  connection.query(query, [email], (err, results) => {
-      if (err) {
-          console.error('Error fetching data:', err);
-          res.status(500).send('Error fetching data');
-          return;
-      }
-      res.json(results);
-  });
+app.post('/ofertas-recibidas', async (req, res) => {
+  console.log("BBBBB")
+  const token = req.headers.authorization;
+
+  if (!token) {
+      console.error('No se proporcionó un token en los encabezados');
+      return res.status(401).send('No se proporcionó un token en los encabezados');
+  }
+
+  const accessToken = token.split(' ')[1]; // Extraer el token del encabezado
+  try {
+      const decodedToken = jwt.verify(accessToken, 'codigo_secreto');
+      const email = decodedToken.correo;
+
+      // Realizar la consulta para obtener el DNI del usuario basado en el correo electrónico
+      const query = 'SELECT dni FROM usuarios WHERE correo = ?';
+      connection.query(query, [email], (err, results) => {
+          if (err) {
+              console.error('Error al obtener el DNI:', err);
+              return res.status(500).send('Error al obtener el DNI');
+          }
+          if (results.length === 0) {
+              return res.status(404).send('Usuario no encontrado');
+          }
+          const dni = results[0].dni;
+
+          // Consultar ofertas recibidas usando el DNI obtenido
+          const queryRec = 'SELECT * FROM ofertas WHERE dni_receptor = ?';
+          connection.query(queryRec, [dni], (errRec, resultsRec) => {
+              if (errRec) {
+                  console.error('Error fetching data:', errRec);
+                  return res.status(500).send('Error fetching data');
+              }
+              res.json(resultsRec);
+          });
+      });
+  } catch (error) {
+      console.error('Error al verificar y decodificar el token:', error);
+      return res.status(401).send('Token inválido');
+  }
 });
+
+
+
 
 
 });
@@ -233,3 +303,9 @@ const ofertaRoutes = require("../routes/ofertaRoutes");
 app.use("/ofertas", ofertaRoutes);
 app.use("/filial", filialRoutes);
 app.use("/usuarios",userRoutes);
+
+const horarioRoutes = require("../routes/horarioRoutes.js");
+app.use("/horario", horarioRoutes);
+
+const usuario_horarios_predeterminadosRoutes = require("../routes/usuario_horarios_predeterminadosRoutes.js");
+app.use("/usuarios_horarios_predeterminados", usuario_horarios_predeterminadosRoutes);
