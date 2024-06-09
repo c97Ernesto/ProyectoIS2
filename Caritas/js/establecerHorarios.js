@@ -33,7 +33,7 @@ async function verificarDisponibilidad() {
 
   try {
       // Hacer una solicitud al servidor para verificar la disponibilidad
-      const response = await fetch(`http://localhost:3000/horario/verificarHorarios?fechaHora=${fechaHoraSeleccionada}&filial=${filialSeleccionada}`);
+      const response = await fetch(`http://localhost:3000/horario/verificarHorario?fechaHora=${fechaHoraSeleccionada}&filial=${filialSeleccionada}`);
       const data = await response.json();
 
       const resultadoDiv = document.getElementById('resultado');
@@ -41,11 +41,6 @@ async function verificarDisponibilidad() {
           resultadoDiv.textContent = 'El horario y filial seleccionados están disponibles.';
       } else {
           resultadoDiv.textContent = data.message;
-      }
-
-      // Mostrar detalles del horario si existen
-      if (data.horario) {
-          resultadoDiv.textContent += `\nDetalles del horario:\nID: ${data.horario.id}\nFecha y Hora: ${data.horario.fechaHora}\nEstado: ${data.horario.estado}`;
       }
   } catch (error) {
       console.error('Error al verificar la disponibilidad:', error);
@@ -77,15 +72,39 @@ async function confirmarFilial() {
       } else {
           alert(data.message);
       }
-
-      // Mostrar detalles del horario si existen
-      if (data.horario) {
-          const resultadoDiv = document.getElementById('resultado');
-          resultadoDiv.textContent = `\nDetalles del horario:\nID: ${data.horario.id}\nFecha y Hora: ${data.horario.fechaHora}\nEstado: ${data.horario.estado}`;
-      }
   } catch (error) {
       console.error('Error al confirmar la reserva:', error);
   }
+}
+
+async function establecerFiliales() {
+  const token = localStorage.getItem("token");
+  const fechaHoraSeleccionada = obtenerFechaSeleccionada();
+  const filialSeleccionada = document.getElementById('filiales').value;
+  try {
+    const response = await fetch('http://localhost:3000/establecerHorario', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+            fechaHora: fechaHoraSeleccionada,
+            filial: filialSeleccionada,
+        }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+        alert('La reserva se ha realizado con éxito.');
+        location.reload(); // Recargar la página
+    } else {
+        alert(data.message);
+    }
+} catch (error) {
+    console.error('Error al confirmar la reserva:', error);
+}
 }
 
 // Llamar a las funciones para generar las opciones al cargar la página
