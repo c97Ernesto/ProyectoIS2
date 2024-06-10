@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 localStorage.setItem('filialId', filialId);
                 localStorage.setItem('horario', horarioId);
                 formulario.reset();
-                cargarHorarios(); // Recargar horarios para actualizar disponibilidad
                 window.history.go(-1);
             } else {
                 const error = await response.json();
@@ -62,10 +61,12 @@ async function cargarFiliales() {
 async function cargarHorarios() {
     const filialId = document.getElementById('filial').value;
     const selectHorario = document.getElementById('fechaHora');
+    const idProductoObjetivo = localStorage.getItem('productoId');
+    
     selectHorario.innerHTML = '<option value="">Seleccionar Fecha y Hora...</option>';
 
     try {
-        const response = await fetch(`http://localhost:3000/filial/horarios/${filialId}`);
+        const response = await fetch(`http://localhost:3000/filial/horarios/${filialId}?productoId=${idProductoObjetivo}`);
         if (response.ok) {
             const horarios = await response.json();
             horarios.forEach(horario => {

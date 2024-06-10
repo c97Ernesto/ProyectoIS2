@@ -35,5 +35,8 @@ router
   .route("/truequesPendientes")
   .get(filialController.obtenerTruequesPendientes);
 
+router
+   .route("/horarios/:filialId/:productoId")
+   .get(filialController.obtenerLosHorariosDeUnaFilial);
    
 module.exports = router;

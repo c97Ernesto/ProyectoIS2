@@ -29,6 +29,20 @@ function obtenerUsuarioPorCorreo(correo) {
   });
 }
 
+function obtenerHorarioPorId(horarioId) {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT fechaHora FROM horario WHERE id = ?', [horarioId], (err, results) => {
+      if (err) {
+        return reject(err);
+      }
+      if (results.length === 0) {
+        return resolve(null);
+      }
+      resolve(results[0]);
+    });
+  });
+}
+
 // Función para obtener un producto a partir de su ID
 function obtenerProductoPorId(idProducto) {
   return new Promise((resolve, reject) => {
@@ -50,17 +64,17 @@ function obtenerProductoPorId(idProducto) {
 
 class OfertaController {
   realizarOferta(req, res) {
-    const { idProductoObjetivo, idProductoOfertante,filialId, horario } = req.body;
+    const { idProductoObjetivo, idProductoOfertante, filialId, horario } = req.body;
     const correoUsuario = obtenerCorreoUsuarioDesdeToken(req);
 
-    const fecha = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    //const fecha = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     obtenerUsuarioPorCorreo(correoUsuario)
       .then(userOfertante => {
         if (!userOfertante) {
           throw new Error('Usuario ofertante no encontrado');
         }
-       
+
         return Promise.all([
           userOfertante,
           obtenerProductoPorId(idProductoObjetivo)
@@ -70,29 +84,35 @@ class OfertaController {
         if (!productoObjetivo) {
           throw new Error('Producto objetivo no encontrado');
         }
-        
+
         return Promise.all([
           userOfertante,
           productoObjetivo,
-          obtenerUsuarioPorCorreo(productoObjetivo.fk_usuario_correo)
+          obtenerUsuarioPorCorreo(productoObjetivo.fk_usuario_correo),
+          obtenerHorarioPorId(horario) // Añadir esta consulta para obtener el horario específico
         ]);
       })
-      .then(([userOfertante, productoObjetivo, userReceptor]) => {
+      .then(([userOfertante, productoObjetivo, userReceptor, horarioDetalle]) => {
         if (!userReceptor) {
           throw new Error('Usuario receptor no encontrado');
         }
-       
-        const estado = 'pendiente'; 
+
+        if (!horarioDetalle) {
+          throw new Error('Horario no encontrado');
+        }
+
+        const estado = 'pendiente';
+        const fechaIntercambio = horarioDetalle.fechaHora;
 
         db.query(
           'INSERT INTO ofertas (dni_ofertante, nombre_ofertante, dni_receptor, nombre_receptor, id_producto_ofertante, id_producto_receptor, id_filial, estado, fecha_intercambio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-          [userOfertante.DNI, userOfertante.Nombre, userReceptor.DNI, userReceptor.Nombre, idProductoOfertante, idProductoObjetivo, filialId, estado,horario],
+          [userOfertante.DNI, userOfertante.Nombre, userReceptor.DNI, userReceptor.Nombre, idProductoOfertante, idProductoObjetivo, filialId, estado, fechaIntercambio],
           (err, result) => {
             if (err) {
               console.error('Error al realizar la oferta:', err.message);
               return res.status(400).send(err.message);
             }
-            return res.status(201).json({ message: 'Oferta realizada con éxito',id: result.insertId });
+            return res.status(201).json({ message: 'Oferta realizada con éxito', id: result.insertId });
           }
         );
       })

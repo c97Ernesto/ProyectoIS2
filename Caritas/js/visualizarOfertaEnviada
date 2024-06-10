@@ -90,7 +90,7 @@ function mostrarOferta(oferta, prodOfer, prodRecep, filial) {
   let btnCambiarFilial;
   let btnCancelarOferta;
   let btnAceptarOferta;
-  if (oferta.estado === 'esperando') {
+  if (oferta.estado === 'pendiente') {
     btnCambiarFilial = '';
     actionButtonHTML = '<a href="#" class="btn btn-outline-dark">Cambiar Filial</a>';
     btnAceptarOferta = '<a href="#" class="btn btn-outline-primary">Aceptar Oferta</a>'

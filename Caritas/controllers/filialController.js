@@ -77,7 +77,7 @@ class FiliarController {
             res.json(results);
         });
     }
-    obtenerLosHorariosDeUnaFilial(req, res){
+   /* obtenerLosHorariosDeUnaFilial(req, res){
         const { filialId } = req.params;
         db.query('SELECT id, fechaHora, estado FROM horario WHERE fk_IdFilial = ?', [filialId], (err, results) => {
              if (err) {
@@ -86,6 +86,39 @@ class FiliarController {
              res.json(results);
         });
 
+    }*/
+
+    obtenerLosHorariosDeUnaFilial(req, res) {
+        const { filialId } = req.params;
+        const { productoId } = req.query;
+    
+        db.query('SELECT fk_usuario_correo FROM publicacion WHERE id = ?', [productoId], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Error al obtener el dueño de la publicación' });
+            }
+    
+            const correoDueno = result[0].fk_usuario_correo;
+            console.log(correoDueno);
+    
+            db.query('SELECT fk_horario_id FROM usuarios_horarios_predeterminados WHERE fk_filial_id = ? AND fk_usuario_correo = ?', [filialId, correoDueno], (err, results) => {
+                if (err) {
+                    return res.status(500).json({ message: 'Error al obtener los horarios preferidos del dueño de la publicación' });
+                }
+    
+                const horariosIds = results.map(row => row.fk_horario_id);
+    
+                if (horariosIds.length > 0) {
+                    db.query('SELECT id, fechaHora, estado FROM horario WHERE id IN (?) AND fk_IdFilial = ?', [horariosIds, filialId], (err, results) => {
+                        if (err) {
+                            return res.status(500).json({ message: err.message });
+                        }
+                        res.json(results);
+                    });
+                } else {
+                    return res.status(404).json({ message: 'No se encontraron horarios preferidos para el dueño de la publicación' });
+                }
+            });
+        });
     }
     
 
