@@ -102,16 +102,17 @@ function mostrarOferta(oferta, prodOfer, prodRecep, filial) {
   let btnCambiarFilial;
   let btnCancelarOferta;
   let btnAceptarOferta;
-  if (oferta.estado === 'esperando') {
+  if (oferta.estado === 'pendiente') {
     btnCambiarFilial = '';
     actionButtonHTML = '<a href="#" class="btn btn-outline-dark">Cambiar Filial</a>';
-    btnAceptarOferta = '<a href="#" class="btn btn-outline-primary">Aceptar Oferta</a>'
-    btnCancelarOferta = '<a href="#" class="btn btn-outline-danger">Rechazar Oferta</a>';
-  } else if (oferta.estado === 'aceptado') {
+    btnAceptarOferta = '<a href="#" id="btn-aceptar" class="btn btn-outline-primary">Aceptar Oferta</a>'
+    btnCancelarOferta = '<a href="#" id="btn-rechazar" class="btn btn-outline-danger">Rechazar Oferta</a>';
+  
+  } else if (oferta.estado === 'aceptada') {
     btnCambiarFilial = '<div><a href="#" class="btn btn-outline-dark">Cambiar Filial</a></div>';
     btnAceptarOferta = ''
     btnCancelarOferta = '<a href="#" class="btn btn-outline-danger">Cancelar Oferta</a>';
-  } else if (oferta.estado === 'rechazado') {
+  } else if (oferta.estado === 'rechazada') {
     btnCambiarFilial = '';
     btnAceptarOferta = ''
     btnCancelarOferta = '';
@@ -157,6 +158,86 @@ function mostrarOferta(oferta, prodOfer, prodRecep, filial) {
     </div>
     `;
     ofertasContainer.appendChild(ofertaElement);
+    // Event listeners for accept and reject buttons
+  if (document.getElementById("btn-aceptar")) {
+    document.getElementById("btn-aceptar").addEventListener("click", () => handleAccept(oferta.id));
+  }
+  if (document.getElementById("btn-rechazar")) {
+    document.getElementById("btn-rechazar").addEventListener("click", () => handleReject(oferta.id));
+  }
+
+  async function handleAccept(ofertaId) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("Token no encontrado en localStorage");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:3000/ofertas/aceptar/${ofertaId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error al aceptar la oferta: ${response.status} ${response.statusText}`);
+      }
+  
+      const result = await response.json();
+      console.log(result.message);
+  
+      // Mostrar mensaje de éxito
+      alert("Oferta aceptada exitosamente");
+      
+  
+      // Recargar la página para reflejar los cambios
+    
+      window.location.reload();
+     
+    } catch (error) {
+      console.error("Error al aceptar la oferta:", error);
+    }
+  }
+  
+  async function handleReject(ofertaId) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("Token no encontrado en localStorage");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:3000/ofertas/rechazar/${ofertaId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error al rechazar la oferta: ${response.status} ${response.statusText}`);
+      }
+  
+      const result = await response.json();
+      console.log(result.message);
+  
+      // Mostrar mensaje de éxito
+      alert("Oferta rechazada exitosamente");
+  
+      // Recargar la página para reflejar los cambios
+      window.location.reload();
+    
+    
+    } catch (error) {
+      console.error("Error al rechazar la oferta:", error);
+    }
+  }
+  
+  
 }
 
 document.getElementById("btn-changeFilial").addEventListener('click', () => {

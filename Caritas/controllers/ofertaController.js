@@ -139,6 +139,28 @@ class OfertaController {
       res.status(500).send(err.message);
     }
   }
+
+aceptarOferta(req, res){
+  const { id } = req.params;
+  try {
+       db.query('UPDATE ofertas SET estado = "Aceptada" WHERE id = ?', [id]);
+      
+      res.status(200).json({ message: 'Oferta aceptada exitosamente' });
+  } catch (error) {
+      res.status(500).json({ message: 'Error al aceptar la oferta', error });
+  }
+};
+
+rechazarOferta(req, res){
+  const { id } = req.params;
+  try {
+      db.query('UPDATE ofertas SET estado = "Rechazada" WHERE id = ?', [id]);
+      
+      res.status(200).json({ message: 'Oferta rechazada exitosamente' });
+  } catch (error) {
+      res.status(500).json({ message: 'Error al rechazar la oferta', error });
+  }
+};
   
 }
 
