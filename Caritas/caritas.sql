@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 10-06-2024 a las 16:45:32
+-- Tiempo de generación: 10-06-2024 a las 20:03:17
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -39,9 +39,9 @@ CREATE TABLE `filial` (
 
 INSERT INTO `filial` (`id`, `nombre`, `fk_idUsuarioVoluntario`) VALUES
 (1, 'FilialNro1', '3'),
-(2, 'FilialNro2', 'VoluntarioDeFilialNro2'),
-(3, 'FilialNro3', 'VoluntarioDeFilialNro3'),
-(4, 'FilialNro4', 'VoluntarioDeFilialNro4'),
+(2, 'FilialNro2', '2'),
+(3, 'FilialNro3', '3'),
+(4, 'FilialNro4', '4'),
 (9, 'peeeee', 'ddg@fggff.com'),
 (10, 'tresArroyos', 'lolaConstante@gmail.com'),
 (11, 'centro caritas_', 'laloConstante@gmail.com');
@@ -72,7 +72,86 @@ INSERT INTO `horario` (`id`, `fechaHora`, `fk_IdFilial`, `estado`) VALUES
 (6, '2024-06-30 10:50:00', 10, 'disponible'),
 (7, '2024-06-10 15:40:00', 10, 'disponible'),
 (8, '2024-12-12 12:00:00', 11, 'ocupado'),
-(9, '2024-12-12 17:00:00', 4, 'ocupado');
+(9, '2024-12-12 17:00:00', 4, 'ocupado'),
+(10, '2024-05-01 08:00:00', 1, 'disponible'),
+(11, '2024-05-01 08:30:00', 1, 'disponible'),
+(12, '2024-05-01 13:50:00', 1, 'disponible'),
+(13, '2024-05-01 13:50:00', 1, 'disponible'),
+(14, '2024-05-01 13:50:00', 1, 'disponible'),
+(15, '2024-05-01 13:50:00', 1, 'disponible'),
+(16, '2024-05-01 13:50:00', 1, 'disponible'),
+(17, '2024-05-01 08:00:00', 1, 'disponible'),
+(18, '2024-05-01 08:30:00', 1, 'ocupado'),
+(19, '2024-05-01 09:00:00', 1, 'disponible'),
+(20, '2024-05-01 09:30:00', 1, 'disponible'),
+(21, '2024-05-01 10:00:00', 1, 'disponible'),
+(22, '2024-05-01 10:30:00', 1, 'disponible'),
+(23, '2024-05-01 11:00:00', 1, 'disponible'),
+(24, '2024-05-01 11:30:00', 1, 'disponible'),
+(25, '2024-05-01 12:00:00', 1, 'disponible'),
+(26, '2024-05-01 12:30:00', 1, 'disponible'),
+(27, '2024-05-01 13:00:00', 1, 'disponible'),
+(28, '2024-05-01 13:30:00', 1, 'disponible'),
+(29, '2024-05-01 14:00:00', 1, 'disponible'),
+(30, '2024-05-01 14:30:00', 1, 'disponible'),
+(31, '2024-05-01 15:00:00', 1, 'disponible'),
+(32, '2024-05-01 15:30:00', 1, 'disponible'),
+(33, '2024-05-01 16:00:00', 1, 'disponible'),
+(34, '2024-05-01 16:30:00', 1, 'disponible'),
+(35, '2024-05-01 08:00:00', 2, 'disponible'),
+(36, '2024-05-01 08:30:00', 2, 'disponible'),
+(37, '2024-05-01 09:00:00', 2, 'disponible'),
+(38, '2024-05-01 09:30:00', 2, 'disponible'),
+(39, '2024-05-01 10:00:00', 2, 'disponible'),
+(40, '2024-05-01 10:30:00', 2, 'disponible'),
+(41, '2024-05-01 11:00:00', 2, 'disponible'),
+(42, '2024-05-01 11:30:00', 2, 'disponible'),
+(43, '2024-05-01 12:00:00', 2, 'disponible'),
+(44, '2024-05-01 12:30:00', 2, 'disponible'),
+(45, '2024-05-01 13:00:00', 2, 'disponible'),
+(46, '2024-05-01 13:30:00', 2, 'disponible'),
+(47, '2024-05-01 14:00:00', 2, 'disponible'),
+(48, '2024-05-01 14:30:00', 2, 'disponible'),
+(49, '2024-05-01 15:00:00', 2, 'disponible'),
+(50, '2024-05-01 15:30:00', 2, 'disponible'),
+(51, '2024-05-01 16:00:00', 2, 'disponible'),
+(52, '2024-05-01 16:30:00', 2, 'disponible'),
+(53, '2024-05-01 08:00:00', 3, 'disponible'),
+(54, '2024-05-01 08:30:00', 3, 'disponible'),
+(55, '2024-05-01 09:00:00', 3, 'disponible'),
+(56, '2024-05-01 09:30:00', 3, 'disponible'),
+(57, '2024-05-01 10:00:00', 3, 'disponible'),
+(58, '2024-05-01 10:30:00', 3, 'disponible'),
+(59, '2024-05-01 11:00:00', 3, 'disponible'),
+(60, '2024-05-01 11:30:00', 3, 'disponible'),
+(61, '2024-05-01 12:00:00', 3, 'disponible'),
+(62, '2024-05-01 12:30:00', 3, 'disponible'),
+(63, '2024-05-01 13:00:00', 3, 'disponible'),
+(64, '2024-05-01 13:30:00', 3, 'disponible'),
+(65, '2024-05-01 14:00:00', 3, 'disponible'),
+(66, '2024-05-01 14:30:00', 3, 'disponible'),
+(67, '2024-05-01 15:00:00', 3, 'disponible'),
+(68, '2024-05-01 15:30:00', 3, 'disponible'),
+(69, '2024-05-01 16:00:00', 3, 'disponible'),
+(70, '2024-05-01 16:30:00', 3, 'disponible'),
+(71, '2024-05-01 08:00:00', 4, 'disponible'),
+(72, '2024-05-01 08:30:00', 4, 'disponible'),
+(73, '2024-05-01 09:00:00', 4, 'disponible'),
+(74, '2024-05-01 09:30:00', 4, 'disponible'),
+(75, '2024-05-01 10:00:00', 4, 'disponible'),
+(76, '2024-05-01 10:30:00', 4, 'disponible'),
+(77, '2024-05-01 11:00:00', 4, 'disponible'),
+(78, '2024-05-01 11:30:00', 4, 'disponible'),
+(79, '2024-05-01 12:00:00', 4, 'disponible'),
+(80, '2024-05-01 12:30:00', 4, 'disponible'),
+(81, '2024-05-01 13:00:00', 4, 'disponible'),
+(82, '2024-05-01 13:30:00', 4, 'disponible'),
+(83, '2024-05-01 14:00:00', 4, 'disponible'),
+(84, '2024-05-01 14:30:00', 4, 'disponible'),
+(85, '2024-05-01 15:00:00', 4, 'disponible'),
+(86, '2024-05-01 15:30:00', 4, 'disponible'),
+(87, '2024-05-01 16:00:00', 4, 'disponible'),
+(88, '2024-05-01 16:30:00', 4, 'disponible');
 
 -- --------------------------------------------------------
 
@@ -187,7 +266,10 @@ INSERT INTO `usuarios_horarios_predeterminados` (`id`, `fk_usuario_correo`, `fk_
 (2, 'lalo@gmail.com', 8, 11),
 (3, 'lalo2@gmail.com', 8, 11),
 (4, 'lalo@gmail.com', 2, 9),
-(5, 'lalo2@gmail.com', 9, 4);
+(5, 'lalo2@gmail.com', 9, 4),
+(6, 'lalo@gmail.com', 88, 4),
+(7, 'laloConstante@gmail.com', 10, 1),
+(8, 'laloConstante@gmail.com', 12, 1);
 
 --
 -- Índices para tablas volcadas
@@ -248,7 +330,7 @@ ALTER TABLE `filial`
 -- AUTO_INCREMENT de la tabla `horario`
 --
 ALTER TABLE `horario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT de la tabla `ofertas`
@@ -266,7 +348,7 @@ ALTER TABLE `publicacion`
 -- AUTO_INCREMENT de la tabla `usuarios_horarios_predeterminados`
 --
 ALTER TABLE `usuarios_horarios_predeterminados`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas
