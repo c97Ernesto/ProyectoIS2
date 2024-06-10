@@ -11,7 +11,7 @@ async function fetchOffers(type) {
             console.error('No hay sesión iniciada');
             return;
         }
-        console.log(url)
+        console.log(url);
         const response = await fetch(url, {
             method: 'POST', // Cambiado a POST
             headers: {
@@ -23,12 +23,30 @@ async function fetchOffers(type) {
         if (!response.ok) {
             throw new Error('Respuesta del servidor no funciono');
         }
-        const data = await response.json();
+        const result = await response.json();
+        if (!result.success) {
+            alert(result.message);
+            return;
+        }
+        const data = result.data;
         displayOffers(data);
     } catch (error) {
         console.error('Error al obtener ofertas:', error);
     }
 }
+
+function displayOffers(data) {
+    const offersList = document.getElementById('offers-list');
+    offersList.innerHTML = '';
+
+    data.forEach(offer => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Oferta ID: ${offer.id} - Detalles: ${offer.detalles}`;
+        offersList.appendChild(listItem);
+    });
+}
+
+
 function displayOffers(offers) {
     const offersList = document.getElementById('offers-list');
     offersList.innerHTML = '';

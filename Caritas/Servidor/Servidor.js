@@ -235,7 +235,10 @@ app.post('/ofertas-enviadas', async (req, res) => {
                   console.error('Error fetching data:', errEnv);
                   return res.status(500).send('Error fetching data');
               }
-              res.json(resultsEnv);
+              if (resultsEnv.length === 0) {
+                  return res.json({ success: false, message: 'Aún no se enviaron ofertas' });
+              }
+              res.json({ success: true, data: resultsEnv });
           });
       });
   } catch (error) {
@@ -243,6 +246,7 @@ app.post('/ofertas-enviadas', async (req, res) => {
       return res.status(401).send('Token inválido');
   }
 });
+
 
 app.post('/ofertas-recibidas', async (req, res) => {
   const token = req.headers.authorization;
@@ -276,7 +280,10 @@ app.post('/ofertas-recibidas', async (req, res) => {
                   console.error('Error fetching data:', errRec);
                   return res.status(500).send('Error fetching data');
               }
-              res.json(resultsRec);
+              if (resultsRec.length === 0) {
+                  return res.json({ success: false, message: 'No se han recibido ofertas' });
+              }
+              res.json({ success: true, data: resultsRec });
           });
       });
   } catch (error) {
