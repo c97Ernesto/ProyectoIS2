@@ -44,5 +44,10 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-
+    const filialesPredeterminadasBtn = document.getElementById('filialesPredeterminadas');
+    if(filialesPredeterminadasBtn){
+        filialesPredeterminadasBtn.addEventListener('click',()=>{
+            window.location.href='http://localhost:3000/elegirFilialPredeterminada.html';
+        });
+    }
 });

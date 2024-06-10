@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 01-06-2024 a las 17:45:08
+-- Servidor: localhost
+-- Tiempo de generación: 10-06-2024 a las 02:19:59
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -38,6 +38,10 @@ CREATE TABLE `filial` (
 --
 
 INSERT INTO `filial` (`id`, `nombre`, `fk_idUsuarioVoluntario`) VALUES
+(1, 'FilialNro1', '3'),
+(2, 'FilialNro2', 'VoluntarioDeFilialNro2'),
+(3, 'FilialNro3', 'VoluntarioDeFilialNro3'),
+(4, 'FilialNro4', 'VoluntarioDeFilialNro4'),
 (9, 'peeeee', 'ddg@fggff.com'),
 (10, 'tresArroyos', 'lolaConstante@gmail.com'),
 (11, 'centro caritas_', 'laloConstante@gmail.com');
@@ -67,7 +71,8 @@ INSERT INTO `horario` (`id`, `fechaHora`, `fk_IdFilial`, `estado`) VALUES
 (5, '2024-05-01 13:50:00', 10, 'ocupado'),
 (6, '2024-06-30 10:50:00', 10, 'disponible'),
 (7, '2024-06-10 15:40:00', 10, 'disponible'),
-(8, '2024-12-12 12:00:00', 11, 'disponible');
+(8, '2024-12-12 12:00:00', 11, 'disponible'),
+(9, '2024-12-12 17:00:00', 4, 'disponible');
 
 -- --------------------------------------------------------
 
@@ -94,7 +99,10 @@ CREATE TABLE `ofertas` (
 
 INSERT INTO `ofertas` (`id`, `dni_ofertante`, `nombre_ofertante`, `dni_receptor`, `nombre_receptor`, `id_producto_ofertante`, `id_producto_receptor`, `id_filial`, `estado`, `fecha_intercambio`) VALUES
 (40, 2147483647, 'lolito', 12345678, 'Gabriela', 25, 23, 1, 'esperando', '2024-05-30 22:08:33'),
-(41, 898989898, 'maria', 12345678, 'Gabriela', 31, 28, 1, 'esperando', '2024-06-01 14:54:46');
+(41, 898989898, 'maria', 12345678, 'Gabriela', 31, 28, 1, 'esperando', '2024-06-01 14:54:46'),
+(42, 1234, 'Lalo', 2147483647, 'lolito', 32, 22, 1, 'esperando', '2024-06-09 13:53:35'),
+(43, 1234, 'lalo', 2147483647, 'lolito', 21, 22, 1, 'esperando', '2024-06-09 14:03:20'),
+(44, 1234, 'lalo', 1234, 'lolito', 21, 22, 1, 'esperando', '2024-06-09 17:34:15');
 
 -- --------------------------------------------------------
 
@@ -117,7 +125,7 @@ CREATE TABLE `publicacion` (
 --
 
 INSERT INTO `publicacion` (`id`, `nombre`, `descripcion`, `imagenes`, `estado`, `categoria`, `fk_usuario_correo`) VALUES
-(21, 'Cafe', 'asdasd', 'https://rincongaucho.net/wp-content/uploads/2023/01/Cafe-molido-intenso-La-Morenita.gif', 'Usado', 'Alimentos', 'laloConstante@gmail.com'),
+(21, 'Cafe', 'asdasd', 'https://rincongaucho.net/wp-content/uploads/2023/01/Cafe-molido-intenso-La-Morenita.gif', 'Usado', 'Alimentos', 'lalo2@gmail.com'),
 (22, 'Leche', 'Leche, la serenisima', 'https://acdn.mitiendanube.com/stores/093/780/products/serenisima-clasica-751-95fea92d1a27f8e9ab15710914346750-1024-1024.webp', 'Nuevo', 'Alimentos', 'laloConstante@gmail.com'),
 (23, 'Carpeta', 'Carpeta', 'https://acdn.mitiendanube.com/stores/209/340/products/imagen171-16252a150f8291655516453217697924-1024-1024.webp', 'Nuevo', 'Utiles escolares', 'gabrielabamba1@gmail.com'),
 (24, 'Mochila', 'mochila', 'https://samsonite.com.ar/cdn/shop/files/5074fa49ba8b0d74bf97bab7dba7afca8512704381bef09467f30f450ad98a37_2000x.png?v=1698937491', 'Nuevo', 'Utiles escolares', 'laloConstante@gmail.com'),
@@ -151,8 +159,32 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`Correo`, `Contraseña`, `Usuario`, `Nombre`, `apellido`, `DNI`, `nacimiento`, `Telefono`, `rol`) VALUES
 ('gabrielabamba1@gmail.com', '$2a$10$/GFigfcFzc4TsRge1BsTW.LG8TCw2T1G20FW6O7Kv2lV6AdpdPOrS', 'Gabriela', 'Gabriela', 'Bamba', 12345678, '1999-07-09', 99999999, 'comun'),
-('laloConstante@gmail.com', '$2a$10$sU0Os2CZrKlwihjVNw7J9e2HONUKC8TmThPW2wwDM7ehUzsnWkMHa', 'lalo', 'lolito', 'Perez', 2147483647, '2000-12-12', 628718, 'comun'),
+('lalo2@gmail.com', '$2a$10$9puN5phOJisM6p/OFnFDNO1gWpeUcFWaY1VGa4fTZAzjSLfPwgqh.', 'lalo', 'lalo', 'landa', 1234, '1998-12-12', 1234, 'comun'),
+('lalo@gmail.com', '$2a$10$G9rHwvulqQsZFHAWcW8vc.Gti.qDhD4ebKM0P1Mwyn95RMcWIObJu', 'Lalo', 'Lalo', 'Landa', 1234, '1998-12-12', 1234, 'comun'),
+('laloConstante@gmail.com', '$2a$10$uMP2r48.k0q/UmonrM7OWunLag5krfmM6x.4oB.UnuAq1tTS0H/Ae', 'lolito', 'lolito', 'landa', 1234, '1998-12-12', 1234, 'comun'),
 ('maria1@gmail.com', '$2a$10$RaHrHxKCFIituX5SAPk58OVXflfzkJjFBYPLmYCAKotp5JVd1qP/y', 'marii', 'maria', 'Aguirre', 898989898, '2000-12-12', 345667788, 'comun');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios_horarios_predeterminados`
+--
+
+CREATE TABLE `usuarios_horarios_predeterminados` (
+  `id` int(11) NOT NULL,
+  `fk_usuario_correo` varchar(30) NOT NULL,
+  `fk_horario_id` int(11) NOT NULL,
+  `fk_filial_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios_horarios_predeterminados`
+--
+
+INSERT INTO `usuarios_horarios_predeterminados` (`id`, `fk_usuario_correo`, `fk_horario_id`, `fk_filial_id`) VALUES
+(1, 'lalo@gmail.com', 8, 11),
+(2, 'lalo@gmail.com', 8, 11),
+(3, 'lalo2@gmail.com', 8, 11);
 
 --
 -- Índices para tablas volcadas
@@ -191,6 +223,15 @@ ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`Correo`);
 
 --
+-- Indices de la tabla `usuarios_horarios_predeterminados`
+--
+ALTER TABLE `usuarios_horarios_predeterminados`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_usuario_correo` (`fk_usuario_correo`),
+  ADD KEY `fk_horario_id` (`fk_horario_id`),
+  ADD KEY `fk_filial_id` (`fk_filial_id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -204,19 +245,37 @@ ALTER TABLE `filial`
 -- AUTO_INCREMENT de la tabla `horario`
 --
 ALTER TABLE `horario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `ofertas`
 --
 ALTER TABLE `ofertas`
-  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `publicacion`
 --
 ALTER TABLE `publicacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios_horarios_predeterminados`
+--
+ALTER TABLE `usuarios_horarios_predeterminados`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `usuarios_horarios_predeterminados`
+--
+ALTER TABLE `usuarios_horarios_predeterminados`
+  ADD CONSTRAINT `usuarios_horarios_predeterminados_ibfk_1` FOREIGN KEY (`fk_usuario_correo`) REFERENCES `usuarios` (`Correo`) ON DELETE CASCADE,
+  ADD CONSTRAINT `usuarios_horarios_predeterminados_ibfk_2` FOREIGN KEY (`fk_horario_id`) REFERENCES `horario` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `usuarios_horarios_predeterminados_ibfk_3` FOREIGN KEY (`fk_filial_id`) REFERENCES `filial` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
