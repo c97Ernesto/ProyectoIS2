@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 10-06-2024 a las 02:19:59
+-- Tiempo de generación: 10-06-2024 a las 16:45:32
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -71,8 +71,8 @@ INSERT INTO `horario` (`id`, `fechaHora`, `fk_IdFilial`, `estado`) VALUES
 (5, '2024-05-01 13:50:00', 10, 'ocupado'),
 (6, '2024-06-30 10:50:00', 10, 'disponible'),
 (7, '2024-06-10 15:40:00', 10, 'disponible'),
-(8, '2024-12-12 12:00:00', 11, 'disponible'),
-(9, '2024-12-12 17:00:00', 4, 'disponible');
+(8, '2024-12-12 12:00:00', 11, 'ocupado'),
+(9, '2024-12-12 17:00:00', 4, 'ocupado');
 
 -- --------------------------------------------------------
 
@@ -133,7 +133,8 @@ INSERT INTO `publicacion` (`id`, `nombre`, `descripcion`, `imagenes`, `estado`, 
 (27, 'Zapatillas', 'Zapatillas Nike', 'https://www.moov.com.ar/on/demandware.static/-/Sites-365-dabra-catalog/default/dw539a8906/products/NIFD9082-101/NIFD9082-101-4.JPG', 'Usado', 'Indumentaria', 'laloConstante@gmail.com'),
 (28, 'Jabon', 'Javon en polvo', 'https://www.skip.com.ar/images/h0nadbhvm6m4/38KjcF07LIl04lvfZpScne/eff03b07e91262993e3b3e8e9a400355/VW50aXRsZWQtMy5wbmc/1080w-1080h/jab%C3%B3n-en-polvo-skip-bio-enzimas.avif', 'Nuevo', 'Productos de limpieza', 'gabrielabamba1@gmail.com'),
 (29, 'Lapices de colores', 'Lapices de colores, faber castelli', 'https://www.libreriaascorti.com.ar/575-large_default/lapices-de-colores-faber-castell-x24-caras-colores.jpg', 'Usado', 'Utiles escolares', 'maria1@gmail.com'),
-(31, 'Lavandina', 'Lavandina, Ayudin', 'https://acdn.mitiendanube.com/stores/002/275/253/products/lavandina-para-ropa-ayudin-quitamanchas-ropa-blanca-2-lts-a1-264490dcdfb3bdb21716589802724031-1024-1024.webp', 'Usado', 'Productos de limpieza', 'maria1@gmail.com');
+(31, 'Lavandina', 'Lavandina, Ayudin', 'https://acdn.mitiendanube.com/stores/002/275/253/products/lavandina-para-ropa-ayudin-quitamanchas-ropa-blanca-2-lts-a1-264490dcdfb3bdb21716589802724031-1024-1024.webp', 'Usado', 'Productos de limpieza', 'maria1@gmail.com'),
+(34, 'Cacao', 'sad', 'https://delvergel.cl/wp-content/uploads/2021/01/CACAOPOLVO1-scaled.jpg', 'Usado', 'Alimentos', 'lalo@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -184,7 +185,9 @@ CREATE TABLE `usuarios_horarios_predeterminados` (
 INSERT INTO `usuarios_horarios_predeterminados` (`id`, `fk_usuario_correo`, `fk_horario_id`, `fk_filial_id`) VALUES
 (1, 'lalo@gmail.com', 8, 11),
 (2, 'lalo@gmail.com', 8, 11),
-(3, 'lalo2@gmail.com', 8, 11);
+(3, 'lalo2@gmail.com', 8, 11),
+(4, 'lalo@gmail.com', 2, 9),
+(5, 'lalo2@gmail.com', 9, 4);
 
 --
 -- Índices para tablas volcadas
@@ -257,13 +260,13 @@ ALTER TABLE `ofertas`
 -- AUTO_INCREMENT de la tabla `publicacion`
 --
 ALTER TABLE `publicacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_horarios_predeterminados`
 --
 ALTER TABLE `usuarios_horarios_predeterminados`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
