@@ -221,7 +221,7 @@ class FiliarController {
     }
 
     reasignarVoluntario(req, res) {
-        const { correoAntiguo, correoNuevo } = req.body;
+        const { correoAntiguo, correoNuevo, nuevoRol } = req.body;
 
         db.query('SELECT id FROM filial WHERE fk_idUsuarioVoluntario = ?', [correoAntiguo], (err, results) => {
             if (err) {
@@ -244,7 +244,7 @@ class FiliarController {
                         return res.status(500).json({ message: err.message });
                     }
 
-                    db.query('UPDATE usuarios SET rol = ? WHERE correo = ?', ['comun', correoAntiguo], (err, results) => {
+                    db.query('UPDATE usuarios SET rol = ? WHERE correo = ?', [nuevoRol, correoAntiguo], (err, results) => {
                         if (err) {
                             return res.status(500).json({ message: err.message });
                         }

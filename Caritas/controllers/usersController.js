@@ -30,8 +30,8 @@ class UsersController {
     });
    };
 
-   obtenerUsuariosComunes = (req, res) => {
-    const query = 'SELECT nombre, correo, apellido FROM usuarios WHERE rol = "comun"'; 
+   obtenerUsuariosSinVoluntarios = (req, res) => {
+    const query = 'SELECT nombre, correo, apellido FROM usuarios WHERE rol != "voluntario"'; 
         db.query(query, (err, results) => {
              if (err) {
                  return res.status(500).json({ message: 'Error al obtener los usuarios voluntarios', error: err });
@@ -41,7 +41,7 @@ class UsersController {
    };
 
    obtenerUsuarios = (req, res) => {
-    const query = 'SELECT nombre, apellido, correo, rol FROM usuarios "';
+    const query = 'SELECT nombre, apellido, correo, rol FROM usuarios';
     db.query(query, (err, results) => {
       if (err) {
         return res.status(500).json({ message: 'Error al obtener los usuarios', error: err });
