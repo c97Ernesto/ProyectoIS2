@@ -1,27 +1,25 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Elegir Filial</title>
-    <link rel="stylesheet" href="./css/cargarFilial.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegir Horarios de la publicacion</title>
 </head>
 <body>
-    <h1>Elegir Filial</h1>
-    <form id="elegirFilialForm">
-        <label for="filial">Filial:</label>
-        <select id="filial" name="filial" required>
-            <option value="">Seleccionar Filial...</option>
-        </select>
-        
-        <label for="fechaHora">Fecha y Hora:</label>
-        <select id="fechaHora" name="fechaHora" required>
-            <option value="">Seleccionar Fecha y Hora...</option>
-        </select>
-        
-        <button type="submit">Confirmar Filial</button>
-    </form>
+    <h1>Elegir Horarios de la publicacion</h1>
 
+    <!-- Select para mostrar los horarios disponibles -->
+    <label for="selectHorarios">Seleccione un horario:</label>
+    <select id="selectHorarios">
+        <!-- Las opciones se llenarán dinámicamente -->
+    </select>
+
+    <!-- Botón para verificar la disponibilidad del horario -->
+    <button id="verificarBtn">Confirmar Horario</button>
+
+    <!-- Div para mostrar el resultado de la verificación -->
+    <div id="resultado"></div>
+    
     <script src="./js/elegirFilial.js"></script>
 </body>
 </html>

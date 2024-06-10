@@ -1,85 +1,140 @@
+let correoUsuarioPublicacionObjetivo = null;
+let idHorario = null;
 
-document.addEventListener("DOMContentLoaded", function() {
-    cargarFiliales();
+async function obtenerHorariosDisponibles() {
+  const token = localStorage.getItem("token");
+  const publicacionId = localStorage.getItem("publicacionId");
+  console.log(token);
+  console.log(publicacionId);
+
+  try {
+    const responsePublicacion = await fetch(
+      `http://localhost:3000/publicacion/detalles/${publicacionId}`,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+
+    const publicaciones = await responsePublicacion.json();
+    console.log(publicaciones);
+    correoUsuarioPublicacionObjetivo = publicaciones[0].fk_usuario_correo;
+    console.log(correoUsuarioPublicacionObjetivo);
+  } catch (error) {
+    console.error("Error al obtener la publicacion:", error);
+    return;
+  }
+
+  try {
+    console.log(correoUsuarioPublicacionObjetivo);
+    const responseHorarios = await fetch(
+      `http://localhost:3000/usuarios_horarios_predeterminados?correoUsuarioPublicacionObjetivo=${correoUsuarioPublicacionObjetivo}`,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+
+    const data = await responseHorarios.json();
+
+    if (data.success) {
+      console.log(data);
+      mostrarHorariosDisponibles(data.horarios);
+    } else {
+      console.error("Error al obtener los horarios disponibles:", data.message);
+    }
+  } catch (error) {
+    console.error("Error al obtener los horarios disponibles:", error);
+  }
+}
+
+// Función para mostrar los horarios disponibles en un <select>
+function mostrarHorariosDisponibles(horarios) {
+  const selectHorarios = document.getElementById("selectHorarios");
+  selectHorarios.innerHTML = "";
+
+  horarios.forEach((horario) => {
+    // if (horario.estado === 'disponible') {
+      const option = document.createElement("option");
+      option.value = horario.id;
+      option.textContent = `Fecha y hora: ${new Date(horario.fechaHora).toLocaleString()} / Filial: ${horario.fk_IdFilial} / estado: ${horario.estado}`;
+      selectHorarios.appendChild(option);
     
-    const formulario = document.getElementById('elegirFilialForm');
-    formulario.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        
-        const filialId = document.getElementById('filial').value;
-        const horarioId = document.getElementById('fechaHora').value;
+  });
+}
 
-        try {
-            const response = await fetch('http://localhost:3000/filial/elegirFilial', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ filialId, horarioId })
-            });
+async function verificarDisponibilidad() {
+  const token = localStorage.getItem("token");
+  const selectHorarios = document.getElementById("selectHorarios");
+  const selectedOption = selectHorarios.options[selectHorarios.selectedIndex];
+  const idHorario = selectedOption.value;
+  console.log("ID del horario seleccionado:", idHorario);
 
-            if (response.ok) {
-                alert('Filial elegida exitosamente');
-                localStorage.setItem('filialId', filialId);
-                localStorage.setItem('horario', horarioId);
-                formulario.reset();
-                cargarHorarios(); // Recargar horarios para actualizar disponibilidad
-                window.history.go(-1);
-            } else {
-                const error = await response.json();
-                alert('Error: ' + error.message);
-            }
-        } catch (error) {
-            console.error('Error al elegir la filial:', error);
-            alert('Error al elegir la filial');
-        }
-    });
+  try {
+    const response = await fetch(
+      `http://localhost:3000/horario/verificarDisponibilidadHorario?id=${idHorario}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.disponible) {
+      console.log("El horario está disponible:", data.horario);
+      document.getElementById("resultado").textContent =
+        "El horario está disponible.";
+    } else {
+      console.log("El horario no está disponible:", data.message);
+      document.getElementById(
+        "resultado"
+      ).textContent = `El horario no está disponible: ${data.message}`;
+    }
+  } catch (error) {
+    console.error("Error al verificar la disponibilidad del horario:", error);
+    document.getElementById("resultado").textContent =
+      "Error al verificar la disponibilidad del horario.";
+  }
+
+  try {
+    const response = await fetch(
+      'http://localhost:3000/horario/confirmarHorarioId',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: idHorario })
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+      console.log("El horario ha sido confirmado:", data.horario);
+      document.getElementById("resultado").textContent = "El horario ha sido confirmado.";
+    } else {
+      console.log("Error al confirmar el horario:", data.message);
+      document.getElementById("resultado").textContent = `Error al confirmar el horario: ${data.message}`;
+    }
+  } catch (error) {
+    console.error("Error al confirmar el horario:", error);
+    document.getElementById("resultado").textContent = "Error al confirmar el horario.";
+  }
+
+}
+
+// Llamar a la función para obtener los horarios disponibles al cargar la página
+document.addEventListener("DOMContentLoaded", () => {
+  obtenerHorariosDisponibles();
+  document
+    .getElementById("verificarBtn")
+    .addEventListener("click", verificarDisponibilidad);
 });
-
-async function cargarFiliales() {
-    try {
-        const response = await fetch('http://localhost:3000/filial');
-        if (response.ok) {
-            const filiales = await response.json();
-            const selectFilial = document.getElementById('filial');
-
-            filiales.forEach(filial => {
-                const option = document.createElement('option');
-                option.value = filial.id;
-                option.textContent = filial.nombre;
-                selectFilial.appendChild(option);
-            });
-
-            selectFilial.addEventListener('change', cargarHorarios);
-        } else {
-            console.error('Error al cargar filiales');
-        }
-    } catch (error) {
-        console.error('Error al cargar filiales:', error);
-    }
-}
-
-async function cargarHorarios() {
-    const filialId = document.getElementById('filial').value;
-    const selectHorario = document.getElementById('fechaHora');
-    selectHorario.innerHTML = '<option value="">Seleccionar Fecha y Hora...</option>';
-
-    try {
-        const response = await fetch(`http://localhost:3000/filial/horarios/${filialId}`);
-        if (response.ok) {
-            const horarios = await response.json();
-            horarios.forEach(horario => {
-                if (horario.estado === 'disponible') {
-                    const option = document.createElement('option');
-                    option.value = horario.id;
-                    option.textContent = new Date(horario.fechaHora).toLocaleString();
-                    selectHorario.appendChild(option);
-                }
-            });
-        } else {
-            console.error('Error al cargar horarios');
-        }
-    } catch (error) {
-        console.error('Error al cargar horarios:', error);
-    }
-}

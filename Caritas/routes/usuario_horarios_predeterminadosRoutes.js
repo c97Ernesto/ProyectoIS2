@@ -4,6 +4,8 @@ const usuarios_horarios_predeterminados = require('../controllers/usuario_horari
 
 router
   .route("/")
+  .get(usuarios_horarios_predeterminados.obtenerHorariosPredeterminados)
   .post(usuarios_horarios_predeterminados.establecerHorarioPredeterminado);
+  
 
 module.exports = router;

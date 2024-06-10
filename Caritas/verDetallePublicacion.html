@@ -12,6 +12,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const parametrosURL = new URLSearchParams(window.location.search);
+            console.log(parametrosURL)
             const ofertaRealizada = parametrosURL.get('ofertaRealizada');
            
             const idProductoReceptor = localStorage.getItem('publicacionId');
