@@ -4,15 +4,11 @@ const caritas = "codigo secreto";
 const db = require("../database/conexion");
 const jwt = require("jsonwebtoken");
 
-// Esta función decodifica el token y extrae el correo electrónico del usuario
-function obtenerCorreoUsuarioDesdeToken(req) {
-  // Obtén el token del encabezado de autorización
+
+function obtenerCorreoUsuario(req) {
   const token = req.headers.authorization.split(" ")[1];
-
-  // Decodifica el token y extrae el correo electrónico
-  const decodedToken = jwt.verify(token, caritas);
-  const correoUsuario = decodedToken.correo; // Suponiendo que el correo electrónico está almacenado en el token como 'correo'
-
+  const decodedToken = jwt.decode(token);
+  const correoUsuario = decodedToken.correo; 
   return correoUsuario;
 }
 
@@ -20,27 +16,26 @@ class Usuario_Horarios_PredeterminadosControllers {
     constructor() {}
 
     obtenerHorariosPredetermiandos(req, res){
-      const correoUsuario = obtenerCorreoUsuarioDesdeToken(req);
+      const correoUsuario = obtenerCorreoUsuario(req);
 
     }
 
-    cargarHorariosPredetermiandos(req, res){
-      const correoUsuario = obtenerCorreoUsuarioDesdeToken(req);
-      const { fechaHora, filial } = req.body;
-
-      db.query(
-        'INSERT INTO usuarios_horarios_predeterminados (fk_usuario_correo, fk_horario_id, fk_filial_id) VALUES (?, ?, ?)',
-        [correoUsuario, fechaHora, filial],
-        (err, result) => {
+    establecerHorarioPredeterminado(req, res) {
+      const { horario } = req.body; 
+      const correoUsuario = obtenerCorreoUsuario(req);
+  
+      // Verificar si se proporcionó un horario
+      if (!horario || !horario.id) {
+          return res.status(400).json({ success: false, message: 'No se ha proporcionado un horario válido.' });
+      }
+  
+      db.query('INSERT INTO usuarios_horarios_predeterminados (fk_usuario_correo, fk_horario_id, fk_filial_id) VALUES (?, ?, ?)', [correoUsuario, horario.id, horario.fk_IdFilial], (err) => {
           if (err) {
-            console.error('Error al realizar la oferta:', err.message);
-            return res.status(400).send(err.message);
+              return res.status(500).json({ message: err.message });
           }
-          return res.status(201).json({ message: 'Oferta realizada con éxito',id: result.insertId });
-        }
-      );
-      
-    }
+          return res.json({ success: true, horario });
+      });
+  }
 }
 
 module.exports = new Usuario_Horarios_PredeterminadosControllers();

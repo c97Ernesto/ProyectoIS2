@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
             filialSection.style.display = 'none';
         }
 
-        if (rol.value === 'comun' && rolActual.value === 'voluntario') {
+        if (rolActual.value === 'voluntario') {
             nuevoVoluntarioSection.style.display = 'block';
             cargarVoluntarios();
         } else {
@@ -58,11 +58,13 @@ document.addEventListener("DOMContentLoaded", function() {
         try {
             if (nuevoRol === 'voluntario' && filialId) {
                 await asignarVoluntarioFilial(filialId, usuarioCorreo);
-                alert('Se cambió el rol del usuario y se asignó la filial con éxito');
-            } else if (nuevoRol === 'comun' && rolActual.value === 'voluntario' && nuevoVoluntarioCorreo) {
-                await reasignarVoluntario(usuarioCorreo, nuevoVoluntarioCorreo);
+                alert('Se cambió el rol del usuario y se asignó el nuevo voluntario a la filial con éxito');
+            } else if (rolActual.value === 'voluntario' && nuevoVoluntarioCorreo) {
+                // Reasignar voluntario a la filial y cambiar el rol del antiguo voluntario
+                await reasignarVoluntario(usuarioCorreo, nuevoVoluntarioCorreo, nuevoRol);
                 alert('Se cambió el rol del usuario y se reasignó el voluntario con éxito');
             } else {
+                // Otros cambios de rol 
                 const response = await fetch('http://localhost:3000/usuarios/cambiarRol', {
                     method: 'POST',
                     headers: {
@@ -138,7 +140,7 @@ async function cargarFiliales() {
 
 async function cargarVoluntarios() {
     try {
-        const response = await fetch('http://localhost:3000/usuarios/comunes');
+        const response = await fetch('http://localhost:3000/usuarios/sinVoluntarios');
         if (response.ok) {
             const voluntarios = await response.json();
             const selectVoluntario = document.getElementById('nuevoVoluntario');
@@ -173,13 +175,13 @@ async function asignarVoluntarioFilial(filialId, correoNuevo) {
     }
 }
 
-async function reasignarVoluntario(correoAntiguo, correoNuevo) {
+async function reasignarVoluntario(correoAntiguo, correoNuevo, nuevoRol) {
     const response = await fetch('http://localhost:3000/filial/reasignarVoluntario', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ correoAntiguo, correoNuevo })
+        body: JSON.stringify({ correoAntiguo, correoNuevo, nuevoRol })
     });
 
     if (!response.ok) {

@@ -11,8 +11,8 @@ router
   .get(usersController.obtenerUsuariosVoluntarios);
 
 router
-  .route("/comunes")
-  .get(usersController.obtenerUsuariosComunes);
+  .route("/sinVoluntarios")
+  .get(usersController.obtenerUsuariosSinVoluntarios);
 
 
 router
