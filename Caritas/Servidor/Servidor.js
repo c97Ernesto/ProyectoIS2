@@ -245,7 +245,6 @@ app.post('/ofertas-enviadas', async (req, res) => {
 });
 
 app.post('/ofertas-recibidas', async (req, res) => {
-  console.log("BBBBB")
   const token = req.headers.authorization;
 
   if (!token) {
@@ -255,12 +254,12 @@ app.post('/ofertas-recibidas', async (req, res) => {
 
   const accessToken = token.split(' ')[1]; // Extraer el token del encabezado
   try {
-      const decodedToken = jwt.verify(accessToken, 'codigo_secreto');
+      const decodedToken = jwt.verify(accessToken, 'codigo secreto');
       const email = decodedToken.correo;
 
       // Realizar la consulta para obtener el DNI del usuario basado en el correo electrónico
       const query = 'SELECT dni FROM usuarios WHERE correo = ?';
-      connection.query(query, [email], (err, results) => {
+      db.query(query, [email], (err, results) => {
           if (err) {
               console.error('Error al obtener el DNI:', err);
               return res.status(500).send('Error al obtener el DNI');
@@ -272,7 +271,7 @@ app.post('/ofertas-recibidas', async (req, res) => {
 
           // Consultar ofertas recibidas usando el DNI obtenido
           const queryRec = 'SELECT * FROM ofertas WHERE dni_receptor = ?';
-          connection.query(queryRec, [dni], (errRec, resultsRec) => {
+          db.query(queryRec, [dni], (errRec, resultsRec) => {
               if (errRec) {
                   console.error('Error fetching data:', errRec);
                   return res.status(500).send('Error fetching data');
