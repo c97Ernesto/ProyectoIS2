@@ -11,7 +11,6 @@ async function fetchOffers(type) {
             console.error('No hay sesión iniciada');
             return;
         }
-        console.log(url);
         const response = await fetch(url, {
             method: 'POST', // Cambiado a POST
             headers: {
@@ -61,6 +60,7 @@ function displayOffers(offers) {
                 <p>Producto solicitado: ${offer.id_producto_receptor}</p>
                 <p>Estado: ${offer.estado}</p>
                 <p>Fecha de intercambio: ${offer.fecha_intercambio}</p>
+                <a href="http://localhost:3000/ofertas/misOfertas/${offer.id}">Ver detalles de la oferta</a>
             `;
             offersList.appendChild(offerItem);
         });
