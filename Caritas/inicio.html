@@ -33,6 +33,7 @@
                 <button id="editProfileButton">Editar perfil</button>
                 <button id="myPostsButton">Mis publicaciones</button>
                 <button id="postHistoryButton">Historias de publicaciones</button>
+                <button id="filialesPredeterminadas">Filiales predeterminadas</button>
                 <button id="logoutButton">Cerrar sesión</button>
         </div>
     </div>
@@ -63,6 +64,9 @@
     <script>
         document.getElementById("btn-filter").addEventListener('click', () => {
           window.location.href = `http://localhost:3000/filtrarPublicaciones.html`;
+        });
+        document.getElementById('filialesPredeterminadas').addEventListener('click',()=>{
+            window.location.href='http://localhost:3000/elegirFilialPredeterminada.html';
         });
     </script>
     
