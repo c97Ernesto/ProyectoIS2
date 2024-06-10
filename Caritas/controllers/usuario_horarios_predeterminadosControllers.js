@@ -44,6 +44,19 @@ class Usuario_Horarios_PredeterminadosControllers {
     });
   }
 
+  obtenerMisHorariosPredeterminados(req, res) {
+    const correoUsuario = obtenerCorreoUsuario(req);
+
+    db.query('SELECT h.* FROM horario h JOIN usuarios_horarios_predeterminados uhp ON h.id = uhp.fk_horario_id WHERE uhp.fk_usuario_correo = ?', 
+      [correoUsuario], (err, results) => {
+      if (err) {
+          return res.status(500).json({ message: err.message });
+      }
+      console.log(results);
+      return res.json({ success: true, horarios: results });
+    });
+  }
+
   obtenerHorarioId(req, res) {
     const idHorario = req.query.idHorario;
 
