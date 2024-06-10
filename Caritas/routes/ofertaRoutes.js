@@ -45,4 +45,8 @@ router
   .route("/detalles/:id")
   .get(ofertaController.obtenerOfertaDetalles)
 
+
+router.post('/aceptar/:id', ofertaController.aceptarOferta);
+router.post('/rechazar/:id', ofertaController.rechazarOferta);
+
 module.exports = router;

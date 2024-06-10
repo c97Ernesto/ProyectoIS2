@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoria = urlParams.get('categoria');
     const token = localStorage.getItem('token');
     const idProductoObjetivo = localStorage.getItem('publicacionObjetivo');
+    localStorage.setItem('productoId', idProductoObjetivo);
 
     if (categoria && token) {
         obtenerPublicacionesPorCategoria(categoria).then(publicaciones => {
@@ -70,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
     async function seleccionarProducto(idProductoOfertante) {
         const filialId = localStorage.getItem('filialId');
         const horario = localStorage.getItem('horario');
-        alert(horario);
 
         if (!filialId || !horario) {
             alert('Por favor, selecciona una filial y un horario antes de realizar la oferta.');
