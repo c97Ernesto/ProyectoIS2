@@ -10,6 +10,9 @@ app.use(bodyParser.json());
 const path= require("path");
 require('dotenv').config();
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey('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');
+
 app.use(cors());
 app.use(bodyParser.json());
 const secretKey = "codigo secreto";
@@ -174,33 +177,46 @@ app.post('/recuperarContrasena', async (req, res) => {
         return res.status(401).json({ error: 'Correo electrónico no registrado' });
     }
 
-    // Obtener la contraseña del primer usuario encontrado
-    const contraseña = results[0].Contraseña;
+    // Generar una nueva contraseña
+    const nuevaContrasena = '12345';
+    const saltRounds = 10;
 
-    // using Twilio SendGrid's v3 Node.js Library
-    // https://github.com/sendgrid/sendgrid-nodejs
-    const sgMail = require('@sendgrid/mail');
-    sgMail.setApiKey('keySG.fxqSbXGJS-Wxj_s0OM_gRg.lcOpQbQJQ70kDXGmzrqNWLFUrSWpDEIJka-UZ8i9gzk');
+    try {
+        // Hashé la nueva contraseña
+        const hash = await bcrypt.hash(nuevaContrasena, saltRounds);
 
-    const msg = {
-        to: correo, // Cambiar por el destinatario
-        from: 'prueba2003123@gmail.com', // Cambiar por el remitente verificado
-        subject: 'Recuperación de Contraseña',
-        text: `Esta es su contraseña: ${contraseña}`,
-        html: `<strong>Recuperación</strong><br/>Esta es su contraseña: ${contraseña}`,
-    };
+        // Actualizar la contraseña en la base de datos
+        db.query('UPDATE usuarios SET Contraseña = ? WHERE Correo = ?', [hash, correo], (err, results) => {
+            if (err) {
+                console.error('Error al actualizar la contraseña:', err);
+                return res.status(500).json({ error: 'Error interno del servidor' });
+            }
 
-  sgMail
-      .send(msg)
-      .then(() => {
-          console.log('Correo enviado');
-          return res.status(200).json({ success: true, message: 'Correo electrónico enviado.' });
-      })
-      .catch((error) => {
-          console.error("Hubo un error: ", error);
-          return res.status(500).json({ success: false, message: 'Error al enviar el correo electrónico.' });
-      });
-});
+            // Enviar el correo con la nueva contraseña
+            const msg = {
+                to: correo, // Cambiar por el destinatario
+                from: 'prueba2003123@gmail.com', // Cambiar por el remitente verificado
+                subject: 'Recuperación de Contraseña',
+                text: `Esta es su nueva contraseña: ${nuevaContrasena}`,
+                html: `<strong>Recuperación</strong><br/>Esta es su nueva contraseña: ${nuevaContrasena}`,
+            };
+
+            sgMail
+                .send(msg)
+                .then(() => {
+                    console.log('Correo enviado');
+                    return res.status(200).json({ success: true, message: 'Correo electrónico enviado.' });
+                })
+                .catch((error) => {
+                    console.error('Hubo un error:', error);
+                    return res.status(500).json({ success: false, message: 'Error al enviar el correo electrónico.' });
+                });
+        });
+    } catch (error) {
+        console.error('Error al hashé la contraseña:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  });
 });
 
 app.post('/ofertas-enviadas', async (req, res) => {
