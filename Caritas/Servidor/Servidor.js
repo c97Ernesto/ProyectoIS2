@@ -177,21 +177,29 @@ app.post('/recuperarContrasena', async (req, res) => {
         return res.status(401).json({ error: 'Correo electrónico no registrado' });
     }
 
-    // Obtener la contraseña del primer usuario encontrado
-    const contraseña = results[0].Contraseña;
+    // Generar una nueva contraseña
+    const nuevaContrasena = '12345';
+    const saltRounds = 10;
 
-    // using Twilio SendGrid's v3 Node.js Library
-    // https://github.com/sendgrid/sendgrid-nodejs
-    const sgMail = require('@sendgrid/mail');
-    sgMail.setApiKey('keySG.fxqSbXGJS-Wxj_s0OM_gRg.lcOpQbQJQ70kDXGmzrqNWLFUrSWpDEIJka-UZ8i9gzk');
+    try {
+        // Hashé la nueva contraseña
+        const hash = await bcrypt.hash(nuevaContrasena, saltRounds);
 
-    const msg = {
-        to: correo, // Cambiar por el destinatario
-        from: 'prueba2003123@gmail.com', // Cambiar por el remitente verificado
-        subject: 'Recuperación de Contraseña',
-        text: `Esta es su contraseña: ${contraseña}`,
-        html: `<strong>Recuperación</strong><br/>Esta es su contraseña: ${contraseña}`,
-    };
+        // Actualizar la contraseña en la base de datos
+        db.query('UPDATE usuarios SET Contraseña = ? WHERE Correo = ?', [hash, correo], (err, results) => {
+            if (err) {
+                console.error('Error al actualizar la contraseña:', err);
+                return res.status(500).json({ error: 'Error interno del servidor' });
+            }
+
+            // Enviar el correo con la nueva contraseña
+            const msg = {
+                to: correo, // Cambiar por el destinatario
+                from: 'prueba2003123@gmail.com', // Cambiar por el remitente verificado
+                subject: 'Recuperación de Contraseña',
+                text: `Esta es su nueva contraseña: ${nuevaContrasena}`,
+                html: `<strong>Recuperación</strong><br/>Esta es su nueva contraseña: ${nuevaContrasena}`,
+            };
 
             sgMail
                 .send(msg)
