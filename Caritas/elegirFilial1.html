@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select de Horarios</title>
+    <title>Verificación de Horarios Disponibles</title>
 </head>
 <body>
-    <h1>Seleccione un horario</h1>
-    <label for="fechaHora">Fecha y Hora:</label>
-    <input type="datetime-local" id="fechaHora" name="fechaHora">
+    <h1>Verificación de Horarios Disponibles</h1>
 
-    <label for="filiales">Filiales:</label>
-    <select id="filiales" name="filiales">
-        <!-- Las opciones de filiales serán generadas aquí -->
+    <!-- Select para mostrar los horarios disponibles -->
+    <label for="selectHorarios">Seleccione un horario:</label>
+    <select id="selectHorarios">
+        <!-- Las opciones se llenarán dinámicamente -->
     </select>
 
+    <!-- Botón para verificar la disponibilidad del horario -->
+    <button id="verificarBtn">Confirmar Horario</button>
+
+    <!-- Div para mostrar el resultado de la verificación -->
     <div id="resultado"></div>
-
-    <button id="confirmarFilial">Confirmar Filial</button>
-
+    
     <script src="./js/elegirFilial1.js"></script>
 </body>
 </html>

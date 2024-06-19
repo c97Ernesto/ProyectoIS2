@@ -1,3 +1,51 @@
+async function obtenerMisHorarios(){
+    const token = localStorage.getItem("token");
+    try {
+        const responseHorarios = await fetch(
+        `http://localhost:3000/usuarios_horarios_predeterminados/misHorarios`,
+        {
+            headers: {
+            Authorization: "Bearer " + token,
+            },
+        }
+        );
+
+        const data = await responseHorarios.json();
+
+        if (data.success) {
+            console.log(data);
+            mostrarMisHorariosDisponibles(data.horarios);
+        } else {
+            console.error("Error al obtener mis horarios disponibles:", data.message);
+        }
+    } catch (error) {
+        console.error("Error al obtener mis horarios disponibles:", error);
+    }
+}
+
+function mostrarMisHorariosDisponibles(horarios) {
+    const listaHorarios = document.getElementById("listaMisHorarios");
+    listaHorarios.innerHTML = "";
+
+    if (horarios.length === 0) {
+        const mensaje = document.createElement("p");
+        mensaje.textContent = "No hay horarios seleccionados";
+        listaHorarios.appendChild(mensaje);
+    } else {
+        horarios.forEach((horario) => {
+            const listItem = document.createElement("li");
+            listItem.textContent = `Fecha y hora: ${new Date(horario.fechaHora).toLocaleString()} / Filial: ${horario.fk_IdFilial} / estado: ${horario.estado}`;
+
+            const eliminarBtn = document.createElement("button");
+            eliminarBtn.textContent = "Eliminar";
+            eliminarBtn.addEventListener("click", () => eliminarHorario(horario.id));
+
+            listItem.appendChild(eliminarBtn);
+            listaHorarios.appendChild(listItem);
+        });
+    }
+}
+
 // Función para obtener la fecha y hora seleccionadas
 function obtenerFechaSeleccionada() {
   const inputFechaHora = document.getElementById('fechaHora');
@@ -14,8 +62,8 @@ async function obtenerFiliales() {
       const select = document.getElementById('filiales');
       filiales.forEach(filial => {
           const option = document.createElement('option');
-          option.value = filial.id; // Suponiendo que cada filial tiene un ID único
-          option.textContent = filial.nombre; // Suponiendo que cada filial tiene un nombre
+          option.value = filial.id; 
+          option.textContent = filial.nombre; 
           select.appendChild(option);
       });
   } catch (error) {
@@ -33,7 +81,7 @@ async function verificarDisponibilidad() {
   console.log(filialSeleccionada);
 
   try {
-      // Hacer una solicitud al servidor para verificar la disponibilidad
+      // Verificar la disponibilidad
       const response = await fetch(`http://localhost:3000/horario/verificarHorarios?fechaHora=${fechaHoraSeleccionada}&filial=${filialSeleccionada}`);
       const data = await response.json();
       console.log(data);
@@ -47,9 +95,9 @@ async function verificarDisponibilidad() {
       }
 
       // Mostrar detalles del horario si existen
-      if (data.horario) {
-          resultadoDiv.textContent += `\nDetalles del horario:\nID: ${data.horario.id}\nFecha y Hora: ${data.horario.fechaHora}\nEstado: ${data.horario.estado}`;
-      }
+    //   if (data.horario) {
+    //       resultadoDiv.textContent += `\nDetalles del horario:\nID: ${data.horario.id}\nFecha y Hora: ${data.horario.fechaHora}\nEstado: ${data.horario.estado}`;
+    //   }
   } catch (error) {
       console.error('Error al verificar la disponibilidad:', error);
   }
@@ -57,10 +105,11 @@ async function verificarDisponibilidad() {
 
 // Función para confirmar la reserva de la filial
 async function establecerHorarioPredeterminado() {
-  if (!horarioSeleccionado) {
-      console.error('No se ha seleccionado un horario para establecer como predeterminado.');
-      return;
-  }
+    if (!horarioSeleccionado) {
+        alert("Se debe ingresar un horario")
+        console.error('No se ha seleccionado un horario para establecer como predeterminado.');
+        return;
+    }
 
   const token = localStorage.getItem("token");
   try {
@@ -94,10 +143,10 @@ async function establecerHorarioPredeterminado() {
   }
 }
 
-// Llamar a las funciones para generar las opciones al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
-  obtenerFiliales();
-  document.getElementById('fechaHora').addEventListener('change', verificarDisponibilidad);
-  document.getElementById('filiales').addEventListener('change', verificarDisponibilidad);
-  document.getElementById('confirmarFilial').addEventListener('click', establecerHorarioPredeterminado);
+    obtenerMisHorarios()
+    obtenerFiliales();
+    document.getElementById('fechaHora').addEventListener('change', verificarDisponibilidad);
+    document.getElementById('filiales').addEventListener('change', verificarDisponibilidad);
+    document.getElementById('confirmarHorario').addEventListener('click', establecerHorarioPredeterminado);
 });

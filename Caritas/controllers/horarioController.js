@@ -20,7 +20,8 @@ class HorarioController {
     verificarDisponibilidad(req, res) {
         const { fechaHora, filial } = req.query;
 
-        db.query('SELECT id, fechaHora, fk_IdFilial, estado FROM horario WHERE fechaHora = ? AND fk_IdFilial = ?', [fechaHora, filial], (err, results) => {
+        db.query('SELECT id, fechaHora, fk_IdFilial, estado FROM horario WHERE fechaHora = ? AND fk_IdFilial = ?', 
+        [fechaHora, filial], (err, results) => {
             if (err) {
                 return res.status(500).json({ message: err.message });
             }
@@ -62,6 +63,60 @@ class HorarioController {
                 }
             } else {
                 return res.status(400).json({ success: false, message: 'El horario no existe.' });
+            }
+        });
+    }
+
+    confirmarHorarioMedianteId(req, res) {
+        const { id } = req.body;
+    
+        if (!id) {
+            return res.status(400).json({ success: false, message: 'No se ha proporcionado un ID de horario.' });
+        }
+    
+        db.query('SELECT * FROM horario WHERE id = ?', [id], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+    
+            if (results.length > 0) {
+                const horario = results[0];
+                if (horario.estado === 'ocupado') {
+                    return res.status(400).json({ success: false, message: 'El horario está ocupado.', horario });
+                } else {
+                    db.query('UPDATE horario SET estado = ? WHERE id = ?', ['ocupado', horario.id], (err) => {
+                        if (err) {
+                            return res.status(500).json({ message: err.message });
+                        }
+                        // Actualizar el estado del horario antes de devolverlo
+                        horario.estado = 'ocupado';
+                        return res.json({ success: true, horario });
+                    });
+                }
+            } else {
+                return res.status(404).json({ success: false, message: 'El horario no existe.' });
+            }
+        });
+    }
+
+    verificarDisponibilidadId(req, res) {
+        const { id } = req.query;
+    
+        db.query('SELECT * FROM horario WHERE id = ?', 
+        [id], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+    
+            if (results.length > 0) {
+                const horario = results[0];
+                if (horario.estado === 'ocupado') {
+                    return res.json({ disponible: false, horario, message: 'El horario está ocupado.' });
+                } else {
+                    return res.json({ disponible: true, horario });
+                }
+            } else {
+                return res.json({ disponible: false, message: 'El horario no existe.' });
             }
         });
     }
