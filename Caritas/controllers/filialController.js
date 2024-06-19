@@ -176,7 +176,7 @@ class FiliarController {
               FROM ofertas o
               JOIN publicacion p1 ON o.id_producto_ofertante = p1.id
               JOIN publicacion p2 ON o.id_producto_receptor = p2.id
-              WHERE o.id_filial = ? AND o.estado = 'pendiente'
+              WHERE o.id_filial = ? AND o.estado = 'aceptada'
             `;
     
             const queryParams = [filialId];
