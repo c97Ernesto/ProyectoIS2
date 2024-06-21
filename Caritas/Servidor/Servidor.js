@@ -308,6 +308,45 @@ app.post('/ofertas-recibidas', async (req, res) => {
   }
 });
 
+app.post('/copiarYEliminarPublicacion', (req, res) => {
+  const { id } = req.body;
+
+  // Paso 1: Obtener los datos de la publicación
+  db.query('SELECT * FROM publicacion WHERE id = ?', [id], (err, results) => {
+    if (err) {
+      console.error('Error al obtener la publicación:', err);
+      return res.status(500).json({ success: false, message: 'Error al obtener la publicación' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: 'Publicación no encontrada' });
+    }
+
+    const publicacion = results[0];
+
+    // Paso 2: Copiar los datos a la tabla publicacion_borrada
+    const insertQuery = 'INSERT INTO publicacion_borrada (id, nombre, descripcion, imagenes, estado, categoria, fk_usuario_correo) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const insertValues = [publicacion.id, publicacion.nombre, publicacion.descripcion, publicacion.imagenes, publicacion.estado, publicacion.categoria, publicacion.fk_usuario_correo];
+
+    db.query(insertQuery, insertValues, (err, results) => {
+      if (err) {
+        console.error('Error al insertar la publicación en publicacion_borrada:', err);
+        return res.status(500).json({ success: false, message: 'Error al copiar la publicación' });
+      }
+
+      // Paso 3: Eliminar la publicación original
+      db.query('DELETE FROM publicacion WHERE id = ?', [id], (err, results) => {
+        if (err) {
+          console.error('Error al eliminar la publicación original:', err);
+          return res.status(500).json({ success: false, message: 'Error al eliminar la publicación' });
+        }
+
+        res.json({ success: true, message: 'Publicación copiada y eliminada con éxito' });
+      });
+    });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(
     `Servidor Express en ejecución en http://localhost:${PORT}`

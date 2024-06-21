@@ -14,7 +14,6 @@
             const parametrosURL = new URLSearchParams(window.location.search);
             console.log(parametrosURL)
             const ofertaRealizada = parametrosURL.get('ofertaRealizada');
-           
             const idProductoReceptor = localStorage.getItem('publicacionId');
             const token = localStorage.getItem('token');
             const detallePublicacion = localStorage.getItem('detallePublicacion');
@@ -27,9 +26,6 @@
                 const botonOferta = document.getElementById('oferta');
                 botonOferta.textContent = "Cancelar Oferta";
                 botonOferta.addEventListener('click', cancelarOferta);
-            } else {
-                const botonOferta = document.getElementById('oferta');
-                botonOferta.addEventListener('click', realizarOferta);
             }
 
             // Agregar event listeners a los demás botones
@@ -51,10 +47,34 @@
 
             if (botonEliminar) {
                 botonEliminar.addEventListener('click', () => {
-                    console.log('Botón Eliminar clickeado');
-                    window.location.href = 'eliminar.html';
-                });
-            }
+                    const publicacionId = localStorage.getItem('publicacionId');
+                    if (!publicacionId) {
+                        console.error('No se encontró el ID de la publicación en el almacenamiento local');
+                        return;
+                    }
+
+                    fetch('http://localhost:3000/copiarYEliminarPublicacion', {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id: publicacionId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                        console.log('Publicación copiada y eliminada con éxito');
+                        window.location.href = './misPublicaciones.html';
+                        } else {
+                        console.error('Error:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error en la solicitud:', error);
+                    });
+                });                
+                }
+
 
             if (botonComentar) {
                 botonComentar.addEventListener('click', () => {
