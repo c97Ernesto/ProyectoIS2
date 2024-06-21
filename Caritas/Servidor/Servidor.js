@@ -312,7 +312,7 @@ app.post('/copiarYEliminarPublicacion', (req, res) => {
   const { id } = req.body;
 
   // Paso 1: Obtener los datos de la publicación
-  connection.query('SELECT * FROM publicacion WHERE id = ?', [id], (err, results) => {
+  db.query('SELECT * FROM publicacion WHERE id = ?', [id], (err, results) => {
     if (err) {
       console.error('Error al obtener la publicación:', err);
       return res.status(500).json({ success: false, message: 'Error al obtener la publicación' });
@@ -352,6 +352,34 @@ app.post('/copiarYEliminarPublicacion', (req, res) => {
         });
       });
     });
+  });
+});
+
+app.post('/editarPublicacion', (req, res) => {
+  const { id, nombre, descripcion, imagenes, estado, categoria, fk_usuario_correo } = req.body;
+
+  // Consulta para actualizar la publicación
+  const updateQuery = `
+    UPDATE publicacion 
+    SET 
+      nombre = ?, 
+      descripcion = ?, 
+      imagenes = ?, 
+      estado = ?`;
+
+  const updateValues = [nombre, descripcion, imagenes, estado];
+
+  db.query(updateQuery, updateValues, (err, results) => {
+    if (err) {
+      console.error('Error al actualizar la publicación:', err);
+      return res.status(500).json({ success: false, message: 'Error al actualizar la publicación' });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Publicación no encontrada' });
+    }
+
+    res.json({ success: true, message: 'Publicación actualizada con éxito' });
   });
 });
 

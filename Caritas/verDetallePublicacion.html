@@ -39,11 +39,9 @@
             const categoria = document.getElementById("cat").innerText;
 
             if (botonEditar) {
-                botonEditar.addEventListener('click', () => {
-                    console.log('Botón Editar clickeado');
-                    window.location.href = 'editarPublicacion.html';
-                });
-            }
+                botonEditar.addEventListener('click', () => {                    
+                    window.location.href = './editarPublicacion.html';
+                })}    
 
             if (botonEliminar) {
                 botonEliminar.addEventListener('click', () => {

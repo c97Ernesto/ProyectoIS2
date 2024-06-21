@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Publicación</title>
+    <link rel="stylesheet" href="./css/editarPublicacion.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Editar Publicación</h1>
+        <form id="editarPublicacionForm">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" required></textarea>
+            
+            <label for="imagenes">Imágenes (URL):</label>
+            <input type="url" id="imagenes" name="imagenes" required>
+            
+            <label for="estado">Estado:</label>
+            <select id="estado" name="estado" required>
+                <option value="">Seleccione...</option>
+                <option value="nuevo">Nuevo</option>
+                <option value="usado">Usado</option>
+            </select>
+            
+            <button type="button" id="editarPublicacionButton">Guardar Cambios</button>
+        </form>
+    </div>
+    <script src="./js/editarPublicacion.js"></script>
+</body>
+</html>
