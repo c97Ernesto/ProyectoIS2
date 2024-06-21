@@ -356,18 +356,19 @@ app.post('/copiarYEliminarPublicacion', (req, res) => {
 });
 
 app.post('/editarPublicacion', (req, res) => {
-  const { id, nombre, descripcion, imagenes, estado, categoria, fk_usuario_correo } = req.body;
+  const { id, nombre, descripcion, imagenes, estado } = req.body;
 
-  // Consulta para actualizar la publicación
+  // Consulta para actualizar la publicación con una condición WHERE
   const updateQuery = `
     UPDATE publicacion 
     SET 
       nombre = ?, 
       descripcion = ?, 
       imagenes = ?, 
-      estado = ?`;
+      estado = ?
+    WHERE id = ?`;
 
-  const updateValues = [nombre, descripcion, imagenes, estado];
+  const updateValues = [nombre, descripcion, imagenes, estado, id];
 
   db.query(updateQuery, updateValues, (err, results) => {
     if (err) {
@@ -380,6 +381,17 @@ app.post('/editarPublicacion', (req, res) => {
     }
 
     res.json({ success: true, message: 'Publicación actualizada con éxito' });
+  });
+});
+
+app.get('/publicaciones', (req, res) => {
+  // Consultar las publicaciones desde la base de datos (publicacion y publicacion_borrada)
+  db.query('SELECT * FROM publicacion UNION SELECT * FROM publicacion_borrada', (err, results) => {
+      if (err) {
+          console.error('Error al obtener las publicaciones:', err);
+          return res.status(500).json({ error: 'Error interno del servidor' });
+      }
+      res.status(200).json(results); // Enviar las publicaciones como respuesta
   });
 });
 
