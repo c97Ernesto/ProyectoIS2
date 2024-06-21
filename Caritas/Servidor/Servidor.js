@@ -312,7 +312,7 @@ app.post('/copiarYEliminarPublicacion', (req, res) => {
   const { id } = req.body;
 
   // Paso 1: Obtener los datos de la publicación
-  db.query('SELECT * FROM publicacion WHERE id = ?', [id], (err, results) => {
+  connection.query('SELECT * FROM publicacion WHERE id = ?', [id], (err, results) => {
     if (err) {
       console.error('Error al obtener la publicación:', err);
       return res.status(500).json({ success: false, message: 'Error al obtener la publicación' });
@@ -334,14 +334,22 @@ app.post('/copiarYEliminarPublicacion', (req, res) => {
         return res.status(500).json({ success: false, message: 'Error al copiar la publicación' });
       }
 
-      // Paso 3: Eliminar la publicación original
-      db.query('DELETE FROM publicacion WHERE id = ?', [id], (err, results) => {
+      // Paso 3: Eliminar las ofertas relacionadas
+      db.query('DELETE FROM ofertas WHERE id_producto_ofertante = ? OR id_producto_receptor = ?', [id, id], (err, results) => {
         if (err) {
-          console.error('Error al eliminar la publicación original:', err);
-          return res.status(500).json({ success: false, message: 'Error al eliminar la publicación' });
+          console.error('Error al eliminar ofertas relacionadas:', err);
+          return res.status(500).json({ success: false, message: 'Error al eliminar ofertas relacionadas' });
         }
 
-        res.json({ success: true, message: 'Publicación copiada y eliminada con éxito' });
+        // Paso 4: Eliminar la publicación original
+        db.query('DELETE FROM publicacion WHERE id = ?', [id], (err, results) => {
+          if (err) {
+            console.error('Error al eliminar la publicación original:', err);
+            return res.status(500).json({ success: false, message: 'Error al eliminar la publicación' });
+          }
+
+          res.json({ success: true, message: 'Publicación y ofertas relacionadas eliminadas con éxito' });
+        });
       });
     });
   });
