@@ -29,7 +29,21 @@ async function obtenerUsuarios() {
         }
 
         usuariosData = await response.json(); // Almacena los usuarios obtenidos
+
+        usuariosData = []
+
         mostrarUsuarios(usuariosData);
+        // Deshabilitar botones de filtro si no hay usuarios
+        const filterButtons = document.querySelectorAll('.btn-filter');
+        if (usuariosData.length === 0) {
+            filterButtons.forEach(button => {
+                button.disabled = true;
+            });
+        } else {
+            filterButtons.forEach(button => {
+                button.disabled = false;
+            });
+        }
 
     } catch (error) {
         console.error("Error al obtener los usuarios:", error);
