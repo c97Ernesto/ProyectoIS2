@@ -313,6 +313,8 @@ app.listen(PORT, () => {
     `Servidor Express en ejecución en http://localhost:${PORT}`
   );
 });
+
+
 const publicacionRoutes = require("../routes/publicacionRoutes");
 const filialRoutes = require("../routes/filialRoutes");
 const userRoutes = require("../routes/userRoutes");
