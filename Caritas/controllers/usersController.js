@@ -41,7 +41,7 @@ class UsersController {
    };
 
    obtenerUsuarios = (req, res) => {
-    const query = 'SELECT nombre, apellido, correo, rol FROM usuarios';
+    const query = 'SELECT *, rol FROM usuarios';
     db.query(query, (err, results) => {
       if (err) {
         return res.status(500).json({ message: 'Error al obtener los usuarios', error: err });
