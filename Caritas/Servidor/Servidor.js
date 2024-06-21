@@ -385,14 +385,27 @@ app.post('/editarPublicacion', (req, res) => {
 });
 
 app.get('/publicaciones', (req, res) => {
-  // Consultar las publicaciones desde la base de datos (publicacion y publicacion_borrada)
-  db.query('SELECT * FROM publicacion UNION SELECT * FROM publicacion_borrada', (err, results) => {
-      if (err) {
-          console.error('Error al obtener las publicaciones:', err);
-          return res.status(500).json({ error: 'Error interno del servidor' });
+// En el servidor
+db.query('SELECT id, nombre, descripcion, estado, imagenes, fk_usuario_correo FROM publicacion UNION SELECT id, nombre, descripcion, estado, imagenes, fk_usuario_correo FROM publicacion_borrada', (err, results) => {
+  if (err) {
+      console.error('Error al obtener las publicaciones:', err);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+
+  // Procesar cada fila de resultados para dividir las imágenes si es necesario
+  results.forEach(publicacion => {
+      if (publicacion.imagenes) {
+          // Dividir la cadena de imágenes en un array de URLs
+          publicacion.imagenes = publicacion.imagenes.split(',').map(imagen => imagen.trim());
+      } else {
+          // Si no hay imágenes, asignar un array vacío
+          publicacion.imagenes = [];
       }
-      res.status(200).json(results); // Enviar las publicaciones como respuesta
   });
+
+  res.status(200).json(results); // Enviar las publicaciones como respuesta
+});
+
 });
 
 app.listen(PORT, () => {

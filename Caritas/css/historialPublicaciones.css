@@ -29,8 +29,10 @@ h1 {
 }
 
 .publicacion img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin-bottom: 10px;
+    max-width: 25%; /* Limita el ancho máximo al 100% del contenedor */
+    height: auto; /* Permite que la altura se ajuste automáticamente */
+    display: block; /* Asegura que la imagen se muestre como un bloque */
+    margin-bottom: 10px; /* Espacio entre imágenes */
+    border-radius: 8px; /* Añade bordes redondeados a las imágenes */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera para efecto visual */
 }

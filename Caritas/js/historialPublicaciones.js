@@ -1,3 +1,4 @@
+// En el cliente
 document.addEventListener('DOMContentLoaded', () => {
     const publicacionesContainer = document.getElementById('publicacionesContainer');
     let publicacionesSet = new Set(); // Conjunto para almacenar IDs de publicaciones
@@ -25,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         contenidoHTML += `<p><strong>Estado:</strong> ${publicacion.estado}</p>`;
                         contenidoHTML += `<p><strong>Imágenes:</strong></p>`;
 
-                        // Verificar si existe publicacion.imagenes y es un array
+                        // Verificar si existe publicacion.imagenes y es un array con al menos una imagen
                         if (Array.isArray(publicacion.imagenes) && publicacion.imagenes.length > 0) {
                             // Iterar sobre las imágenes y agregarlas al contenido HTML
                             publicacion.imagenes.forEach(imagen => {
