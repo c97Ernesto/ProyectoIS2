@@ -25,13 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('La URL de las imágenes no es válida.');
             return;
         }
-
+        const id = localStorage.getItem("publicacionId")
+        
         // Crear un objeto con los datos de la publicación
         const publicacionEditada = {
             nombre,
             descripcion,
             imagenes,
-            estado
+            estado,
+            id
         };
 
         // Enviar la solicitud al servidor

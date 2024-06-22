@@ -356,9 +356,10 @@ app.post('/copiarYEliminarPublicacion', (req, res) => {
 });
 
 app.post('/editarPublicacion', (req, res) => {
-  const { id, nombre, descripcion, imagenes, estado } = req.body;
+  const { nombre, descripcion, imagenes, estado, id  } = req.body;
 
-  // Consulta para actualizar la publicación con una condición WHERE
+  console.log(id)
+  // Consulta para actualizar la publicación
   const updateQuery = `
     UPDATE publicacion 
     SET 
