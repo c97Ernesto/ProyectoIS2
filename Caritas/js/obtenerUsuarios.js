@@ -85,7 +85,6 @@ function mostrarUsuarios(usuarios) {
 document.addEventListener('DOMContentLoaded', () => {
     obtenerUsuarios();
 
-
     const btnFilterCorreo = document.getElementById('btn-filter-correo');
     btnFilterCorreo.addEventListener('click', () => {
         const filtroCorreo = document.getElementById('input-filter-correo').value.trim().toLowerCase();

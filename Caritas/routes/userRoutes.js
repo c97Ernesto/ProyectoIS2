@@ -8,6 +8,11 @@ router
   .get(usersController.obtenerUsuarios);
 
 router
+  .route("/misDatos")
+  .get(usersController.obtenerMisDatos)
+  .put(usersController.actualizarMisDatos);
+
+router
   .route("/voluntarios")
   .get(usersController.obtenerUsuariosVoluntarios);
 

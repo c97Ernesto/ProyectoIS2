@@ -37,6 +37,14 @@ document.addEventListener("DOMContentLoaded", function() {
          
         console.log('El token no existe');
     }
+
+    const verPerfilButton = document.getElementById('verPerfil');
+    if(verPerfilButton){
+        verPerfilButton.addEventListener('click',()=>{
+            window.location.href='http://localhost:3000/verMiPerfil.html';
+        });
+    }
+
     const miPostsButton = document.getElementById('myPostsButton');
     if(miPostsButton){
         miPostsButton.addEventListener('click',()=>{
