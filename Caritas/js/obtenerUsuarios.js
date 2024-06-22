@@ -72,11 +72,19 @@ function mostrarUsuarios(usuarios) {
     document.querySelectorAll('.btn-detalles').forEach(button => {
         button.addEventListener('click', event => {
             const usuarioCorreo = event.target.getAttribute('data-id');
-            const usuarioSeleccionado = usuariosData.find(usuario => usuario.Correo === usuarioCorreo);
-
+            //const usuarioSeleccionado = usuariosData.find(usuario => usuario.Correo === usuarioCorreo);
+            // Redirigir a la página de detalles del usuario
+            window.location.href = `detallesUsuario.html?correo=${usuarioCorreo}`;
             // IR A LA PÁGINA DE DETALLES DEL USUARIO
             //mostrarDetallesUsuario(usuarioSeleccionado);  //función que mostraría los detalles del usuario si fuera en la misma pàgina
 
+        });
+    });
+    document.querySelectorAll('.btn-detalles').forEach(button => {
+        button.addEventListener('click', event => {
+            const usuarioCorreo = event.target.getAttribute('data-id');
+            // Redirigir a la página de detalles del usuario
+            window.location.href = `detallesUsuario.html?correo=${usuarioCorreo}`;
         });
     });
 }
