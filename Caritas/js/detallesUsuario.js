@@ -28,11 +28,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.getElementById('editar-usuario').addEventListener('click', () => {
             // Redirigir a la página de edición del usuario
-            window.location.href = `editarUsuario.html?correo=${usuarioCorreo}`;
+            window.location.href = `http://localhost:3000/cambiarRol.html`;
         });
 
         document.getElementById('eliminar-usuario').addEventListener('click', async () => {
             try {
+                console.log(`Intentando eliminar usuario con correo: ${usuarioCorreo}`);
                 const deleteResponse = await fetch(`http://localhost:3000/usuarios/${usuarioCorreo}`, {
                     method: "DELETE",
                     headers: {

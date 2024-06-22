@@ -18,7 +18,8 @@ router
 
 router
   .route("/:usuarioCorreo")
-  .get(usersController.obtenerUsuarioPorCorreo);
+  .get(usersController.obtenerUsuarioPorCorreo)
+  .delete(usersController.eliminarUsuario);
 
 router
   .route("/cambiarRol")

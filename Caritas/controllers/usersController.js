@@ -90,6 +90,54 @@ obtenerUsuarioPorCorreo = async (req, res) => {
             });
         });
     };
+
+// Eliminar un usuario
+
+ eliminarUsuario = async (req, res) => {
+  const { usuarioCorreo } = req.params;
+  console.log(`Intentandoooo eliminar usuario con correo: ${usuarioCorreo}`);
+  const getUserRoleQuery = 'SELECT rol FROM usuarios WHERE Correo = ?';
+
+  db.query(getUserRoleQuery, [usuarioCorreo], (error, results) => {
+      if (error) {
+          console.error('Error al obtener el rol del usuario:', error);
+          return res.status(500).json({ message: 'Error al obtener el rol del usuario', error });
+      }
+      if (results.length === 0) {
+          return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+
+      const userRole = results[0].rol;
+
+      if (userRole === 'voluntario') {
+        const updateFilialStatusQuery = 'UPDATE filial SET estado = "inactiva", fk_idUsuarioVoluntario = NULL WHERE fk_idUsuarioVoluntario = ?';
+          db.query(updateFilialStatusQuery, [usuarioCorreo], (updateError, updateResults) => {
+              if (updateError) {
+                  console.error('Error al actualizar el estado de la filial:', updateError);
+                  return res.status(500).json({ message: 'Error al actualizar el estado de la filial', updateError });
+              }
+
+              const deleteUserQuery = 'DELETE FROM usuarios WHERE Correo = ?';
+              db.query(deleteUserQuery, [usuarioCorreo], (deleteError, deleteResults) => {
+                  if (deleteError) {
+                      console.error('Error al eliminar el usuario:', deleteError);
+                      return res.status(500).json({ message: 'Error al eliminar el usuario', deleteError });
+                  }
+                  res.sendStatus(200);
+              });
+          });
+      } else {
+          const deleteUserQuery = 'DELETE FROM usuarios WHERE Correo = ?';
+          db.query(deleteUserQuery, [usuarioCorreo], (deleteError, deleteResults) => {
+              if (deleteError) {
+                  console.error('Error al eliminar el usuario:', deleteError);
+                  return res.status(500).json({ message: 'Error al eliminar el usuario', deleteError });
+              }
+              res.sendStatus(200);
+          });
+      }
+  });
+};
 }
 
 module.exports = new UsersController();
