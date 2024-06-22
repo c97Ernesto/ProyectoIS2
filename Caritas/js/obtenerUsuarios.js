@@ -30,8 +30,6 @@ async function obtenerUsuarios() {
 
         usuariosData = await response.json(); // Almacena los usuarios obtenidos
 
-        usuariosData = []
-
         mostrarUsuarios(usuariosData);
         // Deshabilitar botones de filtro si no hay usuarios
         const filterButtons = document.querySelectorAll('.btn-filter');
