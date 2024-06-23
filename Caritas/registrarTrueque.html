@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Estado de Trueque</title>
+    <link rel="stylesheet" href="./css/estadoTrueque.css">
+     
+</head>
+<body>
+    <a class="linkk" href='./perfilVoluntario.html'>
+        <h1>Cáritas</h1>
+    </a>  
+    <h1>Registrar Estado de Trueque</h1>
+    <form id="registrarTruequeForm">
+        <label for="descripcion">Descripción del encuentro:</label>
+        <textarea id="descripcion" name="descripcion" required></textarea>
+
+        <label for="estado">Estado:</label>
+        <select id="estado" name="estado" required>
+            <option value="">Seleccionar...</option>
+            <option value="exitoso">Exitoso</option>
+            <option value="fallido">Fallido</option>
+        </select>
+
+        <input type="hidden" id="ofertaId" name="ofertaId">
+        <button type="submit">Registrar Trueque</button>
+    </form>
+
+    <script src="./js/registrarTrueque.js"></script>
+</body>
+</html>

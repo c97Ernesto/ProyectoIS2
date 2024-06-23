@@ -433,3 +433,6 @@ app.use("/horario", horarioRoutes);
 
 const usuario_horarios_predeterminadosRoutes = require("../routes/usuario_horarios_predeterminadosRoutes.js");
 app.use("/usuarios_horarios_predeterminados", usuario_horarios_predeterminadosRoutes);
+
+const truequesRoutes = require("../routes/truequesRoutes");
+app.use("/trueques", truequesRoutes);
