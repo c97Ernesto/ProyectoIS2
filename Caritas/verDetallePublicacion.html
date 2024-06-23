@@ -21,12 +21,15 @@
             contenedor.innerHTML = detallePublicacion;
             localStorage.setItem('publicacionObjetivo', idProductoReceptor);
             localStorage.setItem('detallePublicacionURL', window.location.href);
+           
 
-            if (ofertaRealizada) {
-                const botonOferta = document.getElementById('oferta');
+           /* if (ofertaRealizada) {
                 botonOferta.textContent = "Cancelar Oferta";
                 botonOferta.addEventListener('click', cancelarOferta);
-            }
+            } else {
+                botonOferta.addEventListener('click', realizarOferta);
+            }*/
+
 
             // Agregar event listeners a los demás botones
             agregarEventListeners();
@@ -37,6 +40,11 @@
             const botonEliminar = document.getElementById('eliminar');
             const botonComentar = document.getElementById('comentar');
             const categoria = document.getElementById("cat").innerText;
+            const botonOferta = document.getElementById('oferta');
+
+            if (botonOferta) {
+                botonOferta.addEventListener('click', realizarOferta);
+             } 
 
             if (botonEditar) {
                 botonEditar.addEventListener('click', () => {                    
