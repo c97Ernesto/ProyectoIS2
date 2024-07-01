@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const descripcion = document.getElementById('descripcion').value;
         const estado = document.getElementById('estado').value;
+        const donacion= document.getElementById('donacion').value;
         const token = localStorage.getItem('token');
 
         try {
@@ -23,12 +24,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 },
-                body: JSON.stringify({ ofertaId, descripcion, estado })
+                body: JSON.stringify({ ofertaId, descripcion, estado, donacion })
             });
 
             if (response.ok) {
                 alert('El intercambio ha sido registrado con éxito');
                 form.reset();
+                window.location.href='http://localhost:3000/visualizarTrueques.html'
 
             } else {
                 const error = await response.json();
