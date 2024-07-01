@@ -27,7 +27,7 @@
       </div>
       <div>
         <div class="input-group m-1 col-md">
-          <input type="text" class="form-control" placeholder="Filtrar por Id de Filial..."
+          <input type="number" class="form-control" placeholder="Filtrar por Id de Filial..."
             aria-label="Filtrar por Id de Filial..." aria-describedby="btn-filter-idFilial" id="input-filter-idFilial">
           <button class="btn btn-outline-secondary btn-filter" type="button" id="btn-filter-idFilial">Buscar</button>
         </div>
@@ -61,6 +61,7 @@
               <th>Id</th>
               <th>Nombre</th>
               <th>Voluntario</th>
+              <th id="total-filiales"></th> <!-- agregar número de cantidad de filiales -->
             </tr>
           </thead>
           <tbody id="filiales-body">

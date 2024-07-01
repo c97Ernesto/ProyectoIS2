@@ -64,13 +64,9 @@ function mostrarDetallesFiliales(filiales) {
       filialesBody.appendChild(fila);
   });
 
+  const thCantFiliales = document.getElementById('total-filiales');
+    thCantFiliales.innerHTML = `Filiales encontradas: ${filiales.length}`;
   
-  document.querySelectorAll('.btn-detalles').forEach(button => {
-      button.addEventListener('click', event => {
-          const filialId = event.target.getAttribute('data-id');
-          // window.location.href = `detallesFilial.html?id=${filialId}`;  //CAMBIAR
-      });
-  });
   document.querySelectorAll('.btn-detalles').forEach(button => {
       button.addEventListener('click', event => {
           const filialId = event.target.getAttribute('data-id');
@@ -85,14 +81,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const btnFilterId = document.getElementById('btn-filter-idFilial');
   btnFilterId.addEventListener('click', () => {
-      const filtroId = document.getElementById('input-filter-idFilial').value.trim().toLowerCase();
-      //filtro por id
-      const filialesFiltradas = filialesData.filter(filial => filial.id.toLowerCase().includes(filtroId));
+      const filtroId = document.getElementById('input-filter-idFilial').value.trim();
+      const filialesFiltradas = filialesData.filter(filial => filial.id == filtroId);
+
       if (filialesFiltradas.length == 0){
           alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
           obtenerDetallesFiliales();
       }
-      mostrarDetallesFiliales(filialesFiltradas);
+      else {
+        mostrarDetallesFiliales(filialesFiltradas);
+      }
+      document.getElementById('input-filter-idFilial').value = '';
   });
 
   const btnFilterNombreFilial = document.getElementById('btn-filter-nombreFilial');
@@ -104,7 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
           alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
           obtenerDetallesFiliales();
       }
-      mostrarDetallesFiliales(filialesFiltradas);
+      else {
+        mostrarDetallesFiliales(filialesFiltradas);
+      }
+      document.getElementById('input-filter-nombreFilial').value = '';
   });
 
   const btnFilterNombrefilial = document.getElementById('btn-filter-correoVoluntario');
@@ -115,7 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (filialesFiltradas.length == 0){
           alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
           obtenerDetallesFiliales();
+      } 
+      else {
+        mostrarDetallesFiliales(filialesFiltradas);
       }
-      mostrarDetallesFiliales(filialesFiltradas);
+      document.getElementById('input-filter-correoVoluntario').value = '';
   });
 });
