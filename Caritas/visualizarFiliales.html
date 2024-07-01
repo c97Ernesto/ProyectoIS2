@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listado de filiales</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body style="background-color: #f0f0f0;">
+
+  <nav class="navbar" style="background-color: #e3f2fd;">
+    <div class="container-fluid">
+      <a class="navbar-brand" style="color: rgb(37, 135, 255);" href='./perfilAdm.html'>
+        <h1>Cáritas</h1>
+      </a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="mb-4">
+      <div>
+        <h3 class="">Filtrar Filiales</h3>
+      </div>
+      <div>
+        <div class="input-group m-1 col-md">
+          <input type="text" class="form-control" placeholder="Filtrar por Id de Filial..."
+            aria-label="Filtrar por Id de Filial..." aria-describedby="btn-filter-idFilial" id="input-filter-idFilial">
+          <button class="btn btn-outline-secondary btn-filter" type="button" id="btn-filter-idFilial">Buscar</button>
+        </div>
+        <div class="input-group m-1 col-md">
+          <input type="text" class="form-control" placeholder="Filtrar por Nombre de Filial..."
+            aria-label="Filtrar por Nombre de Filial..." aria-describedby="btn-filter-nombreFilial"
+            id="input-filter-nombreFilial">
+          <button class="btn btn-outline-secondary btn-filter" type="button"
+            id="btn-filter-nombreFilial">Buscar</button>
+        </div>
+        <div class="input-group m-1 col-md">
+          <input type="text" class="form-control" placeholder="Filtrar por correo de Voluntario..."
+            aria-label="Filtrar por correo de Voluntario..." aria-describedby="btn-filter-correoVoluntario"
+            id="input-filter-correoVoluntario">
+          <button class="btn btn-outline-secondary btn-filter" type="button"
+            id="btn-filter-correoVoluntario">Buscar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="d-flex justify-content-around">
+          <h1 class="">Listado de Filiales</h1>
+          <button class="btn btn-primary" >Cargar Nueva Filial</button>
+      </div>
+
+      <div id="filiales">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Nombre</th>
+              <th>Voluntario</th>
+            </tr>
+          </thead>
+          <tbody id="filiales-body">
+            <!-- filas /tr de las filiales -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="./js/visualizarFiliales.js"></script>
+</body>
+
+</html>

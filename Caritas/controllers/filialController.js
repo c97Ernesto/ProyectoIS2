@@ -77,6 +77,18 @@ class FiliarController {
             res.json(results);
         });
     }
+
+    obtenerDetallesFiliales = (req, res) => {
+        const query = "SELECT * FROM filial";
+        db.query(query, (err, results) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ message: "Error al obtener las filiales (obtenerDetallesFiliales línea81 FilialController)", error: err });
+          }
+          res.status(200).json(results);
+        });
+    };
    /* obtenerLosHorariosDeUnaFilial(req, res){
         const { filialId } = req.params;
         db.query('SELECT id, fechaHora, estado FROM horario WHERE fk_IdFilial = ?', [filialId], (err, results) => {
