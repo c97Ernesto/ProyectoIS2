@@ -46,6 +46,34 @@ async function obtenerDetallesFiliales() {
     }
 }
 
+async function eliminarFilial(filialId) {
+  const token = localStorage.getItem("token");
+
+  console.log(filialId);
+
+  try {
+      const response = await fetch(`http://localhost:3000/filial/eliminar/${filialId}`, {
+          method: "DELETE",
+          headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token,
+          },
+      });
+
+      if (!response.ok) {
+          throw new Error(`Error al eliminar la filial: ${response.status} ${response.statusText}`);
+      }
+
+      alert("Filial eliminada exitosamente!")
+      // Obtener los detalles actualizados de las filiales
+      await obtenerDetallesFiliales();
+
+
+  } catch (error) {
+      console.error("Error al eliminar la filial:", error);
+  }
+}
+
 
 // MOSTRAR LOS DETALLES
 function mostrarDetallesFiliales(filiales) {
@@ -59,19 +87,33 @@ function mostrarDetallesFiliales(filiales) {
           <td>${filial.nombre}</td>
           <td>${filial.fk_idUsuarioVoluntario}</td>
           <td><button class="btn btn-outline-primary btn-detalles" data-id="${filial.id}">Editar</button></td>
-          <td><button class="btn btn-outline-danger btn-detalles" data-id="${filial.id}">Eliminar</button></td>
+          <td>
+            <button type="button" class="btn btn-outline-danger btn-detalles btn-eliminar" data-id="${filial.id}" 
+            data-bs-toggle="modal" data-bs-target="#exampleModal">
+              Eliminar
+            </button>
+          </td>
+</button>
       `;
       filialesBody.appendChild(fila);
   });
 
   const thCantFiliales = document.getElementById('total-filiales');
-    thCantFiliales.innerHTML = `Filiales encontradas: ${filiales.length}`;
+  thCantFiliales.innerHTML = `Filiales encontradas: ${filiales.length}`;
   
   document.querySelectorAll('.btn-detalles').forEach(button => {
       button.addEventListener('click', event => {
           const filialId = event.target.getAttribute('data-id');
           // window.location.href = `detallesFilial.html?id=${filialId}`;  //CAMBIAR
       });
+  });
+
+  document.querySelectorAll('.btn-eliminar').forEach(button => {
+    button.addEventListener('click', event => {
+        const filialId = event.target.getAttribute('data-id');
+        // Asignar el ID de la filial al botón de confirmación de eliminación
+        document.getElementById('confirmarEliminar').setAttribute('data-id', filialId);
+    });
   });
 }
 
@@ -123,4 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       document.getElementById('input-filter-correoVoluntario').value = '';
   });
+});
+
+
+document.getElementById('confirmarEliminar').addEventListener('click', event => {
+  const filialId = event.target.getAttribute('data-id');
+  console.log(filialId);
+  eliminarFilial(filialId);
 });

@@ -32,6 +32,10 @@ router
    .route("/detalles/:id")
    .get(filialController.obtenerDetallesFilial);
 
+router
+   .route("/eliminar/:id")
+   .delete(filialController.eliminarFilial);
+
 
 // Nueva ruta para obtener ofertas pendientes
 router

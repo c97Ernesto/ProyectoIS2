@@ -304,6 +304,17 @@ class FiliarController {
         });
     }
 
+    eliminarFilial = (req, res) => {
+        const filialId = req.params.id;
+        const query = "DELETE FROM filial WHERE id = ?";
+        db.query(query, [filialId], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: "Error al eliminar la filial", error: err });
+            }
+            res.status(200).json({ message: "Filial eliminada exitosamente" });
+        });
+    };
+
 }
 
 module.exports = new FiliarController();
