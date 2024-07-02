@@ -72,15 +72,20 @@
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    
+                    <h4>¿Está seguro que desea eliminar la filial "<span id="filialNameToDelete"></span>"?</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                    <h4>¿Esta seguro que desea eliminar la Filial?</h4>
+                    <p>La cantidad de trueques que dependen de esta filial 
+                      <span id="filialNameToDelete"></span>
+                      son: 
+                      <span id="cant-ofertas-filial"></span>
+                    </p>
+                    <p>Al eliminar la filial tambien se eliminarán los trueques</p>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="confirmarEliminar" data-bs-dismiss="modal" data-id="">Eliminar</button>
+                    <button type="button" class="btn btn-danger" id="confirmarEliminar" data-id="">Eliminar</button>
                   </div>
                 </div>
               </div>

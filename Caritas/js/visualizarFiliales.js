@@ -18,10 +18,7 @@ async function obtenerDetallesFiliales() {
         });
         if (!response.ok) {
             throw new Error(
-                "Error al obtener todos los filiales: " +
-                response.status +
-                " " +
-                response.statusText
+                "Error al obtener todos los filiales: " + response.status + " " + response.statusText
             );
         }
 
@@ -43,6 +40,34 @@ async function obtenerDetallesFiliales() {
     } catch (error) {
         console.error("Error al obtener las filiales (visualizarFiliales.js):", error);
         throw error;
+    }
+}
+
+// modificar para obtener todas las ofertas de el filialId recibido como parámetro
+async function obtenerOfertasFilial(filialId) {
+    const token = localStorage.getItem("token");
+  
+    console.log("antes fetch", filialId);
+
+    try {
+        const response = await fetch(`http://localhost:3000/ofertas/ofertasDeFilial/${filialId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+  
+        if (!response.ok) {
+            throw new Error(`Error al obtner las ofertas de la filial con id "${filialId}": ${response.status} ${response.statusText}`);
+        }
+
+        
+        return await response.json();
+        
+  
+    } catch (error) {
+        console.error("Error al obtener la filial:", error);
     }
 }
 
@@ -74,47 +99,82 @@ async function eliminarFilial(filialId) {
   }
 }
 
+async function eliminarOfertasDeFilial(filialId) {
+    const token = localStorage.getItem("token");
+  
+    console.log(filialId);
+  
+    try {
+        const response = await fetch(`http://localhost:3000/filial/eliminar/${filialId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+  
+        if (!response.ok) {
+            throw new Error(`Error al eliminar la filial: ${response.status} ${response.statusText}`);
+        }
+  
+        alert("Filial eliminada exitosamente!")
+        // Obtener los detalles actualizados de las filiales
+        await obtenerDetallesFiliales();
+  
+  
+    } catch (error) {
+        console.error("Error al eliminar la filial:", error);
+    }
+}
+
 
 // MOSTRAR LOS DETALLES
 function mostrarDetallesFiliales(filiales) {
-  const filialesBody = document.getElementById('filiales-body');
-  filialesBody.innerHTML = '';
+    const filialesBody = document.getElementById('filiales-body');
+    filialesBody.innerHTML = '';
 
-  filiales.forEach(filial => {
-      const fila = document.createElement('tr');
-      fila.innerHTML = `
-          <td>${filial.id}</td>
-          <td>${filial.nombre}</td>
-          <td>${filial.fk_idUsuarioVoluntario}</td>
-          <td><button class="btn btn-outline-primary btn-detalles" data-id="${filial.id}">Editar</button></td>
-          <td>
-            <button type="button" class="btn btn-outline-danger btn-detalles btn-eliminar" data-id="${filial.id}" 
-            data-bs-toggle="modal" data-bs-target="#exampleModal">
-              Eliminar
-            </button>
-          </td>
-</button>
-      `;
-      filialesBody.appendChild(fila);
-  });
-
-  const thCantFiliales = document.getElementById('total-filiales');
-  thCantFiliales.innerHTML = `Filiales encontradas: ${filiales.length}`;
-  
-  document.querySelectorAll('.btn-detalles').forEach(button => {
-      button.addEventListener('click', event => {
-          const filialId = event.target.getAttribute('data-id');
-          // window.location.href = `detallesFilial.html?id=${filialId}`;  //CAMBIAR
-      });
-  });
-
-  document.querySelectorAll('.btn-eliminar').forEach(button => {
-    button.addEventListener('click', event => {
-        const filialId = event.target.getAttribute('data-id');
-        // Asignar el ID de la filial al botón de confirmación de eliminación
-        document.getElementById('confirmarEliminar').setAttribute('data-id', filialId);
+    filiales.forEach(filial => {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+            <td>${filial.id}</td>
+            <td>${filial.nombre}</td>
+            <td>${filial.fk_idUsuarioVoluntario}</td>
+            <td><button class="btn btn-outline-primary btn-detalles" data-id="${filial.id}">Editar</button></td>
+            <td>
+                <button type="button" class="btn btn-outline-danger btn-eliminar" data-id="${filial.id}" data-nombre="${filial.nombre}"
+                data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Eliminar
+                </button>
+            </td>
+        `;
+        filialesBody.appendChild(fila);
     });
-  });
+
+    const thCantFiliales = document.getElementById('total-filiales');
+    thCantFiliales.innerHTML = `Filiales encontradas: ${filiales.length}`;
+
+    document.querySelectorAll('.btn-eliminar').forEach(button => {
+        button.addEventListener('click', async event => {
+            const filialId = event.target.getAttribute('data-id');
+            const filialNombre = event.target.getAttribute('data-nombre');
+
+            // Asignar el ID de la filial al botón de confirmación de eliminación
+            document.getElementById('confirmarEliminar').setAttribute('data-id', filialId);
+
+            // Actualizar el contenido del modal con el nombre de la filial
+            document.getElementById('filialNameToDelete').textContent = filialNombre;
+
+            // Obterner las ofertas de la filial
+            try {
+                const ofertasData = await obtenerOfertasFilial(filialId); // Esperamos la respuesta
+                console.log('Ofertas obtenidas:', ofertasData);
+                document.getElementById('cant-ofertas-filial').textContent = ofertasData.length;    
+            } 
+            catch (error) {
+                console.error('Error al obtener las ofertas:', error);
+            }
+        });
+    });
 }
 
 // EVENTOS
@@ -170,6 +230,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.getElementById('confirmarEliminar').addEventListener('click', event => {
   const filialId = event.target.getAttribute('data-id');
-  console.log(filialId);
+  
   eliminarFilial(filialId);
+
+  eliminarOfertasDeFilial(filialId);
 });

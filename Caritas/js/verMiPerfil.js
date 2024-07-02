@@ -23,7 +23,7 @@ async function obtenerMisDatos() {
 function mostrarMisDatos(mi) {
     const fechaSinHora = obtenerFechaSinHora(mi.nacimiento);
 
-    
+
 
     const misDatosDiv = document.getElementById('mis-datos');
     misDatosDiv.innerHTML = `
@@ -127,6 +127,12 @@ async function guardarCambios() {
     const apellido = document.getElementById('staticApellido').value;
     const dni = document.getElementById('staticDni').value;
     const telefono = document.getElementById('staticTelefono').value;
+
+    if (!usuario || !nombre || !apellido || !dni || !telefono){
+        alert("No pueden quedar campos vacíos!!")
+        obtenerMisDatos()
+        return
+    }
 
     // Construir el objeto con los datos a enviar
     const datosActualizados = {

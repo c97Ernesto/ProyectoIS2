@@ -49,4 +49,6 @@ router
 router.post('/aceptar/:id', ofertaController.aceptarOferta);
 router.post('/rechazar/:id', ofertaController.rechazarOferta);
 
+router.get('/ofertasDeFilial/:filialId', ofertaController.obtenerOfertasDeFilial);
+
 module.exports = router;
