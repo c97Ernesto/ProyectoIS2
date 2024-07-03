@@ -43,34 +43,6 @@ async function obtenerDetallesFiliales() {
     }
 }
 
-// modificar para obtener todas las ofertas de el filialId recibido como parámetro
-async function obtenerOfertasFilial(filialId) {
-    const token = localStorage.getItem("token");
-  
-    console.log("antes fetch", filialId);
-
-    try {
-        const response = await fetch(`http://localhost:3000/ofertas/ofertasDeFilial/${filialId}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + token,
-            },
-        });
-  
-        if (!response.ok) {
-            throw new Error(`Error al obtner las ofertas de la filial con id "${filialId}": ${response.status} ${response.statusText}`);
-        }
-
-        
-        return await response.json();
-        
-  
-    } catch (error) {
-        console.error("Error al obtener la filial:", error);
-    }
-}
-
 async function eliminarFilial(filialId) {
   const token = localStorage.getItem("token");
 
@@ -99,31 +71,47 @@ async function eliminarFilial(filialId) {
   }
 }
 
+async function obtenerOfertasFilial(filialId) {
+    const token = localStorage.getItem("token");
+  
+    console.log("antes fetch", filialId);
+
+    try {
+        const response = await fetch(`http://localhost:3000/ofertas/ofertas-por-filial/${filialId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Error al obtner las ofertas de la filial con id "${filialId}": ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error al obtener la filial:", error);
+    }
+}
+
 async function eliminarOfertasDeFilial(filialId) {
     const token = localStorage.getItem("token");
   
-    console.log(filialId);
-  
     try {
-        const response = await fetch(`http://localhost:3000/filial/eliminar/${filialId}`, {
+        const response = await fetch(`http://localhost:3000/ofertas/ofertas-por-filial/${filialId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + token,
             },
         });
-  
         if (!response.ok) {
-            throw new Error(`Error al eliminar la filial: ${response.status} ${response.statusText}`);
+            throw new Error(`Error al eliminar las ofertas de la filial ${filialId}: ${response.status} ${response.statusText}`);
         }
-  
-        alert("Filial eliminada exitosamente!")
-        // Obtener los detalles actualizados de las filiales
         await obtenerDetallesFiliales();
-  
-  
     } catch (error) {
-        console.error("Error al eliminar la filial:", error);
+        console.error("Error al eliminar las ofertas de la filial:", error);
     }
 }
 
@@ -166,7 +154,7 @@ function mostrarDetallesFiliales(filiales) {
 
             // Obterner las ofertas de la filial
             try {
-                const ofertasData = await obtenerOfertasFilial(filialId); // Esperamos la respuesta
+                const ofertasData = await obtenerOfertasFilial(filialId);
                 console.log('Ofertas obtenidas:', ofertasData);
                 document.getElementById('cant-ofertas-filial').textContent = ofertasData.length;    
             } 
@@ -196,42 +184,41 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('input-filter-idFilial').value = '';
   });
 
-  const btnFilterNombreFilial = document.getElementById('btn-filter-nombreFilial');
-  btnFilterNombreFilial.addEventListener('click', () => {
-      const filtroNombre = document.getElementById('input-filter-nombreFilial').value.trim().toLowerCase();
-      //filtro por Nombre
-      const filialesFiltradas = filialesData.filter(filial => filial.nombre.toLowerCase().includes(filtroNombre));
-      if (filialesFiltradas.length == 0){
-          alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
-          obtenerDetallesFiliales();
-      }
-      else {
-        mostrarDetallesFiliales(filialesFiltradas);
-      }
-      document.getElementById('input-filter-nombreFilial').value = '';
-  });
+    const btnFilterNombreFilial = document.getElementById('btn-filter-nombreFilial');
+    btnFilterNombreFilial.addEventListener('click', () => {
+        const filtroNombre = document.getElementById('input-filter-nombreFilial').value.trim().toLowerCase();
+        //filtro por Nombre
+        const filialesFiltradas = filialesData.filter(filial => filial.nombre.toLowerCase().includes(filtroNombre));
+        if (filialesFiltradas.length == 0){
+            alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
+            obtenerDetallesFiliales();
+        }
+        else {
+            mostrarDetallesFiliales(filialesFiltradas);
+        }
+        document.getElementById('input-filter-nombreFilial').value = '';
+    });
 
-  const btnFilterNombrefilial = document.getElementById('btn-filter-correoVoluntario');
-  btnFilterNombrefilial.addEventListener('click', () => {
-      const filtroCorreoVoluntario = document.getElementById('input-filter-correoVoluntario').value.trim().toLowerCase();
-      //filtro por correoVoluntario
-      const filialesFiltradas = filialesData.filter(filial => filial.fk_idUsuarioVoluntario.toLowerCase().includes(filtroCorreoVoluntario));
-      if (filialesFiltradas.length == 0){
-          alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
-          obtenerDetallesFiliales();
-      } 
-      else {
-        mostrarDetallesFiliales(filialesFiltradas);
-      }
-      document.getElementById('input-filter-correoVoluntario').value = '';
-  });
-});
+    const btnFilterCorreoVoluntario = document.getElementById('btn-filter-correoVoluntario');
+    btnFilterCorreoVoluntario.addEventListener('click', () => {
+        const filtroCorreoVoluntario = document.getElementById('input-filter-correoVoluntario').value.trim().toLowerCase();
+        //filtro por correoVoluntario
+        const filialesFiltradas = filialesData.filter(filial => filial.fk_idUsuarioVoluntario.toLowerCase().includes(filtroCorreoVoluntario));
+        if (filialesFiltradas.length == 0){
+            alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
+            obtenerDetallesFiliales();
+        } 
+        else {
+            mostrarDetallesFiliales(filialesFiltradas);
+        }
+        document.getElementById('input-filter-correoVoluntario').value = '';
+    });
 
+    document.getElementById('confirmarEliminar').addEventListener('click', event => {
+        const filialId = event.target.getAttribute('data-id');
+    
+        eliminarOfertasDeFilial(filialId);
+        eliminarFilial(filialId);
+    });
 
-document.getElementById('confirmarEliminar').addEventListener('click', event => {
-  const filialId = event.target.getAttribute('data-id');
-  
-  eliminarFilial(filialId);
-
-  eliminarOfertasDeFilial(filialId);
 });

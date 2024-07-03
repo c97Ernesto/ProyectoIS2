@@ -23,7 +23,7 @@ function obtenerUsuarioPorCorreo(correo) {
         console.error('Usuario no encontrado:', correo);
         return reject(new Error('Usuario no encontrado'));
       }
-     
+
       resolve(results[0]);
     });
   });
@@ -55,7 +55,7 @@ function obtenerProductoPorId(idProducto) {
         console.error('Producto no encontrado:', idProducto);
         return reject(new Error('Producto no encontrado'));
       }
-   
+
       resolve(results[0]);
     });
   });
@@ -123,7 +123,7 @@ class OfertaController {
   }
 
 
-  obtenerOferta(req, res){
+  obtenerOferta(req, res) {
     const idOferta = req.params.id
     try {
       db.query(`SELECT * FROM ofertas WHERE id = ?`, [idOferta], (err, rows) => {
@@ -133,16 +133,16 @@ class OfertaController {
         if (rows.length === 0) {
           return res.status(404).send('Oferta no encontrada');
         }
-        
+
         res.redirect(`/visualizarOferta.html?id=${idOferta}`);
       }
-    );
+      );
     } catch (err) {
       res.status(500).send(err.message);
     }
   }
 
-  obtenerOfertaDetalles(req, res){
+  obtenerOfertaDetalles(req, res) {
     const idOferta = req.params.id
     try {
       db.query(`SELECT * FROM ofertas WHERE id = ?`, [idOferta], (err, rows) => {
@@ -154,13 +154,36 @@ class OfertaController {
         }
         return res.status(200).json(rows);
       }
-    );
+      );
     } catch (err) {
       res.status(500).send(err.message);
     }
   }
 
-  obtenerOfertasDeFilial(req, res){
+  aceptarOferta(req, res) {
+    const { id } = req.params;
+    try {
+      db.query('UPDATE ofertas SET estado = "Aceptada" WHERE id = ?', [id]);
+
+      res.status(200).json({ message: 'Oferta aceptada exitosamente' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error al aceptar la oferta', error });
+    }
+  };
+
+  rechazarOferta(req, res) {
+    const { id } = req.params;
+    try {
+      db.query('UPDATE ofertas SET estado = "Rechazada" WHERE id = ?', [id]);
+
+      res.status(200).json({ message: 'Oferta rechazada exitosamente' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error al rechazar la oferta', error });
+    }
+  };
+
+
+  obtenerOfertasDeFilial(req, res) {
     const { filialId } = req.params;
 
     console.log(filialId);
@@ -176,7 +199,7 @@ class OfertaController {
         }
         return res.status(200).json(rows);
       }
-    );
+      );
     } catch (err) {
       res.status(500).send(err.message);
     }
@@ -185,44 +208,68 @@ class OfertaController {
   eliminarOfertasDeFilial(req, res) {
     const { filialId } = req.params;
 
+    console.log(filialId);
+
     try {
-        db.query(`DELETE FROM ofertas WHERE id_filial = ?`, [filialId], (err, result) => {
-            if (err) {
-                return res.status(400).send(err.message);
-            }
-            if (result.affectedRows === 0) {
-                console.log('No hay ofertas para la filial con id: ' + filialId);
-                return res.status(200).json({ message: 'No hay ofertas para la filial con id: ' + filialId });
-            }
-            return res.status(200).json({ message: 'Ofertas eliminadas correctamente para la filial con id: ' + filialId });
-        });
+      db.query(`DELETE FROM ofertas WHERE id_filial = ?`, [filialId], (err, result) => {
+        if (err) {
+          return res.status(400).send(err.message);
+        }
+        if (result.affectedRows === 0) {
+          console.log('No hay ofertas para la filial con id: ' + filialId);
+          return res.status(200).json({ message: 'No hay ofertas para la filial con id: ' + filialId });
+        }
+        console.log('Hay ofertas para la filial con id: ' + filialId);
+        return res.status(200).json({ message: 'Ofertas eliminadas correctamente para la filial con id: ' + filialId });
+      });
     } catch (err) {
-        res.status(500).send(err.message);
+      res.status(500).send(err.message);
     }
   }
 
-aceptarOferta(req, res){
-  const { id } = req.params;
-  try {
-       db.query('UPDATE ofertas SET estado = "Aceptada" WHERE id = ?', [id]);
-      
-      res.status(200).json({ message: 'Oferta aceptada exitosamente' });
-  } catch (error) {
-      res.status(500).json({ message: 'Error al aceptar la oferta', error });
-  }
-};
+  obtenerOfertasPorDni(req, res) {
+    const { dni } = req.params;
 
-rechazarOferta(req, res){
-  const { id } = req.params;
-  try {
-      db.query('UPDATE ofertas SET estado = "Rechazada" WHERE id = ?', [id]);
-      
-      res.status(200).json({ message: 'Oferta rechazada exitosamente' });
-  } catch (error) {
-      res.status(500).json({ message: 'Error al rechazar la oferta', error });
+    try {
+      db.query(`SELECT * FROM ofertas WHERE dni_ofertante = ?`, [dni], (err, rows) => {
+        if (err) {
+          res.status(400).send(err.message);
+        }
+        if (rows.length === 0) {
+          console.log('No hay ofertas para el usuario con dni: ' + dni);
+          return res.status(200).json(rows);
+        }
+        console.log('Hay ofertas para el usuario con dni: ' + dni);
+        return res.status(200).json(rows);
+      }
+      );
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
   }
-};
-  
+
+  eliminarOfertasPorDni(req, res) {
+    const { dni } = req.params;
+
+    console.log(dni);
+
+    try {
+      db.query(`DELETE FROM ofertas WHERE dni_ofertante = ?`, [dni], (err, result) => {
+        if (err) {
+          return res.status(400).send(err.message);
+        }
+        if (result.affectedRows === 0) {
+          console.log('No hay ofertas para el Usuario con Dni: ' + dni);
+          return res.status(200).json({ message: 'No hay ofertas para el Usuario con Dni: ' + dni });
+        }
+        console.log('No hay ofertas para el Usuario con Dni: ' + dni);
+        return res.status(200).json({ message: 'Ofertas eliminadas correctamente para el Usuario con Dni: ' + dni });
+      });
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+
 }
 
 module.exports = new OfertaController();

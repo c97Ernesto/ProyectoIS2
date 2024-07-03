@@ -49,6 +49,16 @@ router
 router.post('/aceptar/:id', ofertaController.aceptarOferta);
 router.post('/rechazar/:id', ofertaController.rechazarOferta);
 
-router.get('/ofertasDeFilial/:filialId', ofertaController.obtenerOfertasDeFilial);
+router
+  .route('/ofertas-por-filial/:filialId')
+    .get(ofertaController.obtenerOfertasDeFilial)
+    .delete(ofertaController.eliminarOfertasDeFilial);
+
+
+router
+  .route('/ofertas-por-dni/:dni')
+    .get(ofertaController.obtenerOfertasPorDni)
+    .delete(ofertaController.eliminarOfertasPorDni);
+
 
 module.exports = router;

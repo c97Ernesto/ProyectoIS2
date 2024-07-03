@@ -46,6 +46,12 @@ router
 
 router
   .route("/detalles/:id")
-  .get(publicacionController.infoPublicacion)
+    .get(publicacionController.infoPublicacion)
+
+
+router
+  .route('/publicaciones-por-correo/:correoUsuario')
+    .get(publicacionController.obtenerPublicacionesPorCorreo)
+    .delete(publicacionController.eliminarPublicacionesPorCorreo);
 
 module.exports = router;
