@@ -29,7 +29,7 @@ function obtenerCorreoUsuario(req) {
 
 
 class PublicacionController {
-  constructor() {}
+  constructor() { }
 
   //Obtenemos todas las publicaciones
   consultar(req, res) {
@@ -93,7 +93,7 @@ class PublicacionController {
         if (err) {
           return res.status(400).send(err.message);
         }
-        let correo=  rows[0].fk_usuario_correo;
+        let correo = rows[0].fk_usuario_correo;
         const esPropietario = correo === correoUsuario;
 
         let archivoHtml;
@@ -108,15 +108,15 @@ class PublicacionController {
             return res.status(500).send(err.message);
           }
           const contenido = data
-              .replace("{{nombre}}", rows[0].nombre)
-              .replace("{{descripcion}}", rows[0].descripcion)
-              .replace("{{imagenes}}", rows[0].imagenes)
-              .replace("{{categoria}}", rows[0].categoria)
-              .replace("{{estado}}", rows[0].estado);
+            .replace("{{nombre}}", rows[0].nombre)
+            .replace("{{descripcion}}", rows[0].descripcion)
+            .replace("{{imagenes}}", rows[0].imagenes)
+            .replace("{{categoria}}", rows[0].categoria)
+            .replace("{{estado}}", rows[0].estado);
 
-            // Envía el contenido modificado como respuesta al cliente
-            res.send(contenido);
-          }
+          // Envía el contenido modificado como respuesta al cliente
+          res.send(contenido);
+        }
         );
       });
     } catch (err) {
@@ -277,22 +277,22 @@ class PublicacionController {
 
   // Nueva función para obtener productos de la misma categoría del usuario logueado
   consultarPublicacionPorCategoriaPropio(req, res) {
-    
-      const correoUsuario = obtenerCorreoUsuario(req);
-      const { categoria } = req.params;
-      db.query('SELECT id, nombre, imagenes FROM publicacion WHERE categoria = ? AND fk_usuario_correo = ?', [categoria, correoUsuario], (err, rows) => {
-        if (err) {
-            return res.status(500).send(err.message);
-        }
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'No tienes productos de la misma categoría para intercambiar' });
-        }
-        res.status(200).json(rows);
+
+    const correoUsuario = obtenerCorreoUsuario(req);
+    const { categoria } = req.params;
+    db.query('SELECT id, nombre, imagenes FROM publicacion WHERE categoria = ? AND fk_usuario_correo = ?', [categoria, correoUsuario], (err, rows) => {
+      if (err) {
+        return res.status(500).send(err.message);
+      }
+      if (rows.length === 0) {
+        return res.status(404).json({ message: 'No tienes productos de la misma categoría para intercambiar' });
+      }
+      res.status(200).json(rows);
     });
 
-}
+  }
 
-  infoPublicacion(req, res){
+  infoPublicacion(req, res) {
     const idProducto = req.params.id;
     console.log(idProducto)
     try {
@@ -309,6 +309,53 @@ class PublicacionController {
       res.status(500).send(err.message);
     }
   }
+
+
+  obtenerPublicacionesPorCorreo(req, res) {
+    const { correoUsuario } = req.params;
+
+    try {
+      db.query(`SELECT * FROM publicacion WHERE fk_usuario_correo = ?`, [correoUsuario], (err, rows) => {
+        if (err) {
+          res.status(400).send(err.message);
+        }
+        if (rows.length === 0) {
+          console.log('No hay publicaciones para el usuario con correoUsuario: ' + correoUsuario);
+          return res.status(200).json(rows);
+        }
+        console.log('Hay publicaciones para el usuario con correoUsuario: ' + correoUsuario);
+        return res.status(200).json(rows);
+      }
+      );
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+
+  eliminarPublicacionesPorCorreo(req, res) {
+    const { correoUsuario } = req.params;
+
+    console.log(correoUsuario);
+
+    try {
+      db.query(`DELETE FROM publicacion WHERE fk_usuario_correo = ?`, [correoUsuario], (err, result) => {
+        if (err) {
+          return res.status(400).send(err.message);
+        }
+        if (result.affectedRows === 0) {
+          console.log('No hay publicaciones para el Usuario con correoUsuario: ' + correoUsuario);
+          return res.status(200).json({ message: 'No hay publicaciones para el Usuario con correoUsuario: ' + correoUsuario });
+        }
+        console.log('No hay publicaciones para el Usuario con correoUsuario: ' + correoUsuario);
+        return res.status(200).json({ message: 'Publicaciones eliminadas correctamente para el Usuario con correoUsuario: ' + correoUsuario });
+      });
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+
 }
+
+
 
 module.exports = new PublicacionController();

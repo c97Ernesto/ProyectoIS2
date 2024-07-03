@@ -7,7 +7,6 @@ router
   .get(filialController.obtenerFiliales)
   .post(filialController.cargarFilial);
 
-
 router
    .route("/elegirFilial")
    .post(filialController.ElegirUnaFilial);
@@ -16,7 +15,7 @@ router
    .route("/asignarVoluntario")
    .post(filialController.asignarVoluntarioFilial);
 
-   router
+router
    .route("/reasignarVoluntario")
    .post(filialController.reasignarVoluntario);
 
@@ -26,8 +25,16 @@ router
    .get(filialController.obtenerLosHorariosDeUnaFilial);
 
 router
+   .route("/detalles")
+   .get(filialController.obtenerDetallesFiliales);
+
+router
    .route("/detalles/:id")
    .get(filialController.obtenerDetallesFilial);
+
+router
+   .route("/eliminar/:id")
+   .delete(filialController.eliminarFilial);
 
 
 // Nueva ruta para obtener ofertas pendientes
