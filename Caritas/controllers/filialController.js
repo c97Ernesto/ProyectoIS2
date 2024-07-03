@@ -19,65 +19,88 @@ function obtenerCorreoUsuarioDesdeToken(req) {
 class FiliarController {
     constructor() {}
 
-    // Método para cargar una filial
-    cargarFilial(req, res) {
+    async cargarFilial(req, res) {
         try {
-            const { nombre, horarios, fk_idUsuarioVoluntario } = req.body;
+            const { nombre, fechaInicio, fechaFin, horaInicio, horaFin, intervalo, diasTrabajo } = req.body;
+            const fechaInicioObj = new Date(fechaInicio);
+            const fechaFinObj = new Date(fechaFin);
+            const [horaInicioHoras, horaInicioMinutos] = horaInicio.split(':').map(Number);
+            const [horaFinHoras, horaFinMinutos] = horaFin.split(':').map(Number);
 
             // Insertar la filial
-            db.query(
-                "INSERT INTO filial (nombre, fk_idUsuarioVoluntario) VALUES (?, ?);",
-                [nombre, fk_idUsuarioVoluntario],
-                (err, result) => {
-                    if (err) {
-                        console.error('Error al insertar la filial:', err);
-                        return res.status(400).json({ message: err.message });
+            db.query("INSERT INTO filial (nombre, estado) VALUES (?, ?);", [nombre, 'inactiva'], (err, result) => {
+                if (err) {
+                    console.error('Error al insertar la filial:', err);
+                    return res.status(400).json({ message: err.message });
+                }
+
+                const filialId = result.insertId;
+                const horarios = [];
+
+                let currentDate = new Date(fechaInicioObj);
+                while (currentDate <= fechaFinObj) {
+                    if (diasTrabajo.includes(currentDate.getDay().toString())) {
+                        let currentHour = horaInicioHoras;
+                        let currentMinute = horaInicioMinutos;
+
+                        while (currentHour < horaFinHoras || (currentHour === horaFinHoras && currentMinute < horaFinMinutos)) {
+                            const horario = new Date(currentDate);
+                            horario.setHours(currentHour, currentMinute, 0, 0);
+                            horarios.push({
+                                fechaHora: horario.toISOString().slice(0, 19).replace('T', ' '),
+                                fk_idFilial: filialId,
+                                estado: 'disponible'
+                            });
+
+                            currentMinute += parseInt(intervalo, 10);
+                            if (currentMinute >= 60) {
+                                currentMinute -= 60;
+                                currentHour += 1;
+                            }
+                        }
                     }
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
 
-                    const filialId = result.insertId;
-
-                    // Insertar los horarios para la filial
-                    const horarioQueries = horarios.map(horario => {
-                        return new Promise((resolve, reject) => {
-                            db.query(
-                                "INSERT INTO horario (fechaHora, fk_IdFilial) VALUES (?, ?);",
-                                [horario, filialId],
-                                (err, result) => {
-                                    if (err) {
-                                        console.error('Error al insertar el horario:', err);
-                                        return reject(err);
-                                    }
-                                    resolve(result);
-                                }
-                            );
+                // Insertar los horarios para la filial
+                const horarioQueries = horarios.map(horario => {
+                    return new Promise((resolve, reject) => {
+                        db.query("INSERT INTO horario (fechaHora, fk_idFilial, estado) VALUES (?, ?, ?);", [horario.fechaHora, horario.fk_idFilial, horario.estado], (err, result) => {
+                            if (err) {
+                                console.error('Error al insertar el horario:', err);
+                                return reject(err);
+                            }
+                            resolve(result);
                         });
                     });
+                });
 
-                    // Ejecutar todas las consultas de horario
-                    Promise.all(horarioQueries)
-                        .then(() => {
-                            return res.status(201).json({ message: 'Filial y horarios cargados exitosamente' });
-                        })
-                        .catch(err => {
-                            console.error('Error al insertar los horarios:', err);
-                            return res.status(500).json({ message: 'Error al insertar los horarios' });
-                        });
-                }
-            );
+                // Ejecutar todas las consultas de horario
+                Promise.all(horarioQueries)
+                    .then(() => {
+                        return res.status(201).json({ message: 'Filial y horarios cargados exitosamente' });
+                    })
+                    .catch(err => {
+                        console.error('Error al insertar los horarios:', err);
+                        return res.status(500).json({ message: 'Error al insertar los horarios' });
+                    });
+            });
         } catch (err) {
             console.error('Error al cargar la filial:', err);
             return res.status(500).json({ message: err.message });
         }
     }
-    obtenerFiliales(req, res){
-        db.query('SELECT id, nombre FROM filial', (err, results) => {
+
+
+    obtenerFiliales(req, res) {
+        db.query('SELECT id, nombre FROM filial WHERE estado = "activa"', (err, results) => {
             if (err) {
                 return res.status(500).json({ message: err.message });
             }
             res.json(results);
         });
     }
-   /* obtenerLosHorariosDeUnaFilial(req, res){
+    obtenerLosHorariosDeUnaFilial(req, res){
         const { filialId } = req.params;
         db.query('SELECT id, fechaHora, estado FROM horario WHERE fk_IdFilial = ?', [filialId], (err, results) => {
              if (err) {
@@ -86,8 +109,8 @@ class FiliarController {
              res.json(results);
         });
 
-    }*/
-
+    }
+    /*
     obtenerLosHorariosDeUnaFilial(req, res) {
         const { filialId } = req.params;
         const { productoId } = req.query;
@@ -120,7 +143,7 @@ class FiliarController {
             });
         });
     }
-    
+    */
 
     ElegirUnaFilial(req, res){
         const { filialId, horarioId } = req.body;

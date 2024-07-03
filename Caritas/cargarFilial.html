@@ -2,31 +2,55 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Cargar Filial</title>
+    <title>Crear Filial</title>
     <link rel="stylesheet" href="./css/cargarFilial.css">
 </head>
 <body>
-    <h1>Cargar Filial</h1>
-    <form id="cargarFilialForm">
-        <label for="nombre">Nombre:</label>
+    <h1>Crear Filial</h1>
+    <form id="crearFilialForm">
+        <label for="nombre">Nombre de la Filial:</label>
         <input type="text" id="nombre" name="nombre" required>
 
-        <div id="horarios">
-            <label for="fechaHora">Fecha y Hora:</label>
-            <input type="datetime-local" id="fechaHora" name="fechaHora" required>
-        </div>
-        <button type="button" id="agregarHorario">Agregar otro horario</button>
+        <label for="fechaInicio">Fecha Inicio:</label>
+        <input type="date" id="fechaInicio" name="fechaInicio" required>
 
-        <label for="fk_idUsuarioVoluntario">Usuario Voluntario:</label>
-        <select id="fk_idUsuarioVoluntario" name="fk_idUsuarioVoluntario" required>
-            <option value="">Seleccionar Voluntario...</option>
-            <!-- Opciones serán cargadas dinámicamente -->
-        </select>
-        
-        <button type="submit">Cargar Filial</button>
+        <label for="fechaFin">Fecha Fin:</label>
+        <input type="date" id="fechaFin" name="fechaFin" required>
+
+        <label for="horaInicio">Hora Inicio:</label>
+        <input type="time" id="horaInicio" name="horaInicio" required>
+
+        <label for="horaFin">Hora Fin:</label>
+        <input type="time" id="horaFin" name="horaFin" required>
+
+        <label for="intervalo">Intervalo (minutos):</label>
+        <input type="number" id="intervalo" name="intervalo" required>
+
+        <label for="diasTrabajo">Días de Trabajo:</label>
+        <div>
+            <input type="checkbox" id="lunes" name="diasTrabajo" value="1">
+            <label for="lunes">Lunes</label>
+        </div>
+        <div>
+            <input type="checkbox" id="martes" name="diasTrabajo" value="2">
+            <label for="martes">Martes</label>
+        </div>
+        <div>
+            <input type="checkbox" id="miercoles" name="diasTrabajo" value="3">
+            <label for="miercoles">Miércoles</label>
+        </div>
+        <div>
+            <input type="checkbox" id="jueves" name="diasTrabajo" value="4">
+            <label for="jueves">Jueves</label>
+        </div>
+        <div>
+            <input type="checkbox" id="viernes" name="diasTrabajo" value="5">
+            <label for="viernes">Viernes</label>
+        </div>
+
+        <button type="submit">Crear Filial</button>
     </form>
 
     <script src="./js/cargarFilial.js"></script>
 </body>
 </html>
-

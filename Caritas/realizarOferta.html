@@ -1,29 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todas las Publicaciones</title>
+  <title>Realizar Oferta</title>
   <link rel="stylesheet" href="./css/misPublicaciones.css">
   <a href='./inicio'>
       <h1>Cáritas</h1>
   </a>   
-    
 </head>
-
 <body>
-  <h2 class = "titulo">Seleccionar producto para intercambiar</h2>
-
-    <main>
-      <button type="submit" class="eligir" id="elegir">Elegir Filial</button>
-		<section id="productos-container">
-      <p class ="no_hay"id ="mensaje">No hay publicaciones disponibles para realizar el intercambio.</p>
+  <h2 class="titulo">Seleccionar producto para intercambiar</h2>
+  <main>
+    <section id="productos-container">
+      <p class="no_hay" id="mensaje">No hay publicaciones disponibles para realizar el intercambio.</p>
     </section>
-
-    </main>
-
+    <div id="filial-section" style="display:none;">
+      <h3>Seleccionar Filial</h3>
+      <select id="filial-select">   <option value="">Seleccionar Filial...</option> </select>
+      
+    </div>
+    <div id="horario-section" style="display:none;">
+      <h3>Seleccionar Horario</h3>
+      <select id="horario-select"> </select> <!-- Cambiado de input a select -->
+    </div>
+    <button type="button" id="confirmar-oferta" style="display:none;">Confirmar Oferta</button>
+  </main>
   <script src="./js/realizarOferta.js"></script>
 </body>
-
-</html>                    
+</html>

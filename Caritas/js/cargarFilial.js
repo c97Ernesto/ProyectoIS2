@@ -1,70 +1,37 @@
 document.addEventListener("DOMContentLoaded", function() {
-    cargarUsuariosVoluntarios();
-
-    const formulario = document.getElementById('cargarFilialForm');
-    const agregarHorarioButton = document.getElementById('agregarHorario');
-    const horariosDiv = document.getElementById('horarios');
-
-    agregarHorarioButton.addEventListener('click', function() {
-        const nuevoHorario = document.createElement('input');
-        nuevoHorario.type = 'datetime-local';
-        nuevoHorario.name = 'fechaHora';
-        nuevoHorario.required = true;
-        horariosDiv.appendChild(nuevoHorario);
-    });
+    const formulario = document.getElementById('crearFilialForm');
 
     formulario.addEventListener('submit', async function(event) {
         event.preventDefault();
-        
+
         const nombre = document.getElementById('nombre').value;
-        const horarios = Array.from(document.querySelectorAll('input[name="fechaHora"]')).map(input => input.value);
-        const fk_idUsuarioVoluntario = document.getElementById('fk_idUsuarioVoluntario').value;
+        const fechaInicio = document.getElementById('fechaInicio').value;
+        const fechaFin = document.getElementById('fechaFin').value;
+        const horaInicio = document.getElementById('horaInicio').value;
+        const horaFin = document.getElementById('horaFin').value;
+        const intervalo = document.getElementById('intervalo').value;
+        
+        const diasTrabajo = Array.from(document.querySelectorAll('input[name="diasTrabajo"]:checked')).map(input => input.value);
 
         try {
             const response = await fetch('http://localhost:3000/filial', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ nombre, horarios, fk_idUsuarioVoluntario })
+                body: JSON.stringify({ nombre, fechaInicio, fechaFin, horaInicio, horaFin, intervalo, diasTrabajo })
             });
 
             if (response.ok) {
-                alert('Filial cargada exitosamente');
+                alert('Filial creada exitosamente');
                 formulario.reset();
-                horariosDiv.innerHTML = `<label for="fechaHora">Fecha y Hora:</label><input type="datetime-local" id="fechaHora" name="fechaHora" required>`;
             } else {
                 const error = await response.json();
                 alert('Error: ' + error.message);
             }
         } catch (error) {
-            console.error('Error al cargar la filial:', error);
-            alert('Error al cargar la filial');
+            console.error('Error al crear la filial:', error);
+            alert('Error al crear la filial');
         }
     });
 });
-
-async function cargarUsuariosVoluntarios() {
-    try {
-        const response = await fetch('http://localhost:3000/usuarios/voluntarios', {
-            headers: {}
-        });
-
-        if (response.ok) {
-            const usuarios = await response.json();
-            const select = document.getElementById('fk_idUsuarioVoluntario');
-
-            usuarios.forEach(usuario => {
-                const option = document.createElement('option');
-                option.value = usuario.correo; 
-                option.textContent = `${usuario.nombre} ${usuario.apellido}`; 
-                select.appendChild(option);
-            });
-        } else {
-            const error = await response.json();
-            console.error('Error al cargar usuarios voluntarios:', error);
-        }
-    } catch (error) {
-        console.error('Error al cargar usuarios voluntarios:', error);
-    }
-}
