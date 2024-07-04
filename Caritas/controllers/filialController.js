@@ -100,10 +100,7 @@ class FiliarController {
             res.json(results);
         });
     }
-<<<<<<< HEAD
-    obtenerLosHorariosDeUnaFilial(req, res){
-=======
-
+   
     obtenerDetallesFiliales = (req, res) => {
         const query = "SELECT * FROM filial";
         db.query(query, (err, results) => {
@@ -115,8 +112,7 @@ class FiliarController {
           res.status(200).json(results);
         });
     };
-   /* obtenerLosHorariosDeUnaFilial(req, res){
->>>>>>> fb36ffc315d797122d71e0260428c1b90d9c6726
+    obtenerLosHorariosDeUnaFilial(req, res){
         const { filialId } = req.params;
         db.query('SELECT id, fechaHora, estado FROM horario WHERE fk_IdFilial = ?', [filialId], (err, results) => {
              if (err) {
