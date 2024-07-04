@@ -87,6 +87,50 @@ function obtenerCorreoUsuarioDesdeToken(req) {
         });
     }
 
+
+    filialDelVoluntario(req, res) {
+      const { idVoluntario } = req.params;  // Id === Correo, del usuario
+      
+      console.log(idVoluntario);
+      
+      try {
+        db.query(`SELECT * FROM filial_voluntario WHERE id_voluntario = ?`, [idVoluntario], (err, rows) => {
+          if (err) {
+            res.status(400).send(err.message);
+          } else if (rows.length === 0) {
+            console.log('No hay filiales para el usuario con correo: ' + idVoluntario);
+            return res.status(200).json(rows);
+          } else {
+            console.log('Hay filiales para el usuario con correo: ' + idVoluntario);
+            return res.status(200).json(rows);  // Devolvemos todas las filas donde filial_voluntario.idVolutnario == idVoluntario
+          }
+        });
+      } catch (err) {
+        res.status(500).send(err.message);
+      }
+    }
+    
+      voluntariosDeFilial(req, res) {
+        const { idFilial } = req.params;  // Id === Correo, del usuario
+        console.log(idFilial);
+        try {
+          db.query(`SELECT * FROM filial_voluntario WHERE id_filial = ?`, [idFilial], (err, rows) => {
+            if (err) {
+              res.status(400).send(err.message);
+            }
+            if (rows.length === 0) {
+              console.log('No hay voluntarios para la filial con Id: ' + idFilial);
+              return res.status(200).json(rows);
+            }
+            console.log('Hay voluntarios para la filial con Id: ' + idFilial);
+            return res.status(200).json(rows);
+          }
+          );
+        } catch (err) {
+          res.status(500).send(err.message);
+        }
+      }
+
   }
 
 module.exports = new FilialVoluntarioController();
