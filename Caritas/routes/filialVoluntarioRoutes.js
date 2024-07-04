@@ -15,4 +15,13 @@ router
   .route('/voluntarioFilial/:correoUsuario')
   .get(filialVoluntarioController.voluntarioFilial);
 
+
+router
+    .route('/voluntarios-de-filial/:idFilial')
+    .get(filialVoluntarioController.voluntariosDeFilial);
+
+router
+    .route('/filial-del-voluntario/:idVoluntario')
+    .get(filialVoluntarioController.filialDelVoluntario);
+
 module.exports = router;

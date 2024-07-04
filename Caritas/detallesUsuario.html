@@ -21,11 +21,11 @@
     <div class="container">
         <h1>Detalles del Usuario</h1>
         <div id="usuario-detalles">
-            <!-- Aquí se insertarán los detalles del usuario -->
+            <!-- Informacíon obtenida del usuario -->
         </div>
         <button class="btn btn-primary" id="editar-usuario">Editar Usuario</button>
         <button type="button" class="btn btn-outline-danger btn-eliminar" data-bs-toggle="modal" data-bs-target="#exampleModal" 
-        data-dni_ofertante="" data-correoUsuario="" id="eliminar-usuario">
+        data-dni_ofertante="" data-correoUsuario="" id="btn-eliminar">
             Eliminar
         </button>
     </div>
@@ -36,20 +36,16 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4>¿Está seguro que desea eliminar el usuario "<span id="nombreUsuario"></span>"?</h4>
+          <h4 class="text-center">¿Está seguro que desea eliminar el usuario "<span id="nombreUsuario"></span>"?</h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <p>La cantidad de publicaciones realizadas por el usuario es de:
-            <span id="cant-publicaciones-usuario"></span>
-          </p>
-          <p>La cantidad de ofertas establecidas por el usuario es de:
-            <span id="cant-ofertas-usuario"></span>
-          </p>
+        <div class="modal-body" id="modal-body">
+          
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-danger" id="confirmarEliminar" data-correoUsuario="" data-dni_ofertante="">Eliminar</button>
+          <button type="button" class="btn btn-danger" id="btn-confirmarEliminar" 
+          data-correoUsuario="" data-dni_ofertante="" data-rol="">Eliminar</button>
         </div>
       </div>
     </div>
