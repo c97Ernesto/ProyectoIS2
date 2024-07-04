@@ -100,7 +100,17 @@ class FiliarController {
             res.json(results);
         });
     }
+
+    obtenerTodasFiliales(req, res) {
+        db.query('SELECT id, nombre FROM filial ', (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+            res.json(results);
+        });
+    }
    
+
     obtenerDetallesFiliales = (req, res) => {
         const query = "SELECT * FROM filial";
         db.query(query, (err, results) => {

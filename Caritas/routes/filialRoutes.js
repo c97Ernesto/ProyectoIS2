@@ -8,6 +8,9 @@ router
   .post(filialController.cargarFilial);
 
 router
+  .route("/todasFiliales")
+  .get(filialController.obtenerTodasFiliales)
+router
    .route("/elegirFilial")
    .post(filialController.ElegirUnaFilial);
 
