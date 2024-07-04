@@ -195,10 +195,10 @@ class FiliarController {
     
           // Primero, obtener el ID de la filial usando el correo del usuario
           const obtenerFilialIdQuery = `
-            SELECT f.id AS filialId
-            FROM filial f
-            JOIN usuarios u ON f.fk_idUsuarioVoluntario = u.correo
-            WHERE u.correo = ?
+            SELECT f.id_filial AS filialId
+            FROM filial_voluntario f
+            JOIN usuarios u ON f.id_voluntario = u.Correo
+            WHERE u.Correo = ?
           `;
     
           db.query(obtenerFilialIdQuery, [correoUsuario], (err, results) => {

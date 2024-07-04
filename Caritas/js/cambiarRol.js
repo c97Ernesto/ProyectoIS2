@@ -49,11 +49,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const nuevoRol = rol.value;
         const filialId = filialSelect.value;
 
+        if (nuevoRol === 'voluntario' && !filialId) {
+            alert('Debe seleccionar una filial para asignarle al nuevo voluntario.');
+            return;
+        }
+
         try {
             if (nuevoRol === 'voluntario' && filialId) {
                 await asignarVoluntarioFilial(filialId, usuarioCorreo);
                 alert('Se cambió el rol del usuario a voluntario con éxito');
             } else if (rolActual === 'voluntario') {
+
                 const filas = await obtenerFilasDeFilial(usuarioCorreo);
                 
                 if (filas.length === 1) {

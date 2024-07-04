@@ -9,7 +9,7 @@ router
 
 router
   .route("/todasFiliales")
-  .get(filialController.obtenerTodasFiliales)
+  .get(filialController.obtenerTodasFiliales);
 router
    .route("/elegirFilial")
    .post(filialController.ElegirUnaFilial);
