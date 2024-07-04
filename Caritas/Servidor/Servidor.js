@@ -420,6 +420,7 @@ const publicacionRoutes = require("../routes/publicacionRoutes");
 const filialRoutes = require("../routes/filialRoutes");
 const userRoutes = require("../routes/userRoutes");
 
+
 app.use("/publicacion", publicacionRoutes);
 
 const ofertaRoutes = require("../routes/ofertaRoutes");
@@ -436,3 +437,6 @@ app.use("/usuarios_horarios_predeterminados", usuario_horarios_predeterminadosRo
 
 const truequesRoutes = require("../routes/truequesRoutes");
 app.use("/trueques", truequesRoutes);
+
+const filial_voluntario_Routes = require("../routes/filial_voluntario_Routes");
+app.use('/filial_voluntario', filial_voluntario_Routes);
