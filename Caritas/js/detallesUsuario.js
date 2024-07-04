@@ -158,6 +158,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const usuario = await obtenerDetallesUsuario(usuarioCorreo, token);
 
+        localStorage= localStorage.setItem('correo', usuario.Correo);
+        localStorage.setItem('rolActual', usuario.rol);
         mostrarDetallesEnDOM(usuario);
 
         document.getElementById('editar-usuario').addEventListener('click', () => {

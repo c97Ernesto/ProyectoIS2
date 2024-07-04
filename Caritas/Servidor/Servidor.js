@@ -436,3 +436,6 @@ app.use("/usuarios_horarios_predeterminados", usuario_horarios_predeterminadosRo
 
 const truequesRoutes = require("../routes/truequesRoutes");
 app.use("/trueques", truequesRoutes);
+
+const filialVoluntarioRoutes = require("../routes/filialVoluntarioRoutes.js");
+app.use("/filialVoluntario", filialVoluntarioRoutes);
