@@ -23,8 +23,6 @@ async function obtenerMisDatos() {
 function mostrarMisDatos(mi) {
     const fechaSinHora = obtenerFechaSinHora(mi.nacimiento);
 
-
-
     const misDatosDiv = document.getElementById('mis-datos');
     misDatosDiv.innerHTML = `
         <div class="row">
@@ -85,6 +83,13 @@ function mostrarMisDatos(mi) {
     editarBtn.addEventListener('click', () => {
         habilitarEdicion();
     });
+
+    // Añadir evento a los campos inhabilitados para mostrar alerta
+    const camposInhabilitados = ['staticEmail', 'staticNacimiento'];
+    camposInhabilitados.forEach(id => {
+        const campo = document.getElementById(id);
+        campo.addEventListener('focus', mostrarAlertaCampoInhabilitado);
+    });
 }
 
 function obtenerFechaSinHora(fechaISO) {
@@ -93,13 +98,11 @@ function obtenerFechaSinHora(fechaISO) {
 }
 
 function habilitarEdicion() {
-    // Obtener todos los campos del formulario
+    // Obtenemos los campos del formulario
     const form = document.getElementById('formulario-datos');
     const inputs = form.getElementsByTagName('input');
 
-    console.log(inputs)
-
-    // Habilitar la edición de los campos
+    // Habilitamos la edición de los campos
     for (let i = 0; i < inputs.length; i++) {
         if (i == 0 || i == 4){
             inputs[i].readOnly = true;
@@ -109,7 +112,6 @@ function habilitarEdicion() {
         }
     }
 
-    // Cambiar el texto y estilo del botón
     const editarBtn = document.getElementById('editarBtn');
     editarBtn.textContent = 'Guardar Cambios';
     editarBtn.classList.remove('btn-outline-primary');
@@ -121,7 +123,7 @@ function habilitarEdicion() {
 }
 
 async function guardarCambios() {
-    // Obtener los valores de los campos editables
+    // Obtener los valores de los campos que se an a
     const usuario = document.getElementById('staticUsuario').value;
     const nombre = document.getElementById('staticNombre').value;
     const apellido = document.getElementById('staticApellido').value;
@@ -167,6 +169,11 @@ async function guardarCambios() {
     } catch (error) {
         console.error('Error:', error);
     }
+}
+
+function mostrarAlertaCampoInhabilitado(event) {
+    alert("Este campo no se puede modificar.");
+    event.target.blur(); // Desenfocar el campo para evitar edición
 }
 
 document.addEventListener('DOMContentLoaded', () => {

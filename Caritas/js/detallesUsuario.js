@@ -276,22 +276,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             else if (rolUsuario === 'voluntario') {
                 try {
-                    // const filial_voluntario = await obtenerFilialesDelVoluntario(correoUsuario);
-
-                    // console.log(filial_voluntario);
-
-                    // // const idFilial = filial_voluntario[0].id_filial
-
-                    // const voluntarios = await obtenerVoluntariosDeFilial(idFilial);
-                    
-                    //FALTA BUSCAR LAS FILIALES DONDE EL VOLUNTARIO A ELIMINAR SEA EL ÚNICO VOLUNTARIO EN LA FILIAL
-
                     const filialesConElVoluntario = await obtenerFilialesConVoluntario(correoUsuario)
-
                     console.log(filialesConElVoluntario);
-
                     const filialesInactivas = filialesConElVoluntario.length
-
                     console.log(filialesInactivas)
 
                     if (filialesInactivas == 0) {
