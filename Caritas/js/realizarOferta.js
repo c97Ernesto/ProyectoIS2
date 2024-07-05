@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
 
             if (response.ok) {
-                alert('Filial elegida exitosamente');
+               // alert('Filial elegida exitosamente');
                 localStorage.setItem('filialId', filialId);
                 localStorage.setItem('horario', horarioId);
                 formulario.reset();

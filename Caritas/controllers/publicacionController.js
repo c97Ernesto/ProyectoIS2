@@ -49,6 +49,7 @@ class PublicacionController {
   ingresar(req, res) {
     try {
       const correoUsuario = obtenerCorreoUsuarioDesdeToken(req);
+      const fechaPublicacion = new Date();
 
       //desestructuramos los datos
       console.log(req.body);
@@ -58,8 +59,8 @@ class PublicacionController {
 
       //retornamos datos de la publicación
       db.query(
-        `INSERT INTO publicacion (nombre, descripcion, imagenes, estado, categoria, fk_usuario_correo)
-        VALUES (?, ?, ?, ?, ?, ?);`,
+        `INSERT INTO publicacion (nombre, descripcion, imagenes, estado, categoria, fk_usuario_correo,fecha_publicacion)
+        VALUES (?, ?, ?, ?, ?, ?,?);`,
         [
           nombrePublicacion,
           descripcionFinal,
@@ -67,6 +68,7 @@ class PublicacionController {
           estado,
           categoria,
           correoUsuario,
+          fechaPublicacion
         ],
         (err, rows) => {
           if (err) {
