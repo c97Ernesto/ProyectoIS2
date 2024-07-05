@@ -147,48 +147,31 @@ class UsersController {
   cambiarRol = async (req, res) => {
     const { usuarioCorreo, nuevoRol } = req.body;
 
-    db.query(
-      "SELECT rol FROM usuarios WHERE correo = ?",
-      [usuarioCorreo],
-      (err, results) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({
-              message: "Error al obtener el rol del usuario",
-              error: err,
-            });
-        }
-        const rolAnterior = results[0].rol;
-
+    try {
         db.query(
-          "UPDATE usuarios SET rol = ? WHERE correo = ?",
-          [nuevoRol, usuarioCorreo],
-          (err, results) => {
-            if (err) {
-              return res
-                .status(500)
-                .json({
-                  message: "Error al cambiar el rol del usuario",
-                  error: err,
-                });
-            }
+            "UPDATE usuarios SET rol = ? WHERE Correo = ?",
+            [nuevoRol, usuarioCorreo],
+            (err, results) => {
+                if (err) {
+                    return res.status(500).json({
+                        message: "Error al cambiar el rol del usuario",
+                        error: err,
+                    });
+                }
 
-            if (rolAnterior === "voluntario" && nuevoRol === "comun") {
-              res
-                .status(200)
-                .json({
-                  message:
-                    "Rol cambiado correctamente. Seleccione un nuevo voluntario para la filial.",
+                res.status(200).json({
+                    message: 'Rol cambiado con éxito para el usuario ${usuarioCorreo}',
                 });
-            } else {
-              res.status(200).json({ message: "Rol cambiado correctamente" });
             }
-          }
         );
-      }
-    );
-  };
+    } catch (error) {
+        console.error("Error al cambiar el rol del usuario:", error);
+        res.status(500).json({
+            message: "Error al cambiar el rol del usuario",
+            error: error.message,
+        });
+    }
+};
 
   // Eliminar un usuario
 

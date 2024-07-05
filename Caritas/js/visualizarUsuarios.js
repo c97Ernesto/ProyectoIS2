@@ -59,10 +59,7 @@ function mostrarUsuarios(usuarios) {
             <td>${usuario.Correo}</td>
             <td>${usuario.rol}</td>
             <td>${usuario.DNI}</td>
-            <td>${usuario.Usuario}</td>
-            <td>${usuario.Nombre}</td>
-            <td>${usuario.apellido}</td>
-            <td>${usuario.Telefono}</td>
+            
             <td><button class="btn btn-primary btn-detalles" data-id="${usuario.Correo}">Detalles</button></td>
         `;
         usuariosBody.appendChild(fila);

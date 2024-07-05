@@ -1,37 +1,40 @@
-document.addEventListener("DOMContentLoaded", function() {
-    cargarUsuarios();
+document.addEventListener('DOMContentLoaded', async () => {
+    const usuarioCorreo = localStorage.getItem('correo');
+    const rolActual = localStorage.getItem('rolActual');
 
-    const formulario = document.getElementById('cambiarRolForm');
-    const user = document.getElementById('user');
+    if (!usuarioCorreo) {
+        alert('No se encontró el correo del usuario en localStorage');
+        return;
+    }
+
+    const token = localStorage.getItem('token');
     const rol = document.getElementById('rol');
-    const rolActual = document.getElementById('rolActual');
     const filialSection = document.getElementById('filialSection');
     const filialSelect = document.getElementById('filial');
-    const nuevoVoluntarioSection = document.getElementById('nuevoVoluntarioSection');
-    const nuevoVoluntarioSelect = document.getElementById('nuevoVoluntario');
+    const formulario = document.getElementById('cambiarRolForm');
 
-    // Cuando se selecciona un usuario, se muestra su rol actual
-    user.addEventListener('change', async function() {
-        const usuarioCorreo = user.value;
-        if (usuarioCorreo) {
-            try {
-                const response = await fetch(`http://localhost:3000/usuarios/${usuarioCorreo}`);
-                if (response.ok) {
-                    const usuario = await response.json();
-                    rolActual.value = usuario.rol;
-                } else {
-                    const error = await response.json();
-                    console.error('Error al obtener el rol del usuario:', error);
-                }
-            } catch (error) {
-                console.error('Error al obtener el rol del usuario:', error);
-            }
-        } else {
-            rolActual.value = ''; 
+    try {
+        const response = await fetch(`http://localhost:3000/usuarios/${usuarioCorreo}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Error al obtener detalles del usuario: " + response.status + " " + response.statusText);
         }
-    });
 
-    // Mostrar/ocultar la sección de selección de filial basado en el rol seleccionado
+        const usuario = await response.json();
+        mostrarDetallesUsuario(usuario);
+
+        cargarRoles(rolActual);
+
+    } catch (error) {
+        console.error('Error al obtener el rol del usuario:', error);
+    }
+
     rol.addEventListener('change', function() {
         if (rol.value === 'voluntario') {
             filialSection.style.display = 'block';
@@ -39,32 +42,37 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             filialSection.style.display = 'none';
         }
-
-        if (rolActual.value === 'voluntario') {
-            nuevoVoluntarioSection.style.display = 'block';
-            cargarVoluntarios();
-        } else {
-            nuevoVoluntarioSection.style.display = 'none';
-        }
     });
 
     formulario.addEventListener('submit', async function(event) {
         event.preventDefault();
-        const usuarioCorreo = user.value;
         const nuevoRol = rol.value;
         const filialId = filialSelect.value;
-        const nuevoVoluntarioCorreo = nuevoVoluntarioSelect.value;
+
+        if (nuevoRol === 'voluntario' && !filialId) {
+            alert('Debe seleccionar una filial para asignarle al nuevo voluntario.');
+            return;
+        }
 
         try {
             if (nuevoRol === 'voluntario' && filialId) {
                 await asignarVoluntarioFilial(filialId, usuarioCorreo);
-                alert('Se cambió el rol del usuario y se asignó el nuevo voluntario a la filial con éxito');
-            } else if (rolActual.value === 'voluntario' && nuevoVoluntarioCorreo) {
-                // Reasignar voluntario a la filial y cambiar el rol del antiguo voluntario
-                await reasignarVoluntario(usuarioCorreo, nuevoVoluntarioCorreo, nuevoRol);
-                alert('Se cambió el rol del usuario y se reasignó el voluntario con éxito');
+                alert('Se cambió el rol del usuario a voluntario con éxito');
+            } else if (rolActual === 'voluntario') {
+
+                const filas = await obtenerFilasDeFilial(usuarioCorreo);
+                
+                if (filas.length === 1) {
+                    
+                    const confirmar = confirm("La filial de la cual el usuario es voluntario, no tiene otros voluntarios. Si cambia el rol del usuario, la filial quedará inhabilitada para realizar intercambios y los intercambios pendientes para la filial serán cancelados ¿Deseas continuar con el cambio de rol?");
+                    if (!confirmar) {
+                        return;
+                    }
+                    
+                }
+                await designarVoluntario(usuarioCorreo, nuevoRol);
+                alert('Se cambió el rol del usuario con éxito');
             } else {
-                // Otros cambios de rol 
                 const response = await fetch('http://localhost:3000/usuarios/cambiarRol', {
                     method: 'POST',
                     headers: {
@@ -81,48 +89,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
             formulario.reset();
+            window.location.href = `detallesUsuario.html?correo=${usuarioCorreo}`;
         } catch (error) {
             console.error('Error al cambiar rol:', error);
-            alert('Error al cambiar rol');
+            alert('Error al cambiar rol aquí');
         }
     });
 });
 
-async function cargarUsuarios() {
-    try {
-        const response = await fetch(`http://localhost:3000/usuarios`, {
-            headers: {}
-        });
-
-        if (response.ok) {
-            const usuarios = await response.json();
-            if (usuarios.length === 0) {
-                alert("No hay usuarios registrados en el sistema");
-            }
-            const select = document.getElementById('user');
-
-            usuarios.forEach(usuario => {
-                const option = document.createElement('option');
-                option.value = usuario.correo;
-                option.textContent = `${usuario.nombre} ${usuario.apellido}`;
-                select.appendChild(option);
-            });
-        } else {
-            const error = await response.json();
-            console.error('Error al cargar usuarios:', error);
-        }
-    } catch (error) {
-        console.error('Error al cargar usuarios:', error);
-    }
-}
-
 async function cargarFiliales() {
     try {
-        const response = await fetch('http://localhost:3000/filial');
+        const response = await fetch('http://localhost:3000/filial/todasFiliales');
         if (response.ok) {
             const filiales = await response.json();
             const selectFilial = document.getElementById('filial');
-            selectFilial.innerHTML = '<option value="">Seleccionar Filial...</option>'; 
+            selectFilial.innerHTML = '<option value="">Seleccionar Filial...</option>';
 
             filiales.forEach(filial => {
                 const option = document.createElement('option');
@@ -138,30 +119,8 @@ async function cargarFiliales() {
     }
 }
 
-async function cargarVoluntarios() {
-    try {
-        const response = await fetch('http://localhost:3000/usuarios/sinVoluntarios');
-        if (response.ok) {
-            const voluntarios = await response.json();
-            const selectVoluntario = document.getElementById('nuevoVoluntario');
-            selectVoluntario.innerHTML = '<option value="">Seleccionar Nuevo Voluntario para la filial...</option>';
-
-            voluntarios.forEach(voluntario => {
-                const option = document.createElement('option');
-                option.value = voluntario.correo;
-                option.textContent = `${voluntario.nombre} ${voluntario.apellido}`;
-                selectVoluntario.appendChild(option);
-            });
-        } else {
-            console.error('Error al cargar voluntarios');
-        }
-    } catch (error) {
-        console.error('Error al cargar voluntarios:', error);
-    }
-}
-
 async function asignarVoluntarioFilial(filialId, correoNuevo) {
-    const response = await fetch('http://localhost:3000/filial/asignarVoluntario', {
+    const response = await fetch('http://localhost:3000/filialVoluntario/asignarVoluntario', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -175,17 +134,67 @@ async function asignarVoluntarioFilial(filialId, correoNuevo) {
     }
 }
 
-async function reasignarVoluntario(correoAntiguo, correoNuevo, nuevoRol) {
-    const response = await fetch('http://localhost:3000/filial/reasignarVoluntario', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ correoAntiguo, correoNuevo, nuevoRol })
-    });
+async function designarVoluntario(correoUsuario, nuevoRol) {
+    try {
+        const response = await fetch('http://localhost:3000/filialVoluntario/designarVoluntario', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ correoUsuario, nuevoRol })
+        });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message);
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message);
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw new Error('Error al designar voluntario: ' + error.message);
+    }
+}
+
+function mostrarDetallesUsuario(usuario) {
+    const usuarioDetalles = document.getElementById('usuario-detalles');
+    usuarioDetalles.innerHTML = `  
+        <p>Usuario: ${usuario.Nombre} ${usuario.apellido}</p>
+    `;
+}
+
+function cargarRoles(rolActual) {
+    const rolesDisponibles = ['administrador', 'comun', 'voluntario'];
+    const selectRol = document.getElementById('rol');
+
+    rolesDisponibles.forEach(rol => {
+        if (rol !== rolActual) {
+            const option = document.createElement('option');
+            option.value = rol;
+            option.textContent = rol.charAt(0).toUpperCase() + rol.slice(1);
+            selectRol.appendChild(option);
+        }
+    });
+}
+
+async function obtenerFilasDeFilial(correoUsuario) {
+    try {
+        const response = await fetch(`http://localhost:3000/filialVoluntario/voluntarioFilial/${correoUsuario}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(`Error ${response.status}: ${error.message}`);
+        }
+
+        const filas = await response.json();
+        console.log('Filas obtenidas:', filas);
+        return filas;
+    } catch (error) {
+        console.error('Error al obtener las filas de la filial:', error);
+        throw error;
     }
 }

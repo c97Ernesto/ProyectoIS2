@@ -126,6 +126,74 @@ async function obtenerPublicacionesUsuario(correoUsuario) {
     }
 }
 
+async function obtenerVoluntariosDeFilial(id_filial) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`http://localhost:3000/filialVoluntario/voluntarios-de-filial/${id_filial}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Error al obtener los voluntarios de la Filial "${id_filial}": ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error al obtener los voluntarios:", error);
+        throw error;
+    }
+}
+
+async function obtenerFilialesDelVoluntario(idUsuario) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`http://localhost:3000/filialVoluntario/filiales-del-voluntario/${idUsuario}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Error al obtener filial_voluntario del usuario con correo "${idUsuario}": ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error al obtener filial_voluntario:", error);
+        throw error;
+    }
+}
+
+async function obtenerFilialesConVoluntario(idUsuario) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`http://localhost:3000/filialVoluntario/filiales-con-el-voluntario/${idUsuario}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Error al obtener filial_voluntario del usuario con correo "${idUsuario}": ${response.status} ${response.statusText}`);
+        }
+
+        console.log(response.json)
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error al obtener filial_voluntario:", error);
+        throw error;
+    }
+}
+
+
 // MOSTRAR DETALLES
 function mostrarDetallesEnDOM(usuario) {
     const usuarioDetalles = document.getElementById('usuario-detalles');
@@ -139,10 +207,11 @@ function mostrarDetallesEnDOM(usuario) {
         <p>Telefono: ${usuario.Telefono}</p>
     `;
 
-    document.getElementById('eliminar-usuario').setAttribute('data-dni_ofertante', usuario.DNI);
-    document.getElementById('eliminar-usuario').setAttribute('data-correoUsuario', usuario.Correo);
+    document.getElementById('btn-eliminar').setAttribute('data-dni_ofertante', usuario.DNI);
+    document.getElementById('btn-eliminar').setAttribute('data-correoUsuario', usuario.Correo);
+    document.getElementById('btn-eliminar').setAttribute('data-rol', usuario.rol);
 
-    document.getElementById('nombreUsuario').textContent = usuario.Nombre;    
+    document.getElementById('nombreUsuario').textContent = usuario.Nombre;
 }
 
 // Evento cuando se carga el DOM
@@ -158,6 +227,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const usuario = await obtenerDetallesUsuario(usuarioCorreo, token);
 
+        localStorage= localStorage.setItem('correo', usuario.Correo);
+        localStorage.setItem('rolActual', usuario.rol);
         mostrarDetallesEnDOM(usuario);
 
         document.getElementById('editar-usuario').addEventListener('click', () => {
@@ -165,31 +236,86 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = `http://localhost:3000/cambiarRol.html`;
         });
 
-        document.getElementById('eliminar-usuario').addEventListener('click', async (event) => {
+        document.getElementById('btn-eliminar').addEventListener('click', async (event) => {
             const dni_ofertante = event.target.getAttribute('data-dni_ofertante');
             const correoUsuario = event.target.getAttribute('data-correoUsuario');
+            const rolUsuario = event.target.getAttribute('data-rol');
 
             // Asignar el correo del usuario al botón de confirmación de eliminación.
-            document.getElementById('confirmarEliminar').setAttribute('data-correoUsuario', correoUsuario);
-            document.getElementById('confirmarEliminar').setAttribute('data-dni_ofertante', dni_ofertante);
+            document.getElementById('btn-confirmarEliminar').setAttribute('data-correoUsuario', correoUsuario);
+            document.getElementById('btn-confirmarEliminar').setAttribute('data-dni_ofertante', dni_ofertante);
+            document.getElementById('btn-confirmarEliminar').setAttribute('data-rol', rolUsuario);
 
-            // Obtener las ofertas del usuario
-            try {
-                const data = await obtenerOfertasUsuario(dni_ofertante); 
-                console.log('Ofertas obtenidas:', data);
-                document.getElementById('cant-ofertas-usuario').textContent = data.length;    
-            } catch (error) {
-                console.error('Error al obtener las ofertas:', error);
+            document.getElementById('modal-body').innerHTML = ''
+
+            if (rolUsuario === 'comun') {
+
+                // Obtener las ofertas del usuario
+                try {
+                    const ofertas = await obtenerOfertasUsuario(dni_ofertante);
+                    const modalBody = document.getElementById('modal-body');
+                    modalBody.innerHTML = `
+                        <p class="text-center">Las publicaciones del usuario y las ofertas que estén relacionadas con él, serán eliminadas.</p>
+                        <p>Ofertas establecidas: ${ofertas.length}</p>
+                    `;
+                } catch (error) {
+                    console.error('Error al obtener las ofertas:', error);
+                }
+
+                // Obtener publicaciones del usuario
+                try {
+                    const publicaciones = await obtenerPublicacionesUsuario(correoUsuario);
+                    const modalBody = document.getElementById('modal-body');
+                    modalBody.innerHTML += `
+                        <p>Cantidad de publicaciones realizadas: ${publicaciones.length}</p>
+                    `;
+                } catch (error) {
+                    console.error('Error al obtener las publicaciones:', error);
+                }
+
+            }
+            else if (rolUsuario === 'voluntario') {
+                try {
+                    // const filial_voluntario = await obtenerFilialesDelVoluntario(correoUsuario);
+
+                    // console.log(filial_voluntario);
+
+                    // // const idFilial = filial_voluntario[0].id_filial
+
+                    // const voluntarios = await obtenerVoluntariosDeFilial(idFilial);
+                    
+                    //FALTA BUSCAR LAS FILIALES DONDE EL VOLUNTARIO A ELIMINAR SEA EL ÚNICO VOLUNTARIO EN LA FILIAL
+
+                    const filialesConElVoluntario = await obtenerFilialesConVoluntario(correoUsuario)
+
+                    console.log(filialesConElVoluntario);
+
+                    const filialesInactivas = filialesConElVoluntario.length
+
+                    console.log(filialesInactivas)
+
+                    if (filialesInactivas == 0) {
+                        const modalBody = document.getElementById('modal-body');
+                        modalBody.innerHTML = `
+                            <p>Las filiales que dependen del usuario permanecerán activas.</p>
+                        `;
+                    }
+                    else if (filialesInactivas > 0) {
+                        const modalBody = document.getElementById('modal-body');
+                        modalBody.innerHTML = `
+                            <p>Hay filiales que dependen unicamente de este usuario. Si se elimina el usuario pasarán a estado "inactivo"</p>
+                            <p>Cantidad de filiales: ${filialesInactivas}</p>
+                        `;
+                    }
+                    
+                } catch (error) {
+                    console.error('Error al obtener los voluntarios:', error);
+                }
+
+                
             }
 
-            // Obtener publicaciones del usuario
-            try {
-                const data = await obtenerPublicacionesUsuario(correoUsuario); 
-                console.log('Publicaciones obtenidas:', data);
-                document.getElementById('cant-publicaciones-usuario').textContent = data.length;    
-            } catch (error) {
-                console.error('Error al obtener las publicaciones:', error);
-            }
+
         });
 
     } catch (error) {
@@ -197,7 +323,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert("Hubo un error al obtener los detalles del usuario.");
     }
 
-    document.getElementById('confirmarEliminar').addEventListener('click', async (event) => {
+    document.getElementById('btn-confirmarEliminar').addEventListener('click', async (event) => {
         const correoUsuario = event.target.getAttribute('data-correoUsuario');
         const dni_ofertante = event.target.getAttribute('data-dni_ofertante');
 

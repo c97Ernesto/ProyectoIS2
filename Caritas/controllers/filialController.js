@@ -100,7 +100,17 @@ class FiliarController {
             res.json(results);
         });
     }
+
+    obtenerTodasFiliales(req, res) {
+        db.query('SELECT id, nombre FROM filial ', (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+            res.json(results);
+        });
+    }
    
+
     obtenerDetallesFiliales = (req, res) => {
         const query = "SELECT * FROM filial";
         db.query(query, (err, results) => {
@@ -185,10 +195,10 @@ class FiliarController {
     
           // Primero, obtener el ID de la filial usando el correo del usuario
           const obtenerFilialIdQuery = `
-            SELECT f.id AS filialId
-            FROM filial f
-            JOIN usuarios u ON f.fk_idUsuarioVoluntario = u.correo
-            WHERE u.correo = ?
+            SELECT f.id_filial AS filialId
+            FROM filial_voluntario f
+            JOIN usuarios u ON f.id_voluntario = u.Correo
+            WHERE u.Correo = ?
           `;
     
           db.query(obtenerFilialIdQuery, [correoUsuario], (err, results) => {
