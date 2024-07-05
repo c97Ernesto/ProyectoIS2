@@ -229,6 +229,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         localStorage= localStorage.setItem('correo', usuario.Correo);
         localStorage.setItem('rolActual', usuario.rol);
+        localStorage.setItem('dni_ofertante',usuario.DNI);
         mostrarDetallesEnDOM(usuario);
 
         document.getElementById('editar-usuario').addEventListener('click', () => {

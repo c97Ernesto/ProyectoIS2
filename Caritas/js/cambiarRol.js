@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const usuarioCorreo = localStorage.getItem('correo');
     const rolActual = localStorage.getItem('rolActual');
-
+    const  dni_ofertante = localStorage.getItem("dni_ofertante");
+   
     if (!usuarioCorreo) {
         alert('No se encontró el correo del usuario en localStorage');
         return;
@@ -55,15 +56,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         try {
-            if (nuevoRol === 'voluntario' && filialId) {
+            if (nuevoRol === 'voluntario' && filialId && rolActual === 'administrador') {
                 await asignarVoluntarioFilial(filialId, usuarioCorreo);
                 alert('Se cambió el rol del usuario a voluntario con éxito');
-            } else if (rolActual === 'voluntario') {
 
-                const filas = await obtenerFilasDeFilial(usuarioCorreo);
-                
+            }else if (rolActual === 'voluntario') {
+                const filas = await obtenerFilasDeFilial(usuarioCorreo);   
                 if (filas.length === 1) {
-                    
                     const confirmar = confirm("La filial de la cual el usuario es voluntario, no tiene otros voluntarios. Si cambia el rol del usuario, la filial quedará inhabilitada para realizar intercambios y los intercambios pendientes para la filial serán cancelados ¿Deseas continuar con el cambio de rol?");
                     if (!confirmar) {
                         return;
@@ -72,21 +71,31 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 await designarVoluntario(usuarioCorreo, nuevoRol);
                 alert('Se cambió el rol del usuario con éxito');
-            } else {
-                const response = await fetch('http://localhost:3000/usuarios/cambiarRol', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ usuarioCorreo, nuevoRol })
-                });
-
-                if (response.ok) {
-                    alert('Se cambió el rol del usuario con éxito');
-                } else {
-                    const error = await response.json();
-                    alert('Error: ' + error.message);
-                }
+            } else if(rolActual === 'comun'){
+                     const publicaciones = await obtenerPublicacionesUsuario(usuarioCorreo);
+                    if (publicaciones.length > 0) {   
+                        const confirmar = confirm("Las publicaciones pertenecientes al usuario serán eliminadas junto con las ofertas involucradas ¿Deseas continuar con la operación?");
+                        if (!confirmar) {
+                            return;
+                        }
+                        try {
+                            await eliminarOfertasDeUsuario(dni_ofertante);
+                            await eliminarPublicacionesDeUsuario(usuarioCorreo);
+                            
+                        } catch (error) {
+                            console.error("Error en el proceso de eliminación:", error);
+                            alert("Hubo un error en el proceso de eliminación.");
+                        }
+                    }
+                    if(nuevoRol === 'voluntario' && filialId ){
+                        await asignarVoluntarioFilial(filialId, usuarioCorreo);
+                        alert('Se cambió el rol del usuario a voluntario con éxito');
+                    }else{
+                        await cambiarRolUsuario(usuarioCorreo, nuevoRol);
+                    }
+            }else{
+                //si el rol actual es administrador
+                await cambiarRolUsuario(usuarioCorreo, nuevoRol);
             }
             formulario.reset();
             window.location.href = `detallesUsuario.html?correo=${usuarioCorreo}`;
@@ -196,5 +205,89 @@ async function obtenerFilasDeFilial(correoUsuario) {
     } catch (error) {
         console.error('Error al obtener las filas de la filial:', error);
         throw error;
+    }
+}
+
+async function obtenerPublicacionesUsuario(correoUsuario) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`http://localhost:3000/publicacion/publicaciones-por-correo/${correoUsuario}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Error al obtener las publicaciones del usuario "${correoUsuario}": ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error al obtener las publicaciones:", error);
+        throw error;
+    }
+}
+
+async function eliminarOfertasDeUsuario(dni_ofertante) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`http://localhost:3000/ofertas/ofertas-por-dni/${dni_ofertante}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Error al eliminar las ofertas del usuario con dni: ${dni_ofertante}: ${response.status} ${response.statusText}`);
+        }
+        console.log("Ofertas eliminadas correctamente");
+    } catch (error) {
+        console.error("Error al eliminar las ofertas del usuario ", error);
+        throw error;
+    }
+}
+
+async function eliminarPublicacionesDeUsuario(correoUsuario) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`http://localhost:3000/publicacion/publicaciones-por-correo/${correoUsuario}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Error al eliminar las publicaciones del usuario con correo: ${correoUsuario}: ${response.status} ${response.statusText}`);
+        }
+        console.log("Publicaciones eliminadas correctamente");
+    } catch (error) {
+        console.error("Error al eliminar las publicaciones del usuario ", error);
+        throw error;
+    }
+}
+
+async function cambiarRolUsuario(usuarioCorreo, nuevoRol) {
+    try {
+        const response = await fetch('http://localhost:3000/usuarios/cambiarRol', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ usuarioCorreo, nuevoRol })
+        });
+
+        if (response.ok) {
+            alert('Se cambió el rol del usuario con éxito');
+        } else {
+            const error = await response.json();
+            alert('Error: ' + error.message);
+        }
+    } catch (error) {
+        console.error('Error al cambiar rol:', error);
+        alert('Error al cambiar rol');
     }
 }
