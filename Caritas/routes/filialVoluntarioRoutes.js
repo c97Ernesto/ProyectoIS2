@@ -21,7 +21,11 @@ router
     .get(filialVoluntarioController.voluntariosDeFilial);
 
 router
-    .route('/filial-del-voluntario/:idVoluntario')
-    .get(filialVoluntarioController.filialDelVoluntario);
+    .route('/filiales-del-voluntario/:idVoluntario')
+    .get(filialVoluntarioController.filialesDelVoluntario);
+
+router
+    .route('/filiales-con-el-voluntario/:idVoluntario')
+    .get(filialVoluntarioController.filialesConElVoluntario);
 
 module.exports = router;

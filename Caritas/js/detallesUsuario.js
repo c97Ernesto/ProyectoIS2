@@ -148,10 +148,10 @@ async function obtenerVoluntariosDeFilial(id_filial) {
     }
 }
 
-async function obtenerFilialDelVoluntario(idUsuario) {
+async function obtenerFilialesDelVoluntario(idUsuario) {
     const token = localStorage.getItem("token");
     try {
-        const response = await fetch(`http://localhost:3000/filialVoluntario/filial-del-voluntario/${idUsuario}`, {
+        const response = await fetch(`http://localhost:3000/filialVoluntario/filiales-del-voluntario/${idUsuario}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -162,6 +162,29 @@ async function obtenerFilialDelVoluntario(idUsuario) {
             throw new Error(`Error al obtener filial_voluntario del usuario con correo "${idUsuario}": ${response.status} ${response.statusText}`);
         }
 
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error al obtener filial_voluntario:", error);
+        throw error;
+    }
+}
+
+async function obtenerFilialesConVoluntario(idUsuario) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`http://localhost:3000/filialVoluntario/filiales-con-el-voluntario/${idUsuario}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Error al obtener filial_voluntario del usuario con correo "${idUsuario}": ${response.status} ${response.statusText}`);
+        }
+
+        console.log(response.json)
         return await response.json();
 
     } catch (error) {
@@ -253,22 +276,35 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             else if (rolUsuario === 'voluntario') {
                 try {
-                    // const filial_voluntario = await obtenerFilialDelVoluntario(correoUsuario);
-                    // const idFilial = filial_voluntario[0].id_filial
+                    // const filial_voluntario = await obtenerFilialesDelVoluntario(correoUsuario);
+
+                    // console.log(filial_voluntario);
+
+                    // // const idFilial = filial_voluntario[0].id_filial
+
                     // const voluntarios = await obtenerVoluntariosDeFilial(idFilial);
                     
                     //FALTA BUSCAR LAS FILIALES DONDE EL VOLUNTARIO A ELIMINAR SEA EL ÚNICO VOLUNTARIO EN LA FILIAL
 
-                    if (cantVoluntariosFilial > 1) {
+                    const filialesConElVoluntario = await obtenerFilialesConVoluntario(correoUsuario)
+
+                    console.log(filialesConElVoluntario);
+
+                    const filialesInactivas = filialesConElVoluntario.length
+
+                    console.log(filialesInactivas)
+
+                    if (filialesInactivas == 0) {
                         const modalBody = document.getElementById('modal-body');
                         modalBody.innerHTML = `
-                            <p>La filial continuará en estado "activa" ya que se cuenta con más voluntarios disponibles.</p>
+                            <p>Las filiales que dependen del usuario permanecerán activas.</p>
                         `;
                     }
-                    else if (cantVoluntariosFilial == 1) {
+                    else if (filialesInactivas > 0) {
                         const modalBody = document.getElementById('modal-body');
                         modalBody.innerHTML = `
-                            <p>La filial no cuenta con más voluntarios disponibles, pasará a estado "inactiva"</p>
+                            <p>Hay filiales que dependen unicamente de este usuario. Si se elimina el usuario pasarán a estado "inactivo"</p>
+                            <p>Cantidad de filiales: ${filialesInactivas}</p>
                         `;
                     }
                     
