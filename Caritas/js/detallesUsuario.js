@@ -126,50 +126,6 @@ async function obtenerPublicacionesUsuario(correoUsuario) {
     }
 }
 
-async function obtenerVoluntariosDeFilial(id_filial) {
-    const token = localStorage.getItem("token");
-    try {
-        const response = await fetch(`http://localhost:3000/filialVoluntario/voluntarios-de-filial/${id_filial}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + token,
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`Error al obtener los voluntarios de la Filial "${id_filial}": ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
-
-    } catch (error) {
-        console.error("Error al obtener los voluntarios:", error);
-        throw error;
-    }
-}
-
-async function obtenerFilialesDelVoluntario(idUsuario) {
-    const token = localStorage.getItem("token");
-    try {
-        const response = await fetch(`http://localhost:3000/filialVoluntario/filiales-del-voluntario/${idUsuario}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + token,
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`Error al obtener filial_voluntario del usuario con correo "${idUsuario}": ${response.status} ${response.statusText}`);
-        }
-
-        return await response.json();
-
-    } catch (error) {
-        console.error("Error al obtener filial_voluntario:", error);
-        throw error;
-    }
-}
-
 async function obtenerFilialesConVoluntario(idUsuario) {
     const token = localStorage.getItem("token");
     try {

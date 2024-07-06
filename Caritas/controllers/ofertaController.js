@@ -152,6 +152,7 @@ class OfertaController {
         if (rows.length === 0) {
           return res.status(404).send('Oferta no encontrada');
         }
+        console.log(rows)
         return res.status(200).json(rows);
       }
       );

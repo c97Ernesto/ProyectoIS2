@@ -112,7 +112,7 @@ class FilialVoluntarioController {
   }
 
   voluntariosDeFilial(req, res) {
-    const { idFilial } = req.params;  // Id === Correo, del usuario
+    const { idFilial } = req.params;  
     console.log(idFilial);
     try {
       db.query(`SELECT * FROM filial_voluntario WHERE id_filial = ?`, [idFilial], (err, rows) => {

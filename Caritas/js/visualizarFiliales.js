@@ -73,9 +73,7 @@ async function eliminarFilial(filialId) {
 
 async function obtenerOfertasFilial(filialId) {
     const token = localStorage.getItem("token");
-  
     console.log("antes fetch", filialId);
-
     try {
         const response = await fetch(`http://localhost:3000/ofertas/ofertas-por-filial/${filialId}`, {
             method: "GET",
@@ -115,18 +113,43 @@ async function eliminarOfertasDeFilial(filialId) {
     }
 }
 
+async function obtenerVoluntariosDeFilial(filialId) {
+    const token = localStorage.getItem("token");
+    console.log("antes fetch", filialId);
+    try {
+        const response = await fetch(`http://localhost:3000/filialVoluntario/voluntarios-de-filial/${filialId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Error al obtner las ofertas de la filial con id "${filialId}": ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error al obtener la filial:", error);
+    }
+}
 
 // MOSTRAR LOS DETALLES
 function mostrarDetallesFiliales(filiales) {
     const filialesBody = document.getElementById('filiales-body');
     filialesBody.innerHTML = '';
 
-    filiales.forEach(filial => {
+    filiales.forEach(async filial => {
+        
+        const filial_voluntario = await obtenerVoluntariosDeFilial(filial.id)
+        cantVoluntarios = filial_voluntario.length;
+
         const fila = document.createElement('tr');
         fila.innerHTML = `
             <td>${filial.id}</td>
             <td>${filial.nombre}</td>
-            <td>${filial.fk_idUsuarioVoluntario}</td>
+            <td>${cantVoluntarios}</td>
             <td><button class="btn btn-outline-primary btn-detalles" data-id="${filial.id}">Editar</button></td>
             <td>
                 <button type="button" class="btn btn-outline-danger btn-eliminar" data-id="${filial.id}" data-nombre="${filial.nombre}"
@@ -136,6 +159,7 @@ function mostrarDetallesFiliales(filiales) {
             </td>
         `;
         filialesBody.appendChild(fila);
+
     });
 
     const thCantFiliales = document.getElementById('total-filiales');

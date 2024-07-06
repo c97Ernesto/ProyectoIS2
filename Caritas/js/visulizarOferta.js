@@ -1,3 +1,4 @@
+//visualizarOferta.js
 document.addEventListener("DOMContentLoaded", async () => {
 
   const token = localStorage.getItem("token");
@@ -99,23 +100,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function mostrarOferta(oferta, prodOfer, prodRecep, filial) {
 
-  let btnCambiarFilial;
-  let btnCancelarOferta;
-  let btnAceptarOferta;
-  if (oferta.estado === 'pendiente') {
-    btnCambiarFilial = '';
-    actionButtonHTML = '<a href="#" class="btn btn-outline-dark">Cambiar Filial</a>';
+  let btnCambiarFilial = '';
+  let btnCancelarOferta = '';
+  let btnAceptarOferta = '';
+  if (oferta.estado === 'esperando') {
+    btnCambiarFilial = '<a href="#" id="btn-cambiarFilial" class="btn btn-outline-dark">Cambiar Filial</a>';
     btnAceptarOferta = '<a href="#" id="btn-aceptar" class="btn btn-outline-primary">Aceptar Oferta</a>'
     btnCancelarOferta = '<a href="#" id="btn-rechazar" class="btn btn-outline-danger">Rechazar Oferta</a>';
   
-  } else if (oferta.estado === 'aceptada') {
-    btnCambiarFilial = '<div><a href="#" class="btn btn-outline-dark">Cambiar Filial</a></div>';
+  } else if (oferta.estado === 'aceptado') {
+    btnCambiarFilial = '<a href="#" id="btn-cambiarFilial" class="btn btn-outline-dark">Cambiar Filial</a>';
     btnAceptarOferta = ''
-    btnCancelarOferta = '<a href="#" class="btn btn-outline-danger">Cancelar Oferta</a>';
-  } else if (oferta.estado === 'rechazada') {
-    btnCambiarFilial = '';
-    btnAceptarOferta = ''
-    btnCancelarOferta = '';
+    btnCancelarOferta = '<a href="#" id="btn-cancelar" class="btn btn-outline-danger">Cancelar Oferta</a>';
   }
 
   const ofertasContainer = document.getElementById("ofertas-container");
@@ -134,7 +130,7 @@ function mostrarOferta(oferta, prodOfer, prodRecep, filial) {
         <div class="card">
             <img src="${prodRecep.imagenes}" class="card-img-top d-block mx-auto" style="width: 250px; height: 300px;" alt="...">
             <div class="card-body">
-                <p class="card-text">Nombre del Producto: ${prodRecep.imagenes}</p>
+                <p class="card-text">Nombre del Producto: ${prodRecep.nombre}</p>
                 <p class="card-text">Nombre del Receptor: ${oferta.nombre_receptor}</p>
                 <p class="card-text">Dni del Receptor: ${oferta.dni_receptor}</p>
             </div>
@@ -145,7 +141,7 @@ function mostrarOferta(oferta, prodOfer, prodRecep, filial) {
                 <div class="card-header">Estado de la Oferta: ${oferta.estado}</div>
                 <div class="d-flex align-items-center ">
                   <div class="me-5">
-                    <p class="card-text">Filial: Acá iría el nombre de la filial${filial.nombre}</p>
+                    <p class="card-text">Filial: ${filial.nombre}</p>
                   </div>
                   ${btnCambiarFilial}
                 </div>
@@ -164,6 +160,12 @@ function mostrarOferta(oferta, prodOfer, prodRecep, filial) {
   }
   if (document.getElementById("btn-rechazar")) {
     document.getElementById("btn-rechazar").addEventListener("click", () => handleReject(oferta.id));
+  }
+  if (document.getElementById("btn-cancelar")) {
+    document.getElementById("btn-cancelar").addEventListener("click", () => handleReject(oferta.id));
+  }
+  if (document.getElementById("btn-cambiarFilial")) {
+    document.getElementById("btn-cambiarFilial").addEventListener("click", () => handleFilialChange(oferta.id));
   }
 
   async function handleAccept(ofertaId) {
@@ -237,10 +239,9 @@ function mostrarOferta(oferta, prodOfer, prodRecep, filial) {
     }
   }
   
+  async function handleFilialChange(ofertaId) {
+    console.log("Filial change clicked for ofertaId:", ofertaId);
+    // Implementar lógica de cambio de filial aquí
+  }
   
 }
-
-document.getElementById("btn-changeFilial").addEventListener('click', () => {
-  console.log("click")
-});
-
