@@ -103,12 +103,12 @@ function mostrarOferta(oferta, prodOfer, prodRecep, filial) {
   let btnCambiarFilial = '';
   let btnCancelarOferta = '';
   let btnAceptarOferta = '';
-  if (oferta.estado === 'esperando') {
+  if (oferta.estado === 'pendiente') {
     btnCambiarFilial = '<a href="#" id="btn-cambiarFilial" class="btn btn-outline-dark">Cambiar Filial</a>';
     btnAceptarOferta = '<a href="#" id="btn-aceptar" class="btn btn-outline-primary">Aceptar Oferta</a>'
     btnCancelarOferta = '<a href="#" id="btn-rechazar" class="btn btn-outline-danger">Rechazar Oferta</a>';
   
-  } else if (oferta.estado === 'aceptado') {
+  } else if (oferta.estado === 'aceptada') {
     btnCambiarFilial = '<a href="#" id="btn-cambiarFilial" class="btn btn-outline-dark">Cambiar Filial</a>';
     btnAceptarOferta = ''
     btnCancelarOferta = '<a href="#" id="btn-cancelar" class="btn btn-outline-danger">Cancelar Oferta</a>';
@@ -143,7 +143,7 @@ function mostrarOferta(oferta, prodOfer, prodRecep, filial) {
                   <div class="me-5">
                     <p class="card-text">Filial: ${filial.nombre}</p>
                   </div>
-                  ${btnCambiarFilial}
+                  
                 </div>
                 <p class="card-text">Fecha: ${oferta.fecha_intercambio}</p>
                 <div class="text-center ">
