@@ -1,6 +1,6 @@
 let filialesData = []; // Variable para almacenar los datos originales de filiales
 
-// FETCH DATABE
+// FETCH DATABASE
 async function obtenerDetallesFiliales() {
     const token = localStorage.getItem("token");
 
@@ -49,6 +49,8 @@ async function eliminarFilial(filialId) {
   console.log(filialId);
 
   try {
+      await eliminarOfertasDeFilial(filialId);
+
       const response = await fetch(`http://localhost:3000/filial/eliminar/${filialId}`, {
           method: "DELETE",
           headers: {
@@ -64,7 +66,6 @@ async function eliminarFilial(filialId) {
       alert("Filial eliminada exitosamente!")
       // Obtener los detalles actualizados de las filiales
       await obtenerDetallesFiliales();
-
 
   } catch (error) {
       console.error("Error al eliminar la filial:", error);
@@ -83,7 +84,7 @@ async function obtenerOfertasFilial(filialId) {
             },
         });
         if (!response.ok) {
-            throw new Error(`Error al obtner las ofertas de la filial con id "${filialId}": ${response.status} ${response.statusText}`);
+            throw new Error(`Error al obtener las ofertas de la filial con id "${filialId}": ${response.status} ${response.statusText}`);
         }
 
         return await response.json();
@@ -125,13 +126,13 @@ async function obtenerVoluntariosDeFilial(filialId) {
             },
         });
         if (!response.ok) {
-            throw new Error(`Error al obtner las ofertas de la filial con id "${filialId}": ${response.status} ${response.statusText}`);
+            throw new Error(`Error al obtener los voluntarios de la filial con id "${filialId}": ${response.status} ${response.statusText}`);
         }
 
         return await response.json();
 
     } catch (error) {
-        console.error("Error al obtener la filial:", error);
+        console.error("Error al obtener los voluntarios de la filial:", error);
     }
 }
 
@@ -141,9 +142,8 @@ function mostrarDetallesFiliales(filiales) {
     filialesBody.innerHTML = '';
 
     filiales.forEach(async filial => {
-        
-        const filial_voluntario = await obtenerVoluntariosDeFilial(filial.id)
-        cantVoluntarios = filial_voluntario.length;
+        const filial_voluntario = await obtenerVoluntariosDeFilial(filial.id);
+        const cantVoluntarios = filial_voluntario.length;
 
         const fila = document.createElement('tr');
         fila.innerHTML = `
@@ -159,14 +159,19 @@ function mostrarDetallesFiliales(filiales) {
             </td>
         `;
         filialesBody.appendChild(fila);
-
     });
 
     const thCantFiliales = document.getElementById('total-filiales');
     thCantFiliales.innerHTML = `Filiales encontradas: ${filiales.length}`;
+}
 
-    document.querySelectorAll('.btn-eliminar').forEach(button => {
-        button.addEventListener('click', async event => {
+
+document.addEventListener('DOMContentLoaded', () => {
+    obtenerDetallesFiliales();
+
+    const filialesBody = document.getElementById('filiales-body');
+    filialesBody.addEventListener('click', async event => {
+        if (event.target.classList.contains('btn-eliminar')) {
             const filialId = event.target.getAttribute('data-id');
             const filialNombre = event.target.getAttribute('data-nombre');
 
@@ -176,48 +181,39 @@ function mostrarDetallesFiliales(filiales) {
             // Actualizar el contenido del modal con el nombre de la filial
             document.getElementById('filialNameToDelete').textContent = filialNombre;
 
-            // Obterner las ofertas de la filial
+            // Obtener las ofertas de la filial
             try {
                 const ofertasData = await obtenerOfertasFilial(filialId);
                 console.log('Ofertas obtenidas:', ofertasData);
                 document.getElementById('cant-ofertas-filial').textContent = ofertasData.length;    
-            } 
-            catch (error) {
+            } catch (error) {
                 console.error('Error al obtener las ofertas:', error);
             }
-        });
+        }
     });
-}
 
-// EVENTOS
-document.addEventListener('DOMContentLoaded', () => {
-  obtenerDetallesFiliales();
+    const btnFilterId = document.getElementById('btn-filter-idFilial');
+    btnFilterId.addEventListener('click', () => {
+        const filtroId = document.getElementById('input-filter-idFilial').value.trim();
+        const filialesFiltradas = filialesData.filter(filial => filial.id == filtroId);
 
-  const btnFilterId = document.getElementById('btn-filter-idFilial');
-  btnFilterId.addEventListener('click', () => {
-      const filtroId = document.getElementById('input-filter-idFilial').value.trim();
-      const filialesFiltradas = filialesData.filter(filial => filial.id == filtroId);
-
-      if (filialesFiltradas.length == 0){
-          alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
-          obtenerDetallesFiliales();
-      }
-      else {
-        mostrarDetallesFiliales(filialesFiltradas);
-      }
-      document.getElementById('input-filter-idFilial').value = '';
-  });
+        if (filialesFiltradas.length == 0) {
+            alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
+            obtenerDetallesFiliales();
+        } else {
+            mostrarDetallesFiliales(filialesFiltradas);
+        }
+        document.getElementById('input-filter-idFilial').value = '';
+    });
 
     const btnFilterNombreFilial = document.getElementById('btn-filter-nombreFilial');
     btnFilterNombreFilial.addEventListener('click', () => {
         const filtroNombre = document.getElementById('input-filter-nombreFilial').value.trim().toLowerCase();
-        //filtro por Nombre
         const filialesFiltradas = filialesData.filter(filial => filial.nombre.toLowerCase().includes(filtroNombre));
-        if (filialesFiltradas.length == 0){
+        if (filialesFiltradas.length == 0) {
             alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
             obtenerDetallesFiliales();
-        }
-        else {
+        } else {
             mostrarDetallesFiliales(filialesFiltradas);
         }
         document.getElementById('input-filter-nombreFilial').value = '';
@@ -226,23 +222,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnFilterCorreoVoluntario = document.getElementById('btn-filter-correoVoluntario');
     btnFilterCorreoVoluntario.addEventListener('click', () => {
         const filtroCorreoVoluntario = document.getElementById('input-filter-correoVoluntario').value.trim().toLowerCase();
-        //filtro por correoVoluntario
-        const filialesFiltradas = filialesData.filter(filial => filial.fk_idUsuarioVoluntario.toLowerCase().includes(filtroCorreoVoluntario));
-        if (filialesFiltradas.length == 0){
+        const filialesFiltradas = filialesData.filter(filial => 
+            filial.filial_voluntarios && filial.filial_voluntarios.some(voluntario => 
+                voluntario.voluntario && voluntario.voluntario.correo.toLowerCase().includes(filtroCorreoVoluntario)
+            )
+        );
+        if (filialesFiltradas.length == 0) {
             alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
             obtenerDetallesFiliales();
-        } 
-        else {
+        } else {
             mostrarDetallesFiliales(filialesFiltradas);
         }
         document.getElementById('input-filter-correoVoluntario').value = '';
     });
 
-    document.getElementById('confirmarEliminar').addEventListener('click', event => {
-        const filialId = event.target.getAttribute('data-id');
-    
-        eliminarOfertasDeFilial(filialId);
-        eliminarFilial(filialId);
-    });
+    const btnEliminarFilial = document.getElementById('confirmarEliminar');
+    btnEliminarFilial.addEventListener('click', async () => {
+        const filialId = btnEliminarFilial.getAttribute('data-id');
+        console.log('ID de la filial a eliminar:', filialId);
 
+        if (filialId) {
+            try {
+                await eliminarFilial(filialId);
+                obtenerDetallesFiliales(); // Llamar a obtenerDetallesFiliales() después de eliminar una filial
+            } catch (error) {
+                console.error('Error al eliminar la filial:', error);
+            }
+        }
+    });
 });
