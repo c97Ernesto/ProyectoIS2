@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Usuarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body style="background-color: #f0f0f0;">
+
+    <nav class="navbar" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="color: rgb(37, 135, 255);" href='./perfilAdm.html'>
+                <h1>Cáritas</h1>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="mb-4">
+
+            <div>
+                <div >
+                    <h3 class="text-center">Filtrar Usuario</h3>
+                </div>
+            </div>
+
+            <div>
+                <div class="input-group m-1 col-md">
+                    <input type="text" class="form-control" placeholder="Filtrar por Correo..."
+                        aria-label="Filtrar por Correo..." aria-describedby="btn-filter-correo"
+                        id="input-filter-correo">
+                    <button class="btn btn-outline-secondary btn-filter" type="button"
+                        id="btn-filter-correo">Buscar</button>
+                </div>
+                <div class="input-group m-1 col-md">
+                    <input type="text" class="form-control" placeholder="Filtrar por Rol..."
+                        aria-label="Filtrar por Rol..." aria-describedby="btn-filter-rol" id="input-filter-rol">
+                    <button class="btn btn-outline-secondary btn-filter" type="button"
+                        id="btn-filter-rol">Buscar</button>
+                </div>
+                <div class="input-group m-1 col-md">
+                    <input type="text" class="form-control" placeholder="Filtrar por nombre de usuario..."
+                        aria-label="Filtrar por nombre de usuario..." aria-describedby="btn-filter-usuario"
+                        id="input-filter-usuario">
+                    <button class="btn btn-outline-secondary btn-filter" type="button"
+                        id="btn-filter-usuario">Buscar</button>
+                </div>
+                <!-- <div class="input-group m-1 col-md">
+                    <input type="text" class="form-control" placeholder="Filtrar por nombre..."
+                        aria-label="Filtrar por nombre..." aria-describedby="btn-filter-nombre"
+                        id="input-filter-nombre">
+                    <button class="btn btn-outline-secondary btn-filter" type="button"
+                        id="btn-filter-nombre">Buscar</button>
+                </div>
+                <div class="input-group m-1 col-md">
+                    <input type="text" class="form-control" placeholder="Filtrar por Apellido..."
+                        aria-label="Filtrar por Apellido..." aria-describedby="btn-filter-apellido"
+                        id="input-filter-apellido">
+                    <button class="btn btn-outline-secondary btn-filter" type="button"
+                        id="btn-filter-apellido">Buscar</button>
+                </div>
+                <div class="input-group m-1 col-md">
+                    <input type="text" class="form-control" placeholder="Filtrar por telefono..."
+                        aria-label="Filtrar por telefono..." aria-describedby="btn-filter-telefono"
+                        id="input-filter-telefono">
+                    <button class="btn btn-outline-secondary btn-filter" type="button"
+                        id="btn-filter-telefono">Buscar</button>
+                </div> -->
+                <div class="input-group m-1 col-md">
+                    <input type="text" class="form-control" placeholder="Filtrar por Dni..."
+                        aria-label="Filtrar por Dni..." aria-describedby="btn-filter-dni" id="input-filter-dni">
+                    <button class="btn btn-outline-secondary btn-filter" type="button"
+                        id="btn-filter-dni">Buscar</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mb-4">
+            <div >
+                <h1 class="text-center">Listado de Usuarios</h1>
+            </div>
+            <div id="usuarios">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Usuario</th>
+                            <th>Dni</th>
+                            <!-- <th>Nombre</th> -->
+                            <!-- <th>Apellido</th> -->
+                            <!-- <th>Telefono</th> -->
+                            <th id="total-usuarios"></th> <!-- agregar número de cantidad de usuarios -->
+                        </tr>
+                    </thead>
+                    <tbody id="usuarios-body">
+                        <!-- filas /tr de los usuarios -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="./js/visualizarUsuarios.js"></script>
+</body>
+
+</html>

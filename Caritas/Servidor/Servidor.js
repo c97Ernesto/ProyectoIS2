@@ -74,6 +74,54 @@ app.get('/ofertas-recibidas', (req, res) => {
   res.sendFile(filePath);
 });
 
+app.get('/estadisticas', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'estadisticas.html');
+  res.sendFile(filePath);
+});
+app.post('/estadisticas', (req, res) => {
+  const { startDate, endDate } = req.body;
+
+  const queries = {
+    intercambiosPorFilial: `SELECT f.nombre, COUNT(*) as count 
+                          FROM ofertas o 
+                          JOIN filial f ON o.id_filial = f.id 
+                          WHERE o.fecha_intercambio BETWEEN ? AND ? 
+                          GROUP BY f.nombre`,
+    publicacionesPorCategoria: `SELECT categoria, COUNT(*) as count FROM publicacion WHERE fecha_publicacion BETWEEN ? AND ? GROUP BY categoria ORDER BY count DESC`,
+    donaciones: `SELECT COUNT(*) as count FROM trueques WHERE donacion = 'si' AND fecha_intercambio BETWEEN ? AND ?`,
+    intercambiosPorEstado: `SELECT estado, COUNT(*) as count FROM ofertas WHERE fecha_intercambio BETWEEN ? AND ? GROUP BY estado`,
+    truequesPorEstado: `SELECT estado, COUNT(*) as count FROM trueques WHERE fecha_intercambio BETWEEN ? AND ? GROUP BY estado`,
+    intercambiosPorEstadoYFilial: `SELECT f.nombre AS filial, o.estado, COUNT(*) as count 
+                                      FROM ofertas o 
+                                      JOIN filial f ON o.id_filial = f.id 
+                                      WHERE o.fecha_intercambio BETWEEN ? AND ? 
+                                      GROUP BY f.nombre, o.estado`,
+    donacionesPorFilial: `SELECT f.nombre, COUNT(*) as count 
+                          FROM trueques t 
+                          JOIN filial f ON t.id_filial = f.id 
+                          WHERE t.donacion = 'si' AND t.fecha_intercambio BETWEEN ? AND ? 
+                          GROUP BY f.nombre`
+  };
+
+  const results = {};
+
+  const runQuery = (query, key) => {
+    return new Promise((resolve, reject) => {
+      db.query(query, [startDate, endDate], (error, queryResults) => {
+        if (error) {
+          return reject(error);
+        }
+        results[key] = queryResults.length ? queryResults : [];
+        resolve();
+      });
+    });
+  };
+
+  Promise.all(Object.keys(queries).map(key => runQuery(queries[key], key)))
+    .then(() => res.json(results))
+    .catch(error => res.status(500).json({ error: error.message }));
+});
+
 app.post("/registrar", async (req, res) => {
   var { correo, password, usuario, nombre, apellido, nacimiento, dni, tlf, rol } = req.body;
   try {
@@ -397,6 +445,7 @@ const publicacionRoutes = require("../routes/publicacionRoutes");
 const filialRoutes = require("../routes/filialRoutes");
 const userRoutes = require("../routes/userRoutes");
 
+
 app.use("/publicacion", publicacionRoutes);
 
 const ofertaRoutes = require("../routes/ofertaRoutes");
@@ -410,3 +459,10 @@ app.use("/horario", horarioRoutes);
 
 const usuario_horarios_predeterminadosRoutes = require("../routes/usuario_horarios_predeterminadosRoutes.js");
 app.use("/usuarios_horarios_predeterminados", usuario_horarios_predeterminadosRoutes);
+
+const truequesRoutes = require("../routes/truequesRoutes");
+app.use("/trueques", truequesRoutes);
+
+const filialVoluntarioRoutes = require("../routes/filialVoluntarioRoutes.js");
+app.use("/filialVoluntario", filialVoluntarioRoutes);
+

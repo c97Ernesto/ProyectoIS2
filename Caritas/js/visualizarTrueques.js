@@ -7,12 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const fecha = document.getElementById('fecha').value;
         await obtenerTruequesPendientes(fecha);
     });
-
+    
     async function obtenerTruequesPendientes(fecha) {
         try {
             let url = 'http://localhost:3000/filial/truequesPendientes';
             if (fecha) {
-                url += `?fecha=${fecha}`;
+                `url += ?fecha=${fecha}`;
             }
             const response = await fetch(url, {
                 headers: {
@@ -34,9 +34,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p><strong>Producto Ofertante:</strong> ${trueque.nombre_producto_ofertante}</p>
                         <p><strong>Producto Receptor:</strong> ${trueque.nombre_producto_receptor}</p>
                         <p><strong>Fecha de Intercambio:</strong> ${trueque.fecha_intercambio}</p>
+                        <button class="registrarEstadoBtn" data-id="${trueque.id}">Registrar Estado</button>
                     `;
 
                     truequesPendientesDiv.appendChild(truequeDiv);
+                });
+
+                // Añadir event listeners a los botones después de agregarlos al DOM
+                document.querySelectorAll('.registrarEstadoBtn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const truequeId = this.getAttribute('data-id')
+                        localStorage.setItem('ofertaId',truequeId )
+                        window.location.href =`./registrarTrueque.html`;
+                    });
                 });
             } else {
                 truequesPendientesDiv.innerHTML = `<p>${trueques.message}</p>`;

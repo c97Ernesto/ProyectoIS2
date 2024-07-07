@@ -19,65 +19,110 @@ function obtenerCorreoUsuarioDesdeToken(req) {
 class FiliarController {
     constructor() {}
 
-    // Método para cargar una filial
-    cargarFilial(req, res) {
+    async cargarFilial(req, res) {
         try {
-            const { nombre, horarios, fk_idUsuarioVoluntario } = req.body;
+            const { nombre, fechaInicio, fechaFin, horaInicio, horaFin, intervalo, diasTrabajo } = req.body;
+            const fechaInicioObj = new Date(fechaInicio);
+            const fechaFinObj = new Date(fechaFin);
+            const [horaInicioHoras, horaInicioMinutos] = horaInicio.split(':').map(Number);
+            const [horaFinHoras, horaFinMinutos] = horaFin.split(':').map(Number);
 
             // Insertar la filial
-            db.query(
-                "INSERT INTO filial (nombre, fk_idUsuarioVoluntario) VALUES (?, ?);",
-                [nombre, fk_idUsuarioVoluntario],
-                (err, result) => {
-                    if (err) {
-                        console.error('Error al insertar la filial:', err);
-                        return res.status(400).json({ message: err.message });
+            db.query("INSERT INTO filial (nombre, estado) VALUES (?, ?);", [nombre, 'inactiva'], (err, result) => {
+                if (err) {
+                    console.error('Error al insertar la filial:', err);
+                    return res.status(400).json({ message: err.message });
+                }
+
+                const filialId = result.insertId;
+                const horarios = [];
+
+                let currentDate = new Date(fechaInicioObj);
+                while (currentDate <= fechaFinObj) {
+                    if (diasTrabajo.includes(currentDate.getDay().toString())) {
+                        let currentHour = horaInicioHoras;
+                        let currentMinute = horaInicioMinutos;
+
+                        while (currentHour < horaFinHoras || (currentHour === horaFinHoras && currentMinute < horaFinMinutos)) {
+                            const horario = new Date(currentDate);
+                            horario.setHours(currentHour, currentMinute, 0, 0);
+                            horarios.push({
+                                fechaHora: horario.toISOString().slice(0, 19).replace('T', ' '),
+                                fk_idFilial: filialId,
+                                estado: 'disponible'
+                            });
+
+                            currentMinute += parseInt(intervalo, 10);
+                            if (currentMinute >= 60) {
+                                currentMinute -= 60;
+                                currentHour += 1;
+                            }
+                        }
                     }
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
 
-                    const filialId = result.insertId;
-
-                    // Insertar los horarios para la filial
-                    const horarioQueries = horarios.map(horario => {
-                        return new Promise((resolve, reject) => {
-                            db.query(
-                                "INSERT INTO horario (fechaHora, fk_IdFilial) VALUES (?, ?);",
-                                [horario, filialId],
-                                (err, result) => {
-                                    if (err) {
-                                        console.error('Error al insertar el horario:', err);
-                                        return reject(err);
-                                    }
-                                    resolve(result);
-                                }
-                            );
+                // Insertar los horarios para la filial
+                const horarioQueries = horarios.map(horario => {
+                    return new Promise((resolve, reject) => {
+                        db.query("INSERT INTO horario (fechaHora, fk_idFilial, estado) VALUES (?, ?, ?);", [horario.fechaHora, horario.fk_idFilial, horario.estado], (err, result) => {
+                            if (err) {
+                                console.error('Error al insertar el horario:', err);
+                                return reject(err);
+                            }
+                            resolve(result);
                         });
                     });
+                });
 
-                    // Ejecutar todas las consultas de horario
-                    Promise.all(horarioQueries)
-                        .then(() => {
-                            return res.status(201).json({ message: 'Filial y horarios cargados exitosamente' });
-                        })
-                        .catch(err => {
-                            console.error('Error al insertar los horarios:', err);
-                            return res.status(500).json({ message: 'Error al insertar los horarios' });
-                        });
-                }
-            );
+                // Ejecutar todas las consultas de horario
+                Promise.all(horarioQueries)
+                    .then(() => {
+                        return res.status(201).json({ message: 'Filial y horarios cargados exitosamente' });
+                    })
+                    .catch(err => {
+                        console.error('Error al insertar los horarios:', err);
+                        return res.status(500).json({ message: 'Error al insertar los horarios' });
+                    });
+            });
         } catch (err) {
             console.error('Error al cargar la filial:', err);
             return res.status(500).json({ message: err.message });
         }
     }
-    obtenerFiliales(req, res){
-        db.query('SELECT id, nombre FROM filial', (err, results) => {
+
+
+    obtenerFiliales(req, res) {
+        db.query('SELECT id, nombre FROM filial WHERE estado = "activa"', (err, results) => {
             if (err) {
                 return res.status(500).json({ message: err.message });
             }
             res.json(results);
         });
     }
-   /* obtenerLosHorariosDeUnaFilial(req, res){
+
+    obtenerTodasFiliales(req, res) {
+        db.query('SELECT id, nombre FROM filial ', (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+            res.json(results);
+        });
+    }
+   
+
+    obtenerDetallesFiliales = (req, res) => {
+        const query = "SELECT * FROM filial";
+        db.query(query, (err, results) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ message: "Error al obtener las filiales (obtenerDetallesFiliales línea81 FilialController)", error: err });
+          }
+          res.status(200).json(results);
+        });
+    };
+    obtenerLosHorariosDeUnaFilial(req, res){
         const { filialId } = req.params;
         db.query('SELECT id, fechaHora, estado FROM horario WHERE fk_IdFilial = ?', [filialId], (err, results) => {
              if (err) {
@@ -86,8 +131,8 @@ class FiliarController {
              res.json(results);
         });
 
-    }*/
-
+    }
+    /*
     obtenerLosHorariosDeUnaFilial(req, res) {
         const { filialId } = req.params;
         const { productoId } = req.query;
@@ -120,7 +165,7 @@ class FiliarController {
             });
         });
     }
-    
+    */
 
     ElegirUnaFilial(req, res){
         const { filialId, horarioId } = req.body;
@@ -150,10 +195,10 @@ class FiliarController {
     
           // Primero, obtener el ID de la filial usando el correo del usuario
           const obtenerFilialIdQuery = `
-            SELECT f.id AS filialId
-            FROM filial f
-            JOIN usuarios u ON f.fk_idUsuarioVoluntario = u.correo
-            WHERE u.correo = ?
+            SELECT f.id_filial AS filialId
+            FROM filial_voluntario f
+            JOIN usuarios u ON f.id_voluntario = u.Correo
+            WHERE u.Correo = ?
           `;
     
           db.query(obtenerFilialIdQuery, [correoUsuario], (err, results) => {
@@ -291,6 +336,79 @@ class FiliarController {
             });
         });
     }
+
+    /*eliminarFilial = (req, res) => {
+        const filialId = req.params.id;
+        const query = "DELETE FROM filial WHERE id = ?";
+        db.query(query, [filialId], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: "Error al eliminar la filial", error: err });
+            }
+            res.status(200).json({ message: "Filial eliminada exitosamente" });
+        });
+    };*/
+
+    eliminarFilial = (req, res) => {
+        const filialId = req.params.id;
+        
+        //voluntarios asociados con la filial
+        const obtenerVoluntariosQuery = `
+            SELECT u.Correo 
+            FROM usuarios u
+            JOIN filial_voluntario fv ON u.Correo = fv.id_voluntario
+            WHERE fv.id_filial = ?
+        `;
+    
+        db.query(obtenerVoluntariosQuery, [filialId], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: "Error al obtener los voluntarios de la filial", error: err });
+            }
+    
+            if (results.length === 0) {
+                return res.status(404).json({ message: "No se encontraron voluntarios para esta filial" });
+            }
+    
+            const voluntarios = results.map(voluntario => voluntario.Correo);
+    
+            // Actualizar el rol de los voluntarios a 'comun'
+            const actualizarRolQuery = `
+                UPDATE usuarios 
+                SET rol = 'comun' 
+                WHERE Correo IN (?)
+            `;
+    
+            db.query(actualizarRolQuery, [voluntarios], (err, updateResults) => {
+                if (err) {
+                    return res.status(500).json({ message: "Error al actualizar el rol de los voluntarios", error: err });
+                }
+    
+                //eliminar la relación en la tabla filial_voluntario
+                const eliminarRelacionQuery = `
+                    DELETE FROM filial_voluntario 
+                    WHERE id_filial = ?
+                `;
+    
+                db.query(eliminarRelacionQuery, [filialId], (err, deleteResults) => {
+                    if (err) {
+                        return res.status(500).json({ message: "Error al eliminar la relación filial-voluntario", error: err });
+                    }
+    
+                    // eliminar la filial
+                    const eliminarFilialQuery = `
+                        DELETE FROM filial 
+                        WHERE id = ?
+                    `;
+    
+                    db.query(eliminarFilialQuery, [filialId], (err, results) => {
+                        if (err) {
+                            return res.status(500).json({ message: "Error al eliminar la filial", error: err });
+                        }
+                        res.status(200).json({ message: "Filial eliminada y roles de voluntarios actualizados exitosamente" });
+                    });
+                });
+            });
+        });
+    };
 
 }
 

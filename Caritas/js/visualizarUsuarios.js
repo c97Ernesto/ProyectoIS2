@@ -30,8 +30,6 @@ async function obtenerUsuarios() {
 
         usuariosData = await response.json(); // Almacena los usuarios obtenidos
 
-        usuariosData = []
-
         mostrarUsuarios(usuariosData);
         // Deshabilitar botones de filtro si no hay usuarios
         const filterButtons = document.querySelectorAll('.btn-filter');
@@ -60,25 +58,22 @@ function mostrarUsuarios(usuarios) {
         fila.innerHTML = `
             <td>${usuario.Correo}</td>
             <td>${usuario.rol}</td>
-            <td>${usuario.DNI}</td>
             <td>${usuario.Usuario}</td>
-            <td>${usuario.Nombre}</td>
-            <td>${usuario.apellido}</td>
-            <td>${usuario.Telefono}</td>
+            <td>${usuario.DNI}</td>
+            
             <td><button class="btn btn-primary btn-detalles" data-id="${usuario.Correo}">Detalles</button></td>
         `;
         usuariosBody.appendChild(fila);
     });
 
-    // Agregar evento a todos los botones de detalles
+    const thCantUsuarios = document.getElementById('total-usuarios');
+    thCantUsuarios.innerHTML = `Usuarios encontradas: ${usuarios.length}`;
+
     document.querySelectorAll('.btn-detalles').forEach(button => {
         button.addEventListener('click', event => {
             const usuarioCorreo = event.target.getAttribute('data-id');
-            const usuarioSeleccionado = usuariosData.find(usuario => usuario.Correo === usuarioCorreo);
-
-            // IR A LA PÁGINA DE DETALLES DEL USUARIO
-            //mostrarDetallesUsuario(usuarioSeleccionado);  //función que mostraría los detalles del usuario si fuera en la misma pàgina
-
+            // Redirigir a la página de detalles del usuario
+            window.location.href = `detallesUsuario.html?correo=${usuarioCorreo}`;
         });
     });
 }
@@ -86,7 +81,6 @@ function mostrarUsuarios(usuarios) {
 
 document.addEventListener('DOMContentLoaded', () => {
     obtenerUsuarios();
-
 
     const btnFilterCorreo = document.getElementById('btn-filter-correo');
     btnFilterCorreo.addEventListener('click', () => {
@@ -97,7 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
             obtenerUsuarios();
         }
-        mostrarUsuarios(usuariosFiltrados);
+        else {
+            mostrarUsuarios(usuariosFiltrados);
+        }
+        document.getElementById('input-filter-correo').value = '';
     });
 
     const btnFilterRol = document.getElementById('btn-filter-rol');
@@ -109,7 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
             obtenerUsuarios();
         }
-        mostrarUsuarios(usuariosFiltrados);
+        else {
+            mostrarUsuarios(usuariosFiltrados);
+        }
+        document.getElementById('input-filter-rol').value = '';
     });
 
     const btnFilterNombreUsuario = document.getElementById('btn-filter-usuario');
@@ -121,44 +121,56 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
             obtenerUsuarios();
         }
-        mostrarUsuarios(usuariosFiltrados);
+        else {
+            mostrarUsuarios(usuariosFiltrados);
+        }
+        document.getElementById('input-filter-usuario').value = '';
     });
 
-    const btnFilterNombre = document.getElementById('btn-filter-nombre');
-    btnFilterNombre.addEventListener('click', () => {
-        const filtroNombre = document.getElementById('input-filter-nombre').value.trim().toLowerCase();
-        //filtro por nombre
-        const usuariosFiltrados = usuariosData.filter(usuario => usuario.Nombre.toLowerCase().includes(filtroNombre));
-        if (usuariosFiltrados.length == 0){
-            alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
-            obtenerUsuarios();
-        }
-        mostrarUsuarios(usuariosFiltrados);
-    });
+    // const btnFilterNombre = document.getElementById('btn-filter-nombre');
+    // btnFilterNombre.addEventListener('click', () => {
+    //     const filtroNombre = document.getElementById('input-filter-nombre').value.trim().toLowerCase();
+    //     //filtro por nombre
+    //     const usuariosFiltrados = usuariosData.filter(usuario => usuario.Nombre.toLowerCase().includes(filtroNombre));
+    //     if (usuariosFiltrados.length == 0){
+    //         alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
+    //         obtenerUsuarios();
+    //     }
+    //     else {
+    //         mostrarUsuarios(usuariosFiltrados);
+    //     }
+    //     document.getElementById('input-filter-nombre').value = '';
+    // });
 
-    const btnFilterApellido = document.getElementById('btn-filter-apellido');
-    btnFilterApellido.addEventListener('click', () => {
-        const filtroApellido = document.getElementById('input-filter-apellido').value.trim().toLowerCase();
-        //filtro por apellido
-        const usuariosFiltrados = usuariosData.filter(usuario => usuario.apellido.toLowerCase().includes(filtroApellido));
-        if (usuariosFiltrados.length == 0){
-            alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
-            obtenerUsuarios();
-        }
-        mostrarUsuarios(usuariosFiltrados);
-    });
+    // const btnFilterApellido = document.getElementById('btn-filter-apellido');
+    // btnFilterApellido.addEventListener('click', () => {
+    //     const filtroApellido = document.getElementById('input-filter-apellido').value.trim().toLowerCase();
+    //     //filtro por apellido
+    //     const usuariosFiltrados = usuariosData.filter(usuario => usuario.apellido.toLowerCase().includes(filtroApellido));
+    //     if (usuariosFiltrados.length == 0){
+    //         alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
+    //         obtenerUsuarios();
+    //     }
+    //     else {
+    //         mostrarUsuarios(usuariosFiltrados);
+    //     }
+    //     document.getElementById('input-filter-apellido').value = '';
+    // });
 
-    const btnFilterTelefono = document.getElementById('btn-filter-telefono');
-    btnFilterTelefono.addEventListener('click', () => {
-        const filtroTelefono = document.getElementById('input-filter-telefono').value.trim();
-        //filtro por Telefono
-        const usuariosFiltrados = usuariosData.filter(usuario => usuario.Telefono.toString().includes(filtroTelefono));
-        if (usuariosFiltrados.length == 0){
-            alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
-            obtenerUsuarios();
-        }
-        mostrarUsuarios(usuariosFiltrados);
-    });
+    // const btnFilterTelefono = document.getElementById('btn-filter-telefono');
+    // btnFilterTelefono.addEventListener('click', () => {
+    //     const filtroTelefono = document.getElementById('input-filter-telefono').value.trim();
+    //     //filtro por Telefono
+    //     const usuariosFiltrados = usuariosData.filter(usuario => usuario.Telefono.toString().includes(filtroTelefono));
+    //     if (usuariosFiltrados.length == 0){
+    //         alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
+    //         obtenerUsuarios();
+    //     }
+    //     else {
+    //         mostrarUsuarios(usuariosFiltrados);
+    //     }
+    //     document.getElementById('input-filter-telefono').value = '';
+    // });
     
     const btnFilterDNI = document.getElementById('btn-filter-dni');
     btnFilterDNI.addEventListener('click', () => {
@@ -168,7 +180,10 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
             obtenerUsuarios();
         }
-        mostrarUsuarios(usuariosFiltrados);
+        else {
+            mostrarUsuarios(usuariosFiltrados);
+        }
+        document.getElementById('input-filter-dni').value = '';
     });
     
 
