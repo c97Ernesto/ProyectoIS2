@@ -13,6 +13,9 @@ function obtenerCorreoUsuarioDesdeToken(req) {
   class TruequeController {
       registrarEstadoTrueque(req, res) {
           const { ofertaId, descripcion, estado,donacion } = req.body;
+
+          console.log(ofertaId)
+
           const voluntario = obtenerCorreoUsuarioDesdeToken(req);
   
           db.query('SELECT * FROM ofertas WHERE id = ?', [ofertaId], (err, results) => {

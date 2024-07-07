@@ -185,7 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const ofertasData = await obtenerOfertasFilial(filialId);
                 console.log('Ofertas obtenidas:', ofertasData);
-                document.getElementById('cant-ofertas-filial').textContent = ofertasData.length;    
+                const ofertasAceptadas = ofertasData.filter(oferta => oferta.estado === 'aceptado');
+                document.getElementById('cant-ofertas-filial').textContent = ofertasAceptadas.length;
             } catch (error) {
                 console.error('Error al obtener las ofertas:', error);
             }
