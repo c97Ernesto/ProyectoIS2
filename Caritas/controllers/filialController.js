@@ -337,7 +337,7 @@ class FiliarController {
         });
     }
 
-    eliminarFilial = (req, res) => {
+    /*eliminarFilial = (req, res) => {
         const filialId = req.params.id;
         const query = "DELETE FROM filial WHERE id = ?";
         db.query(query, [filialId], (err, results) => {
@@ -345,6 +345,68 @@ class FiliarController {
                 return res.status(500).json({ message: "Error al eliminar la filial", error: err });
             }
             res.status(200).json({ message: "Filial eliminada exitosamente" });
+        });
+    };*/
+
+    eliminarFilial = (req, res) => {
+        const filialId = req.params.id;
+        
+        //voluntarios asociados con la filial
+        const obtenerVoluntariosQuery = `
+            SELECT u.Correo 
+            FROM usuarios u
+            JOIN filial_voluntario fv ON u.Correo = fv.id_voluntario
+            WHERE fv.id_filial = ?
+        `;
+    
+        db.query(obtenerVoluntariosQuery, [filialId], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: "Error al obtener los voluntarios de la filial", error: err });
+            }
+    
+            if (results.length === 0) {
+                return res.status(404).json({ message: "No se encontraron voluntarios para esta filial" });
+            }
+    
+            const voluntarios = results.map(voluntario => voluntario.Correo);
+    
+            // Actualizar el rol de los voluntarios a 'comun'
+            const actualizarRolQuery = `
+                UPDATE usuarios 
+                SET rol = 'comun' 
+                WHERE Correo IN (?)
+            `;
+    
+            db.query(actualizarRolQuery, [voluntarios], (err, updateResults) => {
+                if (err) {
+                    return res.status(500).json({ message: "Error al actualizar el rol de los voluntarios", error: err });
+                }
+    
+                //eliminar la relación en la tabla filial_voluntario
+                const eliminarRelacionQuery = `
+                    DELETE FROM filial_voluntario 
+                    WHERE id_filial = ?
+                `;
+    
+                db.query(eliminarRelacionQuery, [filialId], (err, deleteResults) => {
+                    if (err) {
+                        return res.status(500).json({ message: "Error al eliminar la relación filial-voluntario", error: err });
+                    }
+    
+                    // eliminar la filial
+                    const eliminarFilialQuery = `
+                        DELETE FROM filial 
+                        WHERE id = ?
+                    `;
+    
+                    db.query(eliminarFilialQuery, [filialId], (err, results) => {
+                        if (err) {
+                            return res.status(500).json({ message: "Error al eliminar la filial", error: err });
+                        }
+                        res.status(200).json({ message: "Filial eliminada y roles de voluntarios actualizados exitosamente" });
+                    });
+                });
+            });
         });
     };
 
