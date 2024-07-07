@@ -78,7 +78,6 @@ app.get('/estadisticas', (req, res) => {
   const filePath = path.join(__dirname, '..', 'estadisticas.html');
   res.sendFile(filePath);
 });
-
 app.post('/estadisticas', (req, res) => {
   const { startDate, endDate } = req.body;
 
@@ -91,7 +90,17 @@ app.post('/estadisticas', (req, res) => {
     publicacionesPorCategoria: `SELECT categoria, COUNT(*) as count FROM publicacion WHERE fecha_publicacion BETWEEN ? AND ? GROUP BY categoria ORDER BY count DESC`,
     donaciones: `SELECT COUNT(*) as count FROM trueques WHERE donacion = 'si' AND fecha_intercambio BETWEEN ? AND ?`,
     intercambiosPorEstado: `SELECT estado, COUNT(*) as count FROM ofertas WHERE fecha_intercambio BETWEEN ? AND ? GROUP BY estado`,
-    truequesPorEstado: `SELECT estado, COUNT(*) as count FROM trueques WHERE fecha_intercambio BETWEEN ? AND ? GROUP BY estado`
+    truequesPorEstado: `SELECT estado, COUNT(*) as count FROM trueques WHERE fecha_intercambio BETWEEN ? AND ? GROUP BY estado`,
+    intercambiosPorEstadoYFilial: `SELECT f.nombre AS filial, o.estado, COUNT(*) as count 
+                                      FROM ofertas o 
+                                      JOIN filial f ON o.id_filial = f.id 
+                                      WHERE o.fecha_intercambio BETWEEN ? AND ? 
+                                      GROUP BY f.nombre, o.estado`,
+    donacionesPorFilial: `SELECT f.nombre, COUNT(*) as count 
+                          FROM trueques t 
+                          JOIN filial f ON t.id_filial = f.id 
+                          WHERE t.donacion = 'si' AND t.fecha_intercambio BETWEEN ? AND ? 
+                          GROUP BY f.nombre`
   };
 
   const results = {};

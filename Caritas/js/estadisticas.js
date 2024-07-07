@@ -26,7 +26,6 @@ document.getElementById('statisticsForm').addEventListener('submit', function(ev
             }
         });
 
-        
         displayStatistics(data);
     })
     .catch(error => {
@@ -35,22 +34,103 @@ document.getElementById('statisticsForm').addEventListener('submit', function(ev
 });
 
 function displayStatistics(data) {
-    const statisticsDiv = document.getElementById('statisticsResults'); // Asegúrate de apuntar al elemento correcto
+    const statisticsDiv = document.getElementById('statisticsResults');
 
     statisticsDiv.innerHTML = '';
 
+    // Sección de estadísticas totales
+    const totalSection = document.createElement('div');
+    totalSection.classList.add('statistics-section');
+    totalSection.innerHTML = `<h2>Estadísticas Totales</h2>`;
+
+    const totalRow = document.createElement('div');
+    totalRow.classList.add('statistics-row');
+
     for (const key in data) {
-        if (data.hasOwnProperty(key)) {
+        if (data.hasOwnProperty(key) && !key.includes('PorEstadoYFilial') && !key.includes('donacionesPorFilial')) {
+            const card = document.createElement('div');
+            card.classList.add('statistics-card');
+
             const section = document.createElement('div');
             section.innerHTML = `<h3>${key}</h3>`;
 
+            const table = document.createElement('table');
+            table.classList.add('statistics-table');
+            const headerRow = document.createElement('tr');
+
+            if (data[key].length > 0) {
+                Object.keys(data[key][0]).forEach(header => {
+                    const th = document.createElement('th');
+                    th.innerText = header;
+                    headerRow.appendChild(th);
+                });
+                table.appendChild(headerRow);
+            }
+
             data[key].forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.innerText = JSON.stringify(item);
-                section.appendChild(itemDiv);
+                const row = document.createElement('tr');
+                Object.values(item).forEach(value => {
+                    const td = document.createElement('td');
+                    td.innerText = value;
+                    row.appendChild(td);
+                });
+                table.appendChild(row);
             });
 
-            statisticsDiv.appendChild(section);
+            section.appendChild(table);
+            card.appendChild(section);
+            totalRow.appendChild(card);
         }
     }
+
+    totalSection.appendChild(totalRow);
+    statisticsDiv.appendChild(totalSection);
+
+    // Sección de estadísticas por filial
+    const filialSection = document.createElement('div');
+    filialSection.classList.add('statistics-section');
+    filialSection.innerHTML = `<h2>Estadísticas por Filial</h2>`;
+
+    const filialRow = document.createElement('div');
+    filialRow.classList.add('statistics-row');
+
+    for (const key in data) {
+        if (data.hasOwnProperty(key) && (key.includes('PorEstadoYFilial') || key.includes('donacionesPorFilial'))) {
+            const card = document.createElement('div');
+            card.classList.add('statistics-card');
+
+            const section = document.createElement('div');
+            section.innerHTML = `<h3>${key}</h3>`;
+
+            const table = document.createElement('table');
+            table.classList.add('statistics-table');
+            const headerRow = document.createElement('tr');
+
+            if (data[key].length > 0) {
+                Object.keys(data[key][0]).forEach(header => {
+                    const th = document.createElement('th');
+                    th.innerText = header;
+                    headerRow.appendChild(th);
+                });
+                table.appendChild(headerRow);
+            }
+
+            data[key].forEach(item => {
+                const row = document.createElement('tr');
+                Object.values(item).forEach(value => {
+                    const td = document.createElement('td');
+                    td.innerText = value;
+                    row.appendChild(td);
+                });
+                table.appendChild(row);
+            });
+
+            section.appendChild(table);
+            card.appendChild(section);
+            filialRow.appendChild(card);
+        }
+    }
+
+    filialSection.appendChild(filialRow);
+    statisticsDiv.appendChild(filialSection);
 }
