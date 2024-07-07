@@ -228,6 +228,51 @@ class OfertaController {
     }
   }
 
+  obtenerOfertasAceptadasDeFilial(req, res) {
+    const { filialId } = req.params;
+
+    console.log(filialId);
+
+    try {
+      db.query(`SELECT * FROM ofertas WHERE id_filial = ? AND estado = 'aceptada'`, [filialId], (err, rows) => {
+        if (err) {
+          res.status(400).send(err.message);
+        }
+        if (rows.length === 0) {
+          console.log('No hay ofertas aceptadas para la filial con id: ' + filialId);
+          return res.status(200).json(rows);
+        }
+        console.log('Hay ofertas aceptadas para la filial con id: ' + filialId);
+        return res.status(200).json(rows);
+      }
+      );
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+
+  eliminarOfertasAceptadasDeFilial(req, res) {
+    const { filialId } = req.params;
+
+    console.log(filialId);
+
+    try {
+      db.query(`DELETE FROM ofertas WHERE id_filial = ? AND estado = 'aceptada'`, [filialId], (err, result) => {
+        if (err) {
+          return res.status(400).send(err.message);
+        }
+        if (result.affectedRows === 0) {
+          console.log('No hay ofertas aceptadas para la filial con id: ' + filialId);
+          return res.status(200).json({ message: 'No hay ofertas para la filial con id: ' + filialId });
+        }
+        console.log('Hay ofertas aceptadas para la filial con id: ' + filialId);
+        return res.status(200).json({ message: 'Ofertas eliminadas correctamente para la filial con id: ' + filialId });
+      });
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+
   obtenerOfertasPorDni(req, res) {
     const { dni } = req.params;
 

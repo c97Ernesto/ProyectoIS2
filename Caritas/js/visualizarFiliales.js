@@ -49,7 +49,7 @@ async function eliminarFilial(filialId) {
   console.log(filialId);
 
   try {
-      await eliminarOfertasDeFilial(filialId);
+      await eliminarOfertasAceptadasDeFilial(filialId);
 
       const response = await fetch(`http://localhost:3000/filial/eliminar/${filialId}`, {
           method: "DELETE",
@@ -72,11 +72,11 @@ async function eliminarFilial(filialId) {
   }
 }
 
-async function obtenerOfertasFilial(filialId) {
+async function obtenerOfertasAceptadasFilial(filialId) {
     const token = localStorage.getItem("token");
     console.log("antes fetch", filialId);
     try {
-        const response = await fetch(`http://localhost:3000/ofertas/ofertas-por-filial/${filialId}`, {
+        const response = await fetch(`http://localhost:3000/ofertas/ofertas-aceptadas-por-filial/${filialId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -94,11 +94,11 @@ async function obtenerOfertasFilial(filialId) {
     }
 }
 
-async function eliminarOfertasDeFilial(filialId) {
+async function eliminarOfertasAceptadasDeFilial(filialId) {
     const token = localStorage.getItem("token");
   
     try {
-        const response = await fetch(`http://localhost:3000/ofertas/ofertas-por-filial/${filialId}`, {
+        const response = await fetch(`http://localhost:3000/ofertas/ofertas-aceptadas-por-filial/${filialId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -183,13 +183,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Obtener las ofertas de la filial
             try {
-                const ofertasData = await obtenerOfertasFilial(filialId);
+                const ofertasData = await obtenerOfertasAceptadasFilial(filialId);
                 console.log('Ofertas obtenidas:', ofertasData);
-                const ofertasAceptadas = ofertasData.filter(oferta => oferta.estado === 'aceptada');
-                console.log('Ofertas filtradas:', ofertasAceptadas);
-                console.log
-
-                document.getElementById('cant-ofertas-filial').textContent = ofertasAceptadas.length;
+                
+                document.getElementById('cant-ofertas-filial').textContent = ofertasData.length;
             } catch (error) {
                 console.error('Error al obtener las ofertas:', error);
             }

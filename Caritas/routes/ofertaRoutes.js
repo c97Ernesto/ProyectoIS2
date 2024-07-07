@@ -34,7 +34,7 @@ const verifyToken = (req, res, next) => {
 router
   .route("/")
   .post(ofertaController.realizarOferta)
-  
+
 router.post('/realizarOfertas', (req, res) => ofertaController.realizarOferta(req, res));
 
 router
@@ -51,14 +51,18 @@ router.post('/rechazar/:id', ofertaController.rechazarOferta);
 
 router
   .route('/ofertas-por-filial/:filialId')
-    .get(ofertaController.obtenerOfertasDeFilial)
-    .delete(ofertaController.eliminarOfertasDeFilial);
+  .get(ofertaController.obtenerOfertasDeFilial)
+  .delete(ofertaController.eliminarOfertasDeFilial);
 
+router
+  .route('/ofertas-aceptadas-por-filial/:filialId')
+  .get(ofertaController.obtenerOfertasAceptadasDeFilial)
+  .delete(ofertaController.eliminarOfertasAceptadasDeFilial);
 
 router
   .route('/ofertas-por-dni/:dni')
-    .get(ofertaController.obtenerOfertasPorDni)
-    .delete(ofertaController.eliminarOfertasPorDni);
+  .get(ofertaController.obtenerOfertasPorDni)
+  .delete(ofertaController.eliminarOfertasPorDni);
 
 
 
