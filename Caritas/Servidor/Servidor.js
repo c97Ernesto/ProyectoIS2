@@ -388,7 +388,12 @@ app.post('/copiarYEliminarPublicacion', (req, res) => {
           console.error('Error al eliminar ofertas relacionadas:', err);
           return res.status(500).json({ success: false, message: 'Error al eliminar ofertas relacionadas' });
         }
-
+      // 3 y medio, eliminar comentarios
+      db.query(sql, [publicacionId], (err, result) => {
+        if (err) {
+          console.error('Error al borrar comentarios:', err);
+          return res.status(500).json({ error: 'Error al borrar comentarios en la base de datos' });
+        }
         // Paso 4: Eliminar la publicación original
         db.query('DELETE FROM publicacion WHERE id = ?', [id], (err, results) => {
           if (err) {
@@ -398,6 +403,7 @@ app.post('/copiarYEliminarPublicacion', (req, res) => {
 
           res.json({ success: true, message: 'Publicación y ofertas relacionadas eliminadas con éxito' });
         });
+      })
       });
     });
   });
