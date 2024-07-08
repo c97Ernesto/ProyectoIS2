@@ -49,7 +49,7 @@ async function eliminarFilial(filialId) {
   console.log(filialId);
 
   try {
-      await eliminarOfertasAceptadasDeFilial(filialId);
+      await eliminarOfertasDeFilial(filialId);
 
       const response = await fetch(`http://localhost:3000/filial/eliminar/${filialId}`, {
           method: "DELETE",
@@ -94,11 +94,11 @@ async function obtenerOfertasAceptadasFilial(filialId) {
     }
 }
 
-async function eliminarOfertasAceptadasDeFilial(filialId) {
+async function eliminarOfertasDeFilial(filialId) {
     const token = localStorage.getItem("token");
   
     try {
-        const response = await fetch(`http://localhost:3000/ofertas/ofertas-aceptadas-por-filial/${filialId}`, {
+        const response = await fetch(`http://localhost:3000/ofertas/ofertas-por-filial/${filialId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -218,23 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarDetallesFiliales(filialesFiltradas);
         }
         document.getElementById('input-filter-nombreFilial').value = '';
-    });
-
-    const btnFilterCorreoVoluntario = document.getElementById('btn-filter-correoVoluntario');
-    btnFilterCorreoVoluntario.addEventListener('click', () => {
-        const filtroCorreoVoluntario = document.getElementById('input-filter-correoVoluntario').value.trim().toLowerCase();
-        const filialesFiltradas = filialesData.filter(filial => 
-            filial.filial_voluntarios && filial.filial_voluntarios.some(voluntario => 
-                voluntario.voluntario && voluntario.voluntario.correo.toLowerCase().includes(filtroCorreoVoluntario)
-            )
-        );
-        if (filialesFiltradas.length == 0) {
-            alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
-            obtenerDetallesFiliales();
-        } else {
-            mostrarDetallesFiliales(filialesFiltradas);
-        }
-        document.getElementById('input-filter-correoVoluntario').value = '';
     });
 
     const btnEliminarFilial = document.getElementById('confirmarEliminar');
