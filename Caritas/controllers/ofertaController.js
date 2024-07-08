@@ -316,6 +316,19 @@ class OfertaController {
     }
   }
 
+  eliminar(req, res) {
+    const { id } = req.params;
+    try {
+      db.query(`DELETE FROM ofertas WHERE id = ?`, [id], (err, rows) => {
+        if (err) {
+          res.status(400).send(err.message);
+        }
+        res.status(201).json(rows);
+      });
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
 }
 
 module.exports = new OfertaController();

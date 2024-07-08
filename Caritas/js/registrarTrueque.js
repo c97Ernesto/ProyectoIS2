@@ -65,11 +65,31 @@ async function obtenerPublicacion(idPublicacion) {
     }
 }
 
+async function eliminarOferta(ofertaId) {
+    const token = localStorage.getItem("token");
+  
+    try {
+        const response = await fetch(`http://localhost:3000/oferta/${ofertaId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Error al eliminar la oferta con id ${ofertaId} : ${response.status} ${response.statusText}`);
+        }
+        
+    } catch (error) {
+        console.error(`Error al eliminar la oferta con id ${ofertaId}. Error:  ${error}`);
+    }
+}
+
 async function eliminarPublicacion(publicacionId) {
     const token = localStorage.getItem("token");
   
     try {
-        const response = await fetch(`http://localhost:3000/publicacion/ofertas-por-filial/${publicacionId}`, {
+        const response = await fetch(`http://localhost:3000/publicacion/${publicacionId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -79,7 +99,7 @@ async function eliminarPublicacion(publicacionId) {
         if (!response.ok) {
             throw new Error(`Error al eliminar la publicacion ${publicacionId} de la oferta aceptada: ${response.status} ${response.statusText}`);
         }
-        await obtenerDetallesFiliales();
+        
     } catch (error) {
         console.error(`Error al eliminar la publicacion ${publicacionId}. Error:  ${error}`);
     }
@@ -95,16 +115,17 @@ async function handleSubmit(event, form) {
 
     const ofertaId = localStorage.getItem('ofertaId');
 
-    if (estado === "fallido") {
+    if (estado === "exitoso") {
         if (ofertaId) {
             const oferta = await obtenerOferta(localStorage.getItem('ofertaId'));
             console.log(oferta);
+            
             const publicacion1 = await obtenerPublicacion(oferta[0].id_producto_ofertante);
             console.log(publicacion1);
-            // await eliminarPublicacion(publicacion1[0].id);
+            await eliminarPublicacion(publicacion1[0].id);
             const publicacion2 = await obtenerPublicacion(oferta[0].id_producto_receptor);
             console.log(publicacion2);
-            // await eliminarPublicacion(publicacion2[0].id);
+            await eliminarPublicacion(publicacion2[0].id);
         }
     }
 
@@ -123,15 +144,17 @@ async function handleSubmit(event, form) {
         } else {
             handleError(await response.json());
         }
+
     } catch (error) {
         console.error('Error al registrar el estado del intercambio:', error);
         alert('Error al registrar el estado del intercambio');
     }
 }
 
-function handleSuccess(form) {
+async function handleSuccess(form) {
     alert('El intercambio ha sido registrado con éxito');
     form.reset();
+    await eliminarOferta(localStorage.getItem('ofertaId'));
     window.location.href = 'http://localhost:3000/visualizarTrueques.html';
 }
 

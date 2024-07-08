@@ -64,7 +64,9 @@ router
   .get(ofertaController.obtenerOfertasPorDni)
   .delete(ofertaController.eliminarOfertasPorDni);
 
-
+router
+  .route("/:id")
+  .delete(ofertaController.eliminar)
 
 
 module.exports = router;
