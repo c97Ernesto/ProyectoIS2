@@ -1,0 +1,102 @@
+/* Estilos generales para el cuerpo y los contenedores */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el contenedor de la publicación */
+#detalle-publicacion-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+#detalle-publicacion-container h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#detalle-publicacion-container p {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Estilos para la sección de comentarios */
+#comments-section {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#comments-section h3 {
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.respuesta {
+    margin-left: 20px; /* Espacio a la derecha del comentario */
+    padding: 5px; /* Espacio interno para mejor apariencia */
+    border-left: 2px solid #ccc; /* Borde a la izquierda para distinguir respuestas */
+}
+
+#comments-list {
+    margin-bottom: 20px;
+}
+
+.comment {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.comment p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.comment .fecha {
+    color: #999;
+    font-size: 12px;
+}
+
+/* Estilos para el formulario de nuevo comentario */
+#new-comment {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical; /* Permitir redimensionar verticalmente el textarea */
+}
+
+#post-comment {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#post-comment:hover {
+    background-color: #0056b3;
+}

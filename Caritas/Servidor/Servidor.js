@@ -433,6 +433,175 @@ app.post('/editarPublicacion', (req, res) => {
   });
 });
 
+app.get('/obtenerPublicacion/:idPublicacion', (req, res) => {
+  const { idPublicacion } = req.params;
+
+  // Ejemplo de respuesta de la publicación (simulación)
+  const publicacion = {
+      id: idPublicacion,
+      nombre: 'Nombre de la publicación',
+      descripcion: 'Descripción de la publicación',
+      categoria: 'Categoría de la publicación'
+  };
+
+  res.json(publicacion);
+});
+
+// Endpoint para obtener comentarios por ID de publicación
+app.get('/obtenerComentarios/:idPublicacion', (req, res) => {
+  const { idPublicacion } = req.params;
+
+  // Consulta SQL para obtener los comentarios de la publicación específica
+  const sql = 'SELECT * FROM comentarios WHERE publicacion_id = ?';
+  db.query(sql, [idPublicacion], (err, result) => {
+      if (err) {
+          console.error('Error al obtener comentarios:', err);
+          return res.status(500).json({ error: 'Error al obtener comentarios de la base de datos' });
+      }
+
+      // Formatear resultados y enviar como respuesta
+      const comentarios = result.map(row => ({
+          id: row.id,
+          publicacion_id: row.publicacion_id,
+          texto: row.texto,
+          usuarioCorreo: row.user_email
+      }));
+
+      res.json(comentarios);
+  });
+});
+
+app.get('/obtenerCorreoPorPublicacion/:publicacionId', (req, res) => {
+  const { publicacionId } = req.params;
+
+  const sql = `
+    SELECT u.correo
+    FROM publicacion p
+    JOIN usuarios u ON p.fk_usuario_correo = u.correo
+    WHERE p.id = ?;
+  `;
+
+  db.query(sql, [publicacionId], (err, result) => {
+    if (err) {
+      console.error('Error al obtener el correo asociado a la publicación:', err);
+      return res.status(500).json({ error: 'Error al obtener el correo asociado a la publicación' });
+    }
+
+    if (result.length === 0) {
+      return res.status(404).json({ error: 'Publicación no encontrada' });
+    }
+
+    const correo = result[0].correo;
+    res.status(200).json({ correo });
+  });
+});
+
+
+app.post('/guardarRespuesta', (req, res) => {
+  const { comentarioId, respuesta } = req.body;
+
+  // Verificar que los datos necesarios estén presentes
+  if (!comentarioId || !respuesta) {
+      return res.status(400).json({ error: 'Faltan datos requeridos para guardar la respuesta' });
+  }
+
+  // Verificar si ya existe una respuesta para el comentario
+  const sqlCheck = 'SELECT COUNT(*) AS count FROM comentarios WHERE id = ? AND respuesta IS NOT NULL';
+
+  db.query(sqlCheck, [comentarioId], (err, rows) => {
+      if (err) {
+          console.error('Error al verificar la existencia de respuestas:', err);
+          return res.status(500).json({ error: 'Error al verificar la existencia de respuestas en la base de datos' });
+      }
+
+      const existingRespuestasCount = rows[0].count;
+
+      if (existingRespuestasCount > 0) {
+          return res.status(400).json({ error: 'Ya existe una respuesta para este comentario' });
+      }
+
+      // Insertar la respuesta en la base de datos
+      const sqlInsert = 'UPDATE comentarios SET respuesta = ? WHERE id = ?';
+
+      db.query(sqlInsert, [respuesta, comentarioId], (err, result) => {
+          if (err) {
+              console.error('Error al insertar la respuesta:', err);
+              return res.status(500).json({ error: 'Error al guardar la respuesta en la base de datos' });
+          }
+
+          res.status(201).json({ success: true, message: 'Respuesta guardada correctamente' });
+      });
+  });
+});
+  app.get('/obtenerDetallesPublicacion/:id', (req, res) => {
+    const { publicacionId } = req.params.id;
+
+    const sql = `
+        SELECT p.*, u.correo as fk_usuario_correo 
+        FROM publicacion p 
+        JOIN usuarios u ON p.fk_usuario_correo = u.correo 
+        WHERE p.id = ?
+    `;
+
+    db.query(sql, [publicacionId], (err, result) => {
+        if (err) {
+            console.error('Error al obtener detalles de la publicación:', err);
+            return res.status(500).json({ error: 'Error al obtener detalles de la publicación' });
+        }
+        if (result.length === 0) {
+            return res.status(404).json({ error: 'Publicación no encontrada' });
+        }
+        res.status(200).json(result[0]);
+    });
+});
+
+
+app.get('/obtenerRespuestas/:commentId', (req, res) => {
+  const commentId = req.params.commentId;
+  db.query('SELECT * FROM comentarios WHERE id = ?', [commentId], (err, result) => {
+    if (err) {
+      console.error(`Error al obtener respuestas del comentario ${commentId}:`, err);
+      return res.status(500).json({ error: `Error al obtener respuestas del comentario ${commentId}` });
+    }
+    res.json(result);
+  });
+});
+
+
+
+
+app.post('/guardarComentario', (req, res) => {
+  const { publicacionId, comentario } = req.body;
+  const token = req.headers.authorization; // Obtener el token del encabezado
+  const accessToken = token.split(' ')[1]; // Extraer el token del encabezado
+  let decodedToken;
+
+  try {
+    decodedToken = jwt.verify(accessToken, 'codigo secreto');
+  } catch (err) {
+    console.error('Error al decodificar el token:', err);
+    return res.status(403).json({ error: 'Token inválido' });
+  }
+
+  const usuarioCorreo = decodedToken.correo;
+
+  // Verificar que los datos necesarios estén presentes
+  if (!publicacionId || !comentario || !usuarioCorreo) {
+    return res.status(400).json({ error: 'Faltan datos requeridos para guardar el comentario' });
+  }  
+  // Si no hay respuesta existente, proceder con la inserción del comentario
+  const sqlInsert = 'INSERT INTO comentarios (publicacion_id, texto, user_email) VALUES (?, ?, ?)';
+  db.query(sqlInsert, [publicacionId, comentario, usuarioCorreo], (err, result) => {
+      if (err) {
+          console.error('Error al insertar comentario:', err);
+          return res.status(500).json({ error: 'Error al insertar comentario en la base de datos' });
+      }
+      // Comentario insertado correctamente
+      res.status(201).json({ success: true, message: 'Comentario guardado correctamente' });
+  });
+});
+
+
 
 app.listen(PORT, () => {
   console.log(
@@ -464,5 +633,6 @@ const truequesRoutes = require("../routes/truequesRoutes");
 app.use("/trueques", truequesRoutes);
 
 const filialVoluntarioRoutes = require("../routes/filialVoluntarioRoutes.js");
+const { Console } = require("console");
 app.use("/filialVoluntario", filialVoluntarioRoutes);
 
