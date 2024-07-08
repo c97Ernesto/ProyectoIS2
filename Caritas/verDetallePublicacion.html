@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de la Publicación</title>
     <link rel="stylesheet" href="./css/comentarios.css">
 </head>
+
 <body>
     <div id="detalle-publicacion-container">
         <!-- Aquí se mostrará el detalle de la publicación -->
     </div>
-    
+
     <div id="comments-section">
         <h3>Comentarios</h3>
         <div id="comments-list">
@@ -44,22 +46,22 @@
                         'Authorization': `Bearer ${token}`
                     }
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error al cargar los comentarios.');
-                    }
-                    return response.json();
-                })
-                .then(comments => {
-                    // Obtener el correo asociado a la publicación
-                    obtenerCorreoPorPublicacion(publicacionId)
-                        .then(correoPublicacion => {
-                            const commentsList = document.getElementById('comments-list');
-                            commentsList.innerHTML = ''; // Limpiar comentarios existentes
-                            comments.forEach(comment => {
-                                const commentElement = document.createElement('div');
-                                commentElement.classList.add('comment');
-                                commentElement.innerHTML = `
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error al cargar los comentarios.');
+                        }
+                        return response.json();
+                    })
+                    .then(comments => {
+                        // Obtener el correo asociado a la publicación
+                        obtenerCorreoPorPublicacion(publicacionId)
+                            .then(correoPublicacion => {
+                                const commentsList = document.getElementById('comments-list');
+                                commentsList.innerHTML = ''; // Limpiar comentarios existentes
+                                comments.forEach(comment => {
+                                    const commentElement = document.createElement('div');
+                                    commentElement.classList.add('comment');
+                                    commentElement.innerHTML = `
                                     <p><strong>${comment.usuarioCorreo}</strong>: ${comment.texto}</p>
                                     <div id="respuestas-${comment.id}" class="respuestas-container"></div>
                                     ${usuarioActual === correoPublicacion ? `
@@ -70,19 +72,19 @@
                                         <button type="button" onclick="toggleResponseForm(${comment.id})">Responder</button>
                                     ` : ''}
                                 `;
-                                commentsList.appendChild(commentElement);
-                                obtenerRespuestasPorComentario(comment.id);
+                                    commentsList.appendChild(commentElement);
+                                    obtenerRespuestasPorComentario(comment.id);
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error al obtener el correo asociado a la publicación:', error);
                             });
-                        })
-                        .catch(error => {
-                            console.error('Error al obtener el correo asociado a la publicación:', error);
-                        });
-                })
-                .catch(error => {
-                    console.error('Error al cargar los comentarios:', error);
-                });
+                    })
+                    .catch(error => {
+                        console.error('Error al cargar los comentarios:', error);
+                    });
             }
-        
+
             function obtenerRespuestasPorComentario(commentId) {
                 fetch(`http://localhost:3000/obtenerRespuestas/${commentId}`, {
                     method: 'GET',
@@ -90,29 +92,29 @@
                         'Content-Type': 'application/json'
                     }
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error al obtener las respuestas del comentario.');
-                    }
-                    return response.json();
-                })
-                .then(respuestas => {
-                    const respuestasFiltradas = respuestas.filter(respuesta => respuesta.respuesta !== null);
-            
-                    const respuestasContainer = document.getElementById(`respuestas-${commentId}`);
-                    respuestasFiltradas.forEach(respuesta => {
-                        const respuestaElement = document.createElement('div');
-                        respuestaElement.classList.add('respuesta');
-                        respuestaElement.innerHTML = `<p><strong>Respuesta:</strong> ${respuesta.respuesta}</p>`;
-                        respuestasContainer.appendChild(respuestaElement);
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error al obtener las respuestas del comentario.');
+                        }
+                        return response.json();
+                    })
+                    .then(respuestas => {
+                        const respuestasFiltradas = respuestas.filter(respuesta => respuesta.respuesta !== null);
+
+                        const respuestasContainer = document.getElementById(`respuestas-${commentId}`);
+                        respuestasFiltradas.forEach(respuesta => {
+                            const respuestaElement = document.createElement('div');
+                            respuestaElement.classList.add('respuesta');
+                            respuestaElement.innerHTML = `<p><strong>Respuesta:</strong> ${respuesta.respuesta}</p>`;
+                            respuestasContainer.appendChild(respuestaElement);
+                        });
+                    })
+                    .catch(error => {
+                        console.error(`Error al obtener las respuestas del comentario ${commentId}:`, error);
                     });
-                })
-                .catch(error => {
-                    console.error(`Error al obtener las respuestas del comentario ${commentId}:`, error);
-                });
             }
-            
-        
+
+
 
             function obtenerCorreoPorPublicacion(publicacionId) {
                 return new Promise((resolve, reject) => {
@@ -123,19 +125,19 @@
                             'Authorization': `Bearer ${token}`
                         }
                     })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Error al obtener el correo asociado a la publicación.');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        const correo = data.correo;
-                        resolve(correo);
-                    })
-                    .catch(error => {
-                        reject(error);
-                    });
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error al obtener el correo asociado a la publicación.');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            const correo = data.correo;
+                            resolve(correo);
+                        })
+                        .catch(error => {
+                            reject(error);
+                        });
                 });
             }
 
@@ -143,7 +145,7 @@
                 const form = document.getElementById(`form-${commentId}`);
                 const toggleButton = document.getElementById(toggleButtonId);
                 const otherToggleButtons = document.querySelectorAll('[id^="toggle-"]');
-                
+
                 otherToggleButtons.forEach(button => {
                     if (button.id !== toggleButtonId) {
                         button.style.display = 'block';
@@ -153,14 +155,14 @@
                 form.style.display = form.style.display === 'none' ? 'block' : 'none';
                 toggleButton.style.display = 'none';
             }
-        
+
             window.postResponse = (commentId) => {
                 const responseText = document.getElementById(`response-${commentId}`).value.trim();
                 if (responseText === '') {
                     alert('Por favor, escribe una respuesta.');
                     return;
                 }
-        
+
                 fetch('http://localhost:3000/guardarRespuesta', {
                     method: 'POST',
                     headers: {
@@ -171,22 +173,22 @@
                         respuesta: responseText
                     })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Respuesta enviada correctamente.');
-                        // Mostrar la respuesta guardada
-                        mostrarRespuesta(commentId, responseText);
-                        // Limpiar el campo de texto
-                        document.getElementById(`response-${commentId}`).value = '';
-                    } else {
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Respuesta enviada correctamente.');
+                            // Mostrar la respuesta guardada
+                            mostrarRespuesta(commentId, responseText);
+                            // Limpiar el campo de texto
+                            document.getElementById(`response-${commentId}`).value = '';
+                        } else {
+                            alert('Error al enviar la respuesta.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error en la solicitud:', error);
                         alert('Error al enviar la respuesta.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error en la solicitud:', error);
-                    alert('Error al enviar la respuesta.');
-                });
+                    });
             };
 
             function mostrarRespuesta(commentId, respuesta) {
@@ -197,57 +199,54 @@
                 respuestasContainer.appendChild(respuestaElement);
                 respuestasContainer.style.display = 'block'; // Mostrar el contenedor de respuestas si no estaba visible
             }
-        
+
             agregarEventListeners();
         });
-        
+
         function agregarEventListeners() {
             const botonEditar = document.getElementById('editar');
             const botonEliminar = document.getElementById('eliminar');
             const botonComentar = document.getElementById('comentar');
             const categoria = document.getElementById("cat").innerText;
             const botonOferta = document.getElementById('oferta');
-        
+
             if (botonOferta) {
                 botonOferta.addEventListener('click', realizarOferta);
             }
-        
+
             if (botonEditar) {
                 botonEditar.addEventListener('click', () => {
                     window.location.href = './editarPublicacion.html';
                 });
             }
-        
+
             if (botonEliminar) {
-                botonEliminar.addEventListener('click', () => {
+                botonEliminar.addEventListener('click', async () => {
                     const publicacionId = localStorage.getItem('publicacionId');
+                    const token = localStorage.getItem("token");
                     if (!publicacionId) {
                         console.error('No se encontró el ID de la publicación en el almacenamiento local');
                         return;
                     }
-        
-                    fetch('http://localhost:3000/copiarYEliminarPublicacion', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ id: publicacionId })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            console.log('Publicación copiada y eliminada con éxito');
-                            window.location.href = './misPublicaciones.html';
-                        } else {
-                            console.error('Error:', data.message);
+
+                    try {
+                        const response = await fetch(`http://localhost:3000/publicacion/${publicacionId}`, {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: "Bearer " + token,
+                            },
+                        });
+                        if (!response.ok) {
+                            throw new Error(`Error al eliminar la publicacion ${publicacionId} de la oferta aceptada: ${response.status} ${response.statusText}`);
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error en la solicitud:', error);
-                    });
+                        window.location.href = './misPublicaciones.html';
+                    } catch (error) {
+                        console.error(`Error al eliminar la publicacion ${publicacionId}. Error:  ${error}`);
+                    }
                 });
             }
-        
+
             if (botonComentar) {
                 botonComentar.addEventListener('click', () => {
                     console.log('Botón Comentar clickeado');
@@ -255,17 +254,18 @@
                 });
             }
         }
-        
+
         function realizarOferta() {
             const categoria = document.getElementById("cat").innerText;
             localStorage.setItem('detallePublicacionURL', window.location.href);
             window.location.href = `realizarOferta.html?categoria=${categoria}`;
         }
-        
+
         function cancelarOferta() {
             alert('Oferta cancelada');
         }
-        
+
     </script>
 </body>
+
 </html>

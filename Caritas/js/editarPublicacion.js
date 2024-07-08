@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.success) {
                 console.log('Publicación editada con éxito');
                 alert('Publicación editada con éxito');
+                window.location.href = './verDetallePublicacion.html';
             } else {
                 console.error('Error:', data.message);
                 alert('Error al editar la publicación: ' + data.message);
