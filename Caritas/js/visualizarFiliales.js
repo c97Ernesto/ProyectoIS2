@@ -145,12 +145,13 @@ function mostrarDetallesFiliales(filiales) {
         const filial_voluntario = await obtenerVoluntariosDeFilial(filial.id);
         const cantVoluntarios = filial_voluntario.length;
 
+        // <td><button class="btn btn-outline-primary btn-detalles" data-id="${filial.id}">Editar</button></td>
+
         const fila = document.createElement('tr');
         fila.innerHTML = `
             <td>${filial.id}</td>
             <td>${filial.nombre}</td>
             <td>${cantVoluntarios}</td>
-            <td><button class="btn btn-outline-primary btn-detalles" data-id="${filial.id}">Editar</button></td>
             <td>
                 <button type="button" class="btn btn-outline-danger btn-eliminar" data-id="${filial.id}" data-nombre="${filial.nombre}"
                 data-bs-toggle="modal" data-bs-target="#exampleModal">
