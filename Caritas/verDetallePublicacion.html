@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de la Publicación</title>
     <link rel="stylesheet" href="./css/comentarios.css">
 </head>
-
 <body>
     <div id="detalle-publicacion-container">
         <!-- Aquí se mostrará el detalle de la publicación -->
@@ -46,43 +44,43 @@
                         'Authorization': `Bearer ${token}`
                     }
                 })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Error al cargar los comentarios.');
-                        }
-                        return response.json();
-                    })
-                    .then(comments => {
-                        // Obtener el correo asociado a la publicación
-                        obtenerCorreoPorPublicacion(publicacionId)
-                            .then(correoPublicacion => {
-                                const commentsList = document.getElementById('comments-list');
-                                commentsList.innerHTML = ''; // Limpiar comentarios existentes
-                                comments.forEach(comment => {
-                                    const commentElement = document.createElement('div');
-                                    commentElement.classList.add('comment');
-                                    commentElement.innerHTML = `
-                                    <p><strong>${comment.usuarioCorreo}</strong>: ${comment.texto}</p>
-                                    <div id="respuestas-${comment.id}" class="respuestas-container"></div>
-                                    ${usuarioActual === correoPublicacion ? `
-                                        <form id="form-${comment.id}" class="response-form" style="display: none;">
-                                            <textarea id="response-${comment.id}" placeholder="Responder al comentario"></textarea>
-                                            <button type="button" onclick="postResponse(${comment.id})">Enviar</button>
-                                        </form>
-                                        <button type="button" onclick="toggleResponseForm(${comment.id})">Responder</button>
-                                    ` : ''}
-                                `;
-                                    commentsList.appendChild(commentElement);
-                                    obtenerRespuestasPorComentario(comment.id);
-                                });
-                            })
-                            .catch(error => {
-                                console.error('Error al obtener el correo asociado a la publicación:', error);
-                            });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al cargar los comentarios.');
+                    }
+                    return response.json();
+                })
+                .then(comments => {
+                    // Obtener el correo asociado a la publicación
+                    obtenerCorreoPorPublicacion(publicacionId)
+                    .then(correoPublicacion => {
+                        const commentsList = document.getElementById('comments-list');
+                        commentsList.innerHTML = ''; // Limpiar comentarios existentes
+                        comments.forEach(comment => {
+                            const commentElement = document.createElement('div');
+                            commentElement.classList.add('comment');
+                            commentElement.innerHTML = `
+                                <p><strong>${comment.usuarioCorreo}</strong>: ${comment.texto}</p>
+                                <div id="respuestas-${comment.id}" class="respuestas-container"></div>
+                                ${usuarioActual === correoPublicacion ? `
+                                    <form id="form-${comment.id}" class="response-form" style="display: none;">
+                                        <textarea id="response-${comment.id}" placeholder="Responder al comentario"></textarea>
+                                        <button type="button" onclick="postResponse(${comment.id})">Enviar</button>
+                                    </form>
+                                    <button type="button" onclick="toggleResponseForm(${comment.id})">Responder</button>
+                                ` : ''}
+                            `;
+                            commentsList.appendChild(commentElement);
+                            obtenerRespuestasPorComentario(comment.id);
+                        });
                     })
                     .catch(error => {
-                        console.error('Error al cargar los comentarios:', error);
+                        console.error('Error al obtener el correo asociado a la publicación:', error);
                     });
+                })
+                .catch(error => {
+                    console.error('Error al cargar los comentarios:', error);
+                });
             }
 
             function obtenerRespuestasPorComentario(commentId) {
@@ -92,29 +90,26 @@
                         'Content-Type': 'application/json'
                     }
                 })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Error al obtener las respuestas del comentario.');
-                        }
-                        return response.json();
-                    })
-                    .then(respuestas => {
-                        const respuestasFiltradas = respuestas.filter(respuesta => respuesta.respuesta !== null);
-
-                        const respuestasContainer = document.getElementById(`respuestas-${commentId}`);
-                        respuestasFiltradas.forEach(respuesta => {
-                            const respuestaElement = document.createElement('div');
-                            respuestaElement.classList.add('respuesta');
-                            respuestaElement.innerHTML = `<p><strong>Respuesta:</strong> ${respuesta.respuesta}</p>`;
-                            respuestasContainer.appendChild(respuestaElement);
-                        });
-                    })
-                    .catch(error => {
-                        console.error(`Error al obtener las respuestas del comentario ${commentId}:`, error);
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener las respuestas del comentario.');
+                    }
+                    return response.json();
+                })
+                .then(respuestas => {
+                    const respuestasFiltradas = respuestas.filter(respuesta => respuesta.respuesta !== null);
+                    const respuestasContainer = document.getElementById(`respuestas-${commentId}`);
+                    respuestasFiltradas.forEach(respuesta => {
+                        const respuestaElement = document.createElement('div');
+                        respuestaElement.classList.add('respuesta');
+                        respuestaElement.innerHTML = `<p><strong>Respuesta:</strong> ${respuesta.respuesta}</p>`;
+                        respuestasContainer.appendChild(respuestaElement);
                     });
+                })
+                .catch(error => {
+                    console.error(`Error al obtener las respuestas del comentario ${commentId}:`, error);
+                });
             }
-
-
 
             function obtenerCorreoPorPublicacion(publicacionId) {
                 return new Promise((resolve, reject) => {
@@ -125,19 +120,19 @@
                             'Authorization': `Bearer ${token}`
                         }
                     })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Error al obtener el correo asociado a la publicación.');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            const correo = data.correo;
-                            resolve(correo);
-                        })
-                        .catch(error => {
-                            reject(error);
-                        });
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error al obtener el correo asociado a la publicación.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const correo = data.correo;
+                        resolve(correo);
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
                 });
             }
 
@@ -173,22 +168,22 @@
                         respuesta: responseText
                     })
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Respuesta enviada correctamente.');
-                            // Mostrar la respuesta guardada
-                            mostrarRespuesta(commentId, responseText);
-                            // Limpiar el campo de texto
-                            document.getElementById(`response-${commentId}`).value = '';
-                        } else {
-                            alert('Error al enviar la respuesta.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error en la solicitud:', error);
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Respuesta enviada correctamente.');
+                        // Mostrar la respuesta guardada
+                        mostrarRespuesta(commentId, responseText);
+                        // Limpiar el campo de texto
+                        document.getElementById(`response-${commentId}`).value = '';
+                    } else {
                         alert('Error al enviar la respuesta.');
-                    });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en la solicitud:', error);
+                    alert('Error al enviar la respuesta.');
+                });
             };
 
             function mostrarRespuesta(commentId, respuesta) {
@@ -222,27 +217,31 @@
 
             if (botonEliminar) {
                 botonEliminar.addEventListener('click', async () => {
-                    const publicacionId = localStorage.getItem('publicacionId');
-                    const token = localStorage.getItem("token");
-                    if (!publicacionId) {
-                        console.error('No se encontró el ID de la publicación en el almacenamiento local');
-                        return;
-                    }
-
-                    try {
-                        const response = await fetch(`http://localhost:3000/publicacion/${publicacionId}`, {
-                            method: "DELETE",
-                            headers: {
-                                "Content-Type": "application/json",
-                                Authorization: "Bearer " + token,
-                            },
-                        });
-                        if (!response.ok) {
-                            throw new Error(`Error al eliminar la publicacion ${publicacionId} de la oferta aceptada: ${response.status} ${response.statusText}`);
+                    const confirmed = confirm("¿Estás seguro de que deseas eliminar esta publicación?");
+                    if (confirmed) {
+                        const publicacionId = localStorage.getItem('publicacionId');
+                        const token = localStorage.getItem("token");
+                        if (!publicacionId) {
+                            console.error('No se encontró el ID de la publicación en el almacenamiento local');
+                            return;
                         }
-                        window.location.href = './misPublicaciones.html';
-                    } catch (error) {
-                        console.error(`Error al eliminar la publicacion ${publicacionId}. Error:  ${error}`);
+
+                        try {
+                            const response = await fetch(`http://localhost:3000/publicacion/${publicacionId}`, {
+                                method: "DELETE",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: "Bearer " + token,
+                                },
+                            });
+                            if (!response.ok) {
+                                throw new Error(`Error al eliminar la publicacion ${publicacionId} de la oferta aceptada: ${response.status} ${response.statusText}`);
+                            }
+                            alert("Publicación eliminada");
+                            window.location.href = './misPublicaciones.html';
+                        } catch (error) {
+                            console.error(`Error al eliminar la publicacion ${publicacionId}. Error:  ${error}`);
+                        }
                     }
                 });
             }
@@ -264,8 +263,6 @@
         function cancelarOferta() {
             alert('Oferta cancelada');
         }
-
     </script>
 </body>
-
 </html>
