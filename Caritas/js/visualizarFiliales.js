@@ -72,11 +72,11 @@ async function eliminarFilial(filialId) {
   }
 }
 
-async function obtenerOfertasFilial(filialId) {
+async function obtenerOfertasAceptadasFilial(filialId) {
     const token = localStorage.getItem("token");
     console.log("antes fetch", filialId);
     try {
-        const response = await fetch(`http://localhost:3000/ofertas/ofertas-por-filial/${filialId}`, {
+        const response = await fetch(`http://localhost:3000/ofertas/ofertas-aceptadas-por-filial/${filialId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -183,9 +183,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Obtener las ofertas de la filial
             try {
-                const ofertasData = await obtenerOfertasFilial(filialId);
+                const ofertasData = await obtenerOfertasAceptadasFilial(filialId);
                 console.log('Ofertas obtenidas:', ofertasData);
-                document.getElementById('cant-ofertas-filial').textContent = ofertasData.length;    
+                
+                document.getElementById('cant-ofertas-filial').textContent = ofertasData.length;
             } catch (error) {
                 console.error('Error al obtener las ofertas:', error);
             }
@@ -217,23 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarDetallesFiliales(filialesFiltradas);
         }
         document.getElementById('input-filter-nombreFilial').value = '';
-    });
-
-    const btnFilterCorreoVoluntario = document.getElementById('btn-filter-correoVoluntario');
-    btnFilterCorreoVoluntario.addEventListener('click', () => {
-        const filtroCorreoVoluntario = document.getElementById('input-filter-correoVoluntario').value.trim().toLowerCase();
-        const filialesFiltradas = filialesData.filter(filial => 
-            filial.filial_voluntarios && filial.filial_voluntarios.some(voluntario => 
-                voluntario.voluntario && voluntario.voluntario.correo.toLowerCase().includes(filtroCorreoVoluntario)
-            )
-        );
-        if (filialesFiltradas.length == 0) {
-            alert("No hay filiales que coincidan con el criterio de búsqueda ingresado.");
-            obtenerDetallesFiliales();
-        } else {
-            mostrarDetallesFiliales(filialesFiltradas);
-        }
-        document.getElementById('input-filter-correoVoluntario').value = '';
     });
 
     const btnEliminarFilial = document.getElementById('confirmarEliminar');
