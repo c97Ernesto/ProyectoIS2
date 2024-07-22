@@ -26,23 +26,26 @@ class FiliarController {
             const fechaFinObj = new Date(fechaFin);
             const [horaInicioHoras, horaInicioMinutos] = horaInicio.split(':').map(Number);
             const [horaFinHoras, horaFinMinutos] = horaFin.split(':').map(Number);
-
-            // Insertar la filial
+    
+            console.log('Datos recibidos:', { nombre, fechaInicio, fechaFin, horaInicio, horaFin, intervalo, diasTrabajo });
+    
             db.query("INSERT INTO filial (nombre, estado) VALUES (?, ?);", [nombre, 'inactiva'], (err, result) => {
                 if (err) {
                     console.error('Error al insertar la filial:', err);
                     return res.status(400).json({ message: err.message });
                 }
-
+    
                 const filialId = result.insertId;
                 const horarios = [];
-
+    
                 let currentDate = new Date(fechaInicioObj);
                 while (currentDate <= fechaFinObj) {
+                    console.log('Procesando fecha:', currentDate);
                     if (diasTrabajo.includes(currentDate.getDay().toString())) {
+                        console.log('Día de trabajo:', currentDate.getDay());
                         let currentHour = horaInicioHoras;
                         let currentMinute = horaInicioMinutos;
-
+    
                         while (currentHour < horaFinHoras || (currentHour === horaFinHoras && currentMinute < horaFinMinutos)) {
                             const horario = new Date(currentDate);
                             horario.setHours(currentHour, currentMinute, 0, 0);
@@ -51,7 +54,8 @@ class FiliarController {
                                 fk_idFilial: filialId,
                                 estado: 'disponible'
                             });
-
+                            console.log('Horario agregado:', horario.toISOString());
+    
                             currentMinute += parseInt(intervalo, 10);
                             if (currentMinute >= 60) {
                                 currentMinute -= 60;
@@ -61,8 +65,9 @@ class FiliarController {
                     }
                     currentDate.setDate(currentDate.getDate() + 1);
                 }
-
-                // Insertar los horarios para la filial
+    
+                console.log('Horarios generados:', horarios);
+    
                 const horarioQueries = horarios.map(horario => {
                     return new Promise((resolve, reject) => {
                         db.query("INSERT INTO horario (fechaHora, fk_idFilial, estado) VALUES (?, ?, ?);", [horario.fechaHora, horario.fk_idFilial, horario.estado], (err, result) => {
@@ -74,8 +79,7 @@ class FiliarController {
                         });
                     });
                 });
-
-                // Ejecutar todas las consultas de horario
+    
                 Promise.all(horarioQueries)
                     .then(() => {
                         return res.status(201).json({ message: 'Filial y horarios cargados exitosamente' });
@@ -90,7 +94,8 @@ class FiliarController {
             return res.status(500).json({ message: err.message });
         }
     }
-
+    
+    
 
     obtenerFiliales(req, res) {
         db.query('SELECT id, nombre FROM filial WHERE estado = "activa"', (err, results) => {
@@ -365,10 +370,17 @@ class FiliarController {
             }
     
             if (results.length === 0) {
-                return res.status(404).json({ message: "No se encontraron voluntarios para esta filial" });
+                const query = "DELETE FROM filial WHERE id = ?";
+                db.query(query, [filialId], (err, results) => {
+                    if (err) {
+                        return res.status(500).json({ message: "Error al eliminar la filial", error: err });
+                    }
+                    res.status(200).json({ message: "Filial eliminada exitosamente (sin voluntarios)" });
+                });
             }
-    
-            const voluntarios = results.map(voluntario => voluntario.Correo);
+            else {
+
+                const voluntarios = results.map(voluntario => voluntario.Correo);
     
             // Actualizar el rol de los voluntarios a 'comun'
             const actualizarRolQuery = `
@@ -407,9 +419,29 @@ class FiliarController {
                     });
                 });
             });
+            }          
         });
     };
 
+    async obtenerFilialesDelVoluntario(req, res) {
+        const idVoluntario = obtenerCorreoUsuarioDesdeToken(req);
+
+        try {
+            db.query(`SELECT f.* FROM filial f JOIN filial_voluntario fv ON f.id = fv.id_filial WHERE fv.id_voluntario = ?`, [idVoluntario], (err, result) => {
+                if (err) {
+                    return res.status(400).send(err.message);
+                }
+                if (result.length === 0) {
+                    console.log(`No hay filiales para el voluntario con correo ${idVoluntario}`);
+                    return res.status(200).json({ ok: 0, message: 'No hay filiales para el voluntario' });
+                }
+                return res.status(200).json(result);
+            });
+        } catch (error) {
+            console.error('Error al obtener las filiales del voluntario:', error);
+            res.status(500).send('Error interno del servidor');
+        }
+    }
 }
 
 module.exports = new FiliarController();

@@ -154,13 +154,13 @@ async function obtenerFilialesConVoluntario(idUsuario) {
 function mostrarDetallesEnDOM(usuario) {
     const usuarioDetalles = document.getElementById('usuario-detalles');
     usuarioDetalles.innerHTML = `
-        <p>Correo: ${usuario.Correo}</p>
-        <p>Rol: ${usuario.rol}</p>
-        <p>DNI: ${usuario.DNI}</p>
-        <p>Usuario: ${usuario.Usuario}</p>
-        <p>Nombre: ${usuario.Nombre}</p>
-        <p>Apellido: ${usuario.apellido}</p>
-        <p>Telefono: ${usuario.Telefono}</p>
+        <p>Correo: <span class="fw-medium">${usuario.Correo}</span></p>
+        <p>Rol: <span class="fw-medium">${usuario.rol}</span></p>
+        <p>DNI: <span class="fw-medium">${usuario.DNI}</span></p>
+        <p>Usuario: <span class="fw-medium">${usuario.Usuario}</span></p>
+        <p>Nombre: <span class="fw-medium">${usuario.Nombre}</span></p>
+        <p>Apellido: <span class="fw-medium">${usuario.apellido}</span></p>
+        <p>Telefono: <span class="fw-medium">${usuario.Telefono}</span></p>
     `;
 
     document.getElementById('btn-eliminar').setAttribute('data-dni_ofertante', usuario.DNI);
