@@ -433,7 +433,7 @@ class FiliarController {
                 }
                 if (result.length === 0) {
                     console.log(`No hay filiales para el voluntario con correo ${idVoluntario}`);
-                    return res.status(200).json({ ok: 0, message: 'No hay filiales para el voluntario' });
+                    return res.status(200).json(result);
                 }
                 return res.status(200).json(result);
             });

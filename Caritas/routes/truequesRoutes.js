@@ -7,5 +7,8 @@ router
   .route("/registrar")
   .post(truequeController.registrarEstadoTrueque)
   
+router
+  .route("/de-la-filial/:idFilial")
+  .get(truequeController.obtenerTruequesDeFilial)
 
 module.exports = router;

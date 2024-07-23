@@ -20,12 +20,7 @@ async function obtenerUsuarios() {
         });
 
         if (!response.ok) {
-            throw new Error(
-                "Error al obtener todos los usuarios: " +
-                response.status +
-                " " +
-                response.statusText
-            );
+            throw new Error("Error al obtener todos los usuarios: " + response.status + " " + response.statusText);
         }
 
         usuariosData = await response.json(); // Almacena los usuarios obtenidos
@@ -126,51 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.getElementById('input-filter-usuario').value = '';
     });
-
-    // const btnFilterNombre = document.getElementById('btn-filter-nombre');
-    // btnFilterNombre.addEventListener('click', () => {
-    //     const filtroNombre = document.getElementById('input-filter-nombre').value.trim().toLowerCase();
-    //     //filtro por nombre
-    //     const usuariosFiltrados = usuariosData.filter(usuario => usuario.Nombre.toLowerCase().includes(filtroNombre));
-    //     if (usuariosFiltrados.length == 0){
-    //         alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
-    //         obtenerUsuarios();
-    //     }
-    //     else {
-    //         mostrarUsuarios(usuariosFiltrados);
-    //     }
-    //     document.getElementById('input-filter-nombre').value = '';
-    // });
-
-    // const btnFilterApellido = document.getElementById('btn-filter-apellido');
-    // btnFilterApellido.addEventListener('click', () => {
-    //     const filtroApellido = document.getElementById('input-filter-apellido').value.trim().toLowerCase();
-    //     //filtro por apellido
-    //     const usuariosFiltrados = usuariosData.filter(usuario => usuario.apellido.toLowerCase().includes(filtroApellido));
-    //     if (usuariosFiltrados.length == 0){
-    //         alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
-    //         obtenerUsuarios();
-    //     }
-    //     else {
-    //         mostrarUsuarios(usuariosFiltrados);
-    //     }
-    //     document.getElementById('input-filter-apellido').value = '';
-    // });
-
-    // const btnFilterTelefono = document.getElementById('btn-filter-telefono');
-    // btnFilterTelefono.addEventListener('click', () => {
-    //     const filtroTelefono = document.getElementById('input-filter-telefono').value.trim();
-    //     //filtro por Telefono
-    //     const usuariosFiltrados = usuariosData.filter(usuario => usuario.Telefono.toString().includes(filtroTelefono));
-    //     if (usuariosFiltrados.length == 0){
-    //         alert("No hay usuarios que coincidan con el criterio de búsqueda ingresado.");
-    //         obtenerUsuarios();
-    //     }
-    //     else {
-    //         mostrarUsuarios(usuariosFiltrados);
-    //     }
-    //     document.getElementById('input-filter-telefono').value = '';
-    // });
     
     const btnFilterDNI = document.getElementById('btn-filter-dni');
     btnFilterDNI.addEventListener('click', () => {
