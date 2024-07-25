@@ -83,21 +83,33 @@ class TruequeController {
         });
     }
 
-    obtenerTruequesDeFilial(req, res){
+    obtenerTruequesDeFilial(req, res) {
         const idFilial = req.params.idFilial
 
         const correoUsuario = obtenerCorreoUsuarioDesdeToken(req);
 
         try {
             db.query(`SELECT * FROM trueques WHERE id_filial = ? AND voluntario = ?`, [idFilial, correoUsuario], (error, filas) => {
-                if (error){
+                if (error) {
                     res.status(400).send(error.message);
                 }
-                
-                        console.log(`Se encontraron ${filas.length} trueques para el usuario con correo ${correoUsuario} y filial con id ${idFilial}`)
-                        return res.status(200).json(filas);
-                    
-                
+                console.log(`Se encontraron ${filas.length} trueques para el usuario con correo ${correoUsuario} y filial con id ${idFilial}`)
+                return res.status(200).json(filas);
+            })
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
+    }
+
+    obtenerTruequesPorDni(req, res){
+        const dni = req.params.dni;
+        try {
+            db.query(`SELECT * FROM trueques WHERE dni_ofertante = ? OR dni_receptor = ?`, [dni, dni], (error, filas) => {
+                if (error) {
+                    res.status(400).send(error.message);
+                }
+                console.log(`Se encontraron ${filas.length} trueques para el usuario con dni ${dni}.`)
+                return res.status(200).json(filas);
             })
         } catch (error) {
             res.status(500).send(error.message);
