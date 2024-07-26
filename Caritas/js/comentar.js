@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Token o ID de publicación no encontrado');
         return;
     }
-    const commentsList = document.getElementById('comments-list');
     const newCommentInput = document.getElementById('new-comment');
     const postCommentButton = document.getElementById('post-comment');
 

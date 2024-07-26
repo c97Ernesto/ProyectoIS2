@@ -31,11 +31,10 @@
             localStorage.setItem('detallePublicacionURL', window.location.href);
             const commentsList = document.getElementById('comments-list');
             const token = localStorage.getItem('token');
-            let usuarioActual = token.correo;
-            usuarioActual = jwt_decode(token).correo;
+            let usuarioActual = jwt_decode(token).correo;
             const comentariosURL = `http://localhost:3000/obtenerComentarios/${publicacionId}`;
             loadComments();
-
+        
             function loadComments() {
                 fetch(comentariosURL, {
                     method: 'GET',
@@ -67,7 +66,7 @@
                                         <textarea id="response-${comment.id}" placeholder="Responder al comentario"></textarea>
                                         <button type="button" onclick="postResponse(${comment.id})">Enviar</button>
                                     </form>
-                                    <button type="button" onclick="toggleResponseForm(${comment.id})">Responder</button>
+                                    <button id="toggle-${comment.id}" type="button" onclick="toggleResponseForm(${comment.id})">Responder</button>
                                 ` : ''}
                             `;
                             commentsList.appendChild(commentElement);
@@ -82,7 +81,7 @@
                     console.error('Error al cargar los comentarios:', error);
                 });
             }
-
+        
             function obtenerRespuestasPorComentario(commentId) {
                 fetch(`http://localhost:3000/obtenerRespuestas/${commentId}`, {
                     method: 'GET',
@@ -99,6 +98,7 @@
                 .then(respuestas => {
                     const respuestasFiltradas = respuestas.filter(respuesta => respuesta.respuesta !== null);
                     const respuestasContainer = document.getElementById(`respuestas-${commentId}`);
+                    document.getElementById(`toggle-${commentId}`).style.display = 'none';
                     respuestasFiltradas.forEach(respuesta => {
                         const respuestaElement = document.createElement('div');
                         respuestaElement.classList.add('respuesta');
@@ -110,7 +110,7 @@
                     console.error(`Error al obtener las respuestas del comentario ${commentId}:`, error);
                 });
             }
-
+        
             function obtenerCorreoPorPublicacion(publicacionId) {
                 return new Promise((resolve, reject) => {
                     fetch(`http://localhost:3000/obtenerCorreoPorPublicacion/${publicacionId}`, {
@@ -135,29 +135,29 @@
                     });
                 });
             }
-
-            window.toggleResponseForm = (commentId, toggleButtonId) => {
+        
+            window.toggleResponseForm = (commentId) => {
                 const form = document.getElementById(`form-${commentId}`);
-                const toggleButton = document.getElementById(toggleButtonId);
+                const toggleButton = document.getElementById(`toggle-${commentId}`);
                 const otherToggleButtons = document.querySelectorAll('[id^="toggle-"]');
-
+        
                 otherToggleButtons.forEach(button => {
-                    if (button.id !== toggleButtonId) {
+                    if (button.id !== `toggle-${commentId}`) {
                         button.style.display = 'block';
                     }
                 });
-
+        
                 form.style.display = form.style.display === 'none' ? 'block' : 'none';
                 toggleButton.style.display = 'none';
             }
-
+        
             window.postResponse = (commentId) => {
                 const responseText = document.getElementById(`response-${commentId}`).value.trim();
                 if (responseText === '') {
                     alert('Por favor, escribe una respuesta.');
                     return;
                 }
-
+        
                 fetch('http://localhost:3000/guardarRespuesta', {
                     method: 'POST',
                     headers: {
@@ -176,6 +176,9 @@
                         mostrarRespuesta(commentId, responseText);
                         // Limpiar el campo de texto
                         document.getElementById(`response-${commentId}`).value = '';
+                        // Ocultar el formulario y el botón de responder
+                        document.getElementById(`form-${commentId}`).style.display = 'none';
+                        document.getElementById(`toggle-${commentId}`).style.display = 'none';
                     } else {
                         alert('Error al enviar la respuesta.');
                     }
@@ -185,7 +188,7 @@
                     alert('Error al enviar la respuesta.');
                 });
             };
-
+        
             function mostrarRespuesta(commentId, respuesta) {
                 const respuestasContainer = document.getElementById(`respuestas-${commentId}`);
                 const respuestaElement = document.createElement('div');
@@ -194,9 +197,10 @@
                 respuestasContainer.appendChild(respuestaElement);
                 respuestasContainer.style.display = 'block'; // Mostrar el contenedor de respuestas si no estaba visible
             }
-
+        
             agregarEventListeners();
         });
+        
 
         function agregarEventListeners() {
             const botonEditar = document.getElementById('editar');
