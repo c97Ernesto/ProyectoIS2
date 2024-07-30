@@ -11,4 +11,8 @@ router
   .route("/de-la-filial/:idFilial")
   .get(truequeController.obtenerTruequesDeFilial)
 
+router
+  .route("/del-usuario/:dni")
+  .get(truequeController.obtenerTruequesPorDni)
+
 module.exports = router;

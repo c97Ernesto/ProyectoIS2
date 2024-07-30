@@ -89,9 +89,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   else {
     document.getElementById('nombreFilial').innerHTML = `${filial[0].nombre}`;
 
-    const trueques = await obtenerTrueques(filial[0].id)
+    const trueques = await obtenerTrueques(filial[0].id);
 
-    mostrarTruequesFinalizados(trueques);
+    if (trueques.length > 0){
+        mostrarTruequesFinalizados(trueques);
+    }
+    else{
+      alert("No se encuentran trueques en la filial.")
+    }
+
   }
 
   console.log(filial);

@@ -17,13 +17,8 @@ async function fetchOffersRecibidas() {
         if (!response.ok) {
             throw new Error('Respuesta del servidor no funcionó');
         }
-        const result = await response.json();
-        if (!result.success) {
-            alert(result.message);
-            return;
-        }
-        const data = result.data;
-        displayOffers(data);
+        return await response.json();
+        
     } catch (error) {
         console.error('Error al obtener ofertas:', error);
     }
@@ -44,12 +39,7 @@ async function obtenerPublicacion(idPublicacion){
             },
         });
         if (!response.ok) {
-            throw new Error(
-                "Error al obtener todos los usuarios: " +
-                response.status +
-                " " +
-                response.statusText
-            );
+            throw new Error("Error al obtener la publicación: " +response.status +" " +response.statusText);
         }
 
         return await response.json(); // Almacena los usuarios obtenidos
@@ -68,26 +58,49 @@ function displayOffers(data) {
         const prodOfertante = await obtenerPublicacion(offer.id_producto_ofertante);
         const prodReceptor = await obtenerPublicacion(offer.id_producto_receptor);
 
-        const offerItem = document.createElement('li');
-        offerItem.classList.add('offer-item');
-        offerItem.innerHTML = `
-            <div class"">
-                <div>
-                    <h3>Oferta de: ${offer.nombre_ofertante} para ${offer.nombre_receptor}</h3>
-                    <p>Producto ofrecido: ${prodOfertante[0].nombre}</p>
-                    <p>Producto solicitado: ${prodReceptor[0].nombre}</p>
-                    <p>Estado: ${offer.estado}</p>
-                    <p>Fecha de intercambio: ${new Date(offer.fecha_intercambio).toLocaleString()}</p>
+        if (prodOfertante.length != 0 && prodReceptor.length != 0){
+            const offerItem = document.createElement('li');
+            offerItem.classList.add('offer-item');
+            offerItem.innerHTML = `
+                <div class"">
+                    <div>
+                        <h3>Oferta de: ${offer.nombre_ofertante} para ${offer.nombre_receptor}</h3>
+                        <p>Producto ofrecido: ${prodOfertante[0].nombre}</p>
+                        <p>Producto solicitado: ${prodReceptor[0].nombre}</p>
+                        <p>Estado: ${offer.estado}</p>
+                        <p>Fecha de intercambio: ${new Date(offer.fecha_intercambio).toLocaleString()}</p>
+                    </div>
+                    <div >
+                        <a href="./visualizarOfertaRecibida.html?id=${offer.id}">Ver detalles de la oferta</a>
+                    </div>
                 </div>
-                <div >
-                    <a href="./visualizarOfertaRecibida.html?id=${offer.id}">Ver detalles de la oferta</a>
-                </div>
-            </div>
-        `;
-        offersList.appendChild(offerItem);
+            `;
+            offersList.appendChild(offerItem);
+        }
+        else{
+            if (prodOfertante.length === 0){
+                console.log("No se pudo obtener el producto ofertante")
+    
+            }
+            else {
+                if (prodReceptor.length === 0){
+                    console.log("No se pudo obtener el producto receptor")
+                }
+            }
+        }
     });
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    fetchOffersRecibidas();
+document.addEventListener('DOMContentLoaded', async function () {
+    const ofertas = await fetchOffersRecibidas();
+    console.log(ofertas);
+    if (ofertas.length === 0) {
+        console.log("No hay ofertas recibidas");
+        console.log(ofertas.data);
+    }
+    else{
+        console.log("Hay ofertas recibidas");
+        console.log(ofertas.data);
+        displayOffers(ofertas.data)
+    }
 });

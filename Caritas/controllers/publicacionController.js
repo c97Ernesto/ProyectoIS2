@@ -303,7 +303,7 @@ class PublicacionController {
           return res.status(400).send(err.message);
         }
         if (rows.length === 0) {
-          return res.status(404).send('Producto no encontrado');
+          return res.status(200).json(rows);
         }
         res.status(200).json(rows);
       });

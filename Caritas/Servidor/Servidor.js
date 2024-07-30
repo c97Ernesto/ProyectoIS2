@@ -338,7 +338,7 @@ app.post('/ofertas-recibidas', async (req, res) => {
           const dni = results[0].dni;
 
           // Consultar ofertas recibidas usando el DNI obtenido
-          const queryRec = 'SELECT * FROM ofertas WHERE dni_receptor = ?';
+          const queryRec = `SELECT * FROM ofertas WHERE dni_receptor = ? AND estado <> 'finalizada'`
           db.query(queryRec, [dni], (errRec, resultsRec) => {
               if (errRec) {
                   console.error('Error fetching data:', errRec);

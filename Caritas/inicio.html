@@ -32,7 +32,7 @@
             <div class="dropdown-content hidden">
                 <button id="verPerfil">Ver perfil</button>
                 <button id="myPostsButton">Mis publicaciones</button>
-                <button id="filialesPredeterminadas">Filiales predeterminadas</button>
+                <button id="ofertasFinalizadas">Ofertas finalizadas</button>
                 <button id="logoutButton">Cerrar sesión</button>
         </div>
     </div>
@@ -55,7 +55,6 @@
                 
     </div>
 
-    <script src="./js/inicio.js"></script>
     <script src="./js/perfil.js"></script>
     <script src="./js/logout.js"></script>
     <script src="./js/filtroPorCategoria.js"></script>
@@ -64,12 +63,10 @@
         document.getElementById("btn-filter").addEventListener('click', () => {
           window.location.href = `http://localhost:3000/filtrarPublicaciones.html`;
         });
-        document.getElementById('filialesPredeterminadas').addEventListener('click',()=>{
-            window.location.href='http://localhost:3000/elegirFilialPredeterminada.html';
+        document.getElementById('ofertasFinalizadas').addEventListener('click',()=>{
+            window.location.href='http://localhost:3000/visualizarOfertasFinalizadas.html';
         });
-        document.getElementById('postHistoryButton').addEventListener('click',()=>{
-            window.location.href='http://localhost:3000/historialPublicaciones.html';
-        });
+        
     </script>
     
 
