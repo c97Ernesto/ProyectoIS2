@@ -67,8 +67,8 @@ function mostrarTruequesFinalizados(trueques){
     fila.innerHTML = `
       <td>${new Date(t.fecha_intercambio).toLocaleString()}</td>
       <td>${t.id_filial}</td>
-      <td>${t.donacion}</td>
       <td>${t.estado}</td>
+      <td>${t.donacion}</td>
       <td>${t.voluntario}</td>
       <td>${t.dni_ofertante}</td>
       <td>${t.dni_receptor}</td>
