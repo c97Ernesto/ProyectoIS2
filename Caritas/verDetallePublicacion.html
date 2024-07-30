@@ -97,8 +97,10 @@
                 })
                 .then(respuestas => {
                     const respuestasFiltradas = respuestas.filter(respuesta => respuesta.respuesta !== null);
+                    if(respuestasFiltradas.length>0){
+                        document.getElementById(`toggle-${commentId}`).style.display = 'none';
+                    }
                     const respuestasContainer = document.getElementById(`respuestas-${commentId}`);
-                    document.getElementById(`toggle-${commentId}`).style.display = 'none';
                     respuestasFiltradas.forEach(respuesta => {
                         const respuestaElement = document.createElement('div');
                         respuestaElement.classList.add('respuesta');
@@ -193,7 +195,7 @@
                 const respuestasContainer = document.getElementById(`respuestas-${commentId}`);
                 const respuestaElement = document.createElement('div');
                 respuestaElement.classList.add('respuesta');
-                respuestaElement.innerHTML = `<p><strong>${usuarioActual}</strong>: ${respuesta}</p>`;
+                respuestaElement.innerHTML = `<p><strong>Respuesta:</strong> ${respuesta}</p>`;
                 respuestasContainer.appendChild(respuestaElement);
                 respuestasContainer.style.display = 'block'; // Mostrar el contenedor de respuestas si no estaba visible
             }
